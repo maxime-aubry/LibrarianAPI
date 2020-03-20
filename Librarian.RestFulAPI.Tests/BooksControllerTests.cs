@@ -215,29 +215,29 @@ namespace Librarian.RestFulAPI.Tests
             });
         }
 
-        [Fact]
-        public async Task Created_book_is_equals_to_model()
-        {
-            //await DataProvider.CleanDatabase(this.client);
+        //[Fact]
+        //public async Task Created_book_is_equals_to_model()
+        //{
+        //    await DataProvider.CleanDatabase(this.client);
 
-            ////Librarian.Core.Domain.Entities.Shelf shelves = DataProvider.Shelves.First();
+        //    //Librarian.Core.Domain.Entities.Shelf shelves = DataProvider.Shelves.First();
 
-            //Librarian.RestFulAPI.V1.ViewModels.Books.CreateBookViewModel viewModel = new Librarian.RestFulAPI.V1.ViewModels.Books.CreateBookViewModel()
-            //{
-            //    Title = "Escadron spectre",
-            //    Categories = new List<EBookCategory>() { EBookCategory.ScienceFiction },
-            //    ReleaseDate = DateTime.Now,
-            //    NumberOfCopies = 10,
-            //    ShelfId = shelves.Id
-            //};
-            //string json = JsonConvert.SerializeObject(viewModel);
-            //StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
-            //string response = await this.client.PostAsync($"/api/v1/Books/create", formContent).Result.Content.ReadAsStringAsync();
-            //ContentResult<string> result = JsonConvert.DeserializeObject<ContentResult<string>>(response);
-            //Assert.True(result.Success);
-            //Assert.Null(result.Message);
-            //Assert.Null(result.Errors);
-            //Assert.NotNull(result.Result);
-        }
+        //    Librarian.RestFulAPI.V1.ViewModels.Books.CreateBookViewModel viewModel = new Librarian.RestFulAPI.V1.ViewModels.Books.CreateBookViewModel()
+        //    {
+        //        Title = "Escadron spectre",
+        //        Categories = new List<EBookCategory>() { EBookCategory.ScienceFiction },
+        //        ReleaseDate = DateTime.Now,
+        //        NumberOfCopies = 10,
+        //        ShelfId = shelves.Id
+        //    };
+        //    string json = JsonConvert.SerializeObject(viewModel);
+        //    StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
+        //    string response = await this.client.PostAsync($"/api/v1/Books/create", formContent).Result.Content.ReadAsStringAsync();
+        //    ContentResult<string> result = JsonConvert.DeserializeObject<ContentResult<string>>(response);
+        //    Assert.True(result.Success);
+        //    Assert.Null(result.Message);
+        //    Assert.Null(result.Errors);
+        //    Assert.NotNull(result.Result);
+        //}
     }
 }
