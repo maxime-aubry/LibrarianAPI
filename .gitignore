@@ -3,3 +3,10 @@
 ################################################################################
 
 /Librarian.Domain/bin
+/Librarian.Domain/obj
+/Librarian.Infrastructure/bin
+/Librarian.Infrastructure/obj
+/Librarian.RestFulApi/bin
+/Librarian.RestFulApi/obj
+/Librarian.RestFulAPI.Tests/bin
+/Librarian.RestFulAPI.Tests/obj
