@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Librarian.Core.Domain.Entities;
+using System.Collections.Generic;
 
 namespace Librarian.Core.DataTransfertObject.UseCases.Authors
 {
-    public class GetAuthorsByFiltersRequest : IUseCaseRequest<UseCaseResponseMessage<IEnumerable<Librarian.Core.Domain.Entities.FindAuthorsByFilters>>>
+    public class GetAuthorsByFiltersRequest : IUseCaseRequest<UseCaseResponseMessage<IEnumerable<FindAuthorsByFilters>>>
     {
         public GetAuthorsByFiltersRequest(string firstName, string lastName)
         {

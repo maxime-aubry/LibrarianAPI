@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace Librarian.Infrastructure.Entities
 {
@@ -15,6 +17,7 @@ namespace Librarian.Infrastructure.Entities
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        [BsonDateTimeOptions(DateOnly = true, Kind = DateTimeKind.Utc, Representation = BsonType.Document)]
         public DateTime Birthday { get; set; }
         public bool IsForbidden { get; set; }
     }

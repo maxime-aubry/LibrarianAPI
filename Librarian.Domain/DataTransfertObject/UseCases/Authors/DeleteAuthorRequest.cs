@@ -4,9 +4,9 @@
     {
         public DeleteAuthorRequest(string id)
         {
-            this.Id = id;
+            this.AuthorId = id;
         }
 
-        public string Id { get; set; }
+        public string AuthorId { get; set; }
     }
 }

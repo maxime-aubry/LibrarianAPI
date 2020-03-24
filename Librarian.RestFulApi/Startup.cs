@@ -9,7 +9,7 @@ using Librarian.Core.DataTransfertObject.UseCases.Readers;
 using Librarian.Core.DataTransfertObject.UseCases.Shelves;
 using Librarian.Core.UseCases;
 using Librarian.Core.UseCases.Authors;
-using Librarian.Core.UseCases.AuthorWitesBook;
+using Librarian.Core.UseCases.AuthorWritesBook;
 using Librarian.Core.UseCases.Books;
 using Librarian.Core.UseCases.ReaderLoansBook;
 using Librarian.Core.UseCases.ReaderRatesBook;
@@ -96,10 +96,10 @@ namespace Librarian.RestFulAPI
             services.AddScoped<IGetAuthorsByFiltersUseCase, GetAuthorsByFiltersUseCase>();
             services.AddScoped<ICreateAuthorUseCase, CreateAuthorUseCase>();
             services.AddScoped<IUpdateAuthorUseCase, UpdateAuthorUseCase>();
-            services.AddScoped<IDeleteAuthorUseCase, DeleteAuthorUseCase>();
+            services.AddScoped<Core.DataTransfertObject.UseCases.Authors.IDeleteAuthorUseCase, Core.UseCases.Authors.DeleteAuthorUseCase>();
 
-            services.AddScoped<IAddAuthorsUseCase, AddAuthorsUseCase>();
-            services.AddScoped<IDeleteAuthorsUseCase, DeleteAuthorsUseCase>();
+            services.AddScoped<IAddAuthorUseCase, AddAuthorUseCase>();
+            services.AddScoped<Core.DataTransfertObject.UseCases.AuthorWritesBook.IDeleteAuthorUseCase, Core.UseCases.AuthorWritesBook.DeleteAuthorUseCase>();
             services.AddScoped<IGetAuthorsByBookIdUseCase, GetAuthorsByBookIdUseCase>();
             services.AddScoped<IGetBooksByAuthorIdUseCase, GetBooksByAuthorIdUseCase>();
 
@@ -126,7 +126,6 @@ namespace Librarian.RestFulAPI
             services.AddScoped<IGetShelfByIdUseCase, GetShelfByIdUseCase>();
             services.AddScoped<IGetShelvesUseCase, GetShelvesUseCase>();
             services.AddScoped<ICreateShelfUseCase, CreateShelfUseCase>();
-            services.AddScoped<IUpdateShelfUseCase, UpdateShelfUseCase>();
             services.AddScoped<IDeleteShelfUseCase, DeleteShelfUseCase>();
             services.AddScoped<IGetAvailableShelvesUseCase, GetAvailableShelvesUseCase>();
 

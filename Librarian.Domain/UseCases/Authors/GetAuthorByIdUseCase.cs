@@ -1,33 +1,59 @@
 ﻿using Librarian.Core.DataTransfertObject;
-using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Authors;
-using System.Linq;
+using Librarian.Core.Domain.Entities;
+using System;
 using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.Authors
 {
     public class GetAuthorByIdUseCase : IGetAuthorByIdUseCase
     {
-        public GetAuthorByIdUseCase(IAuthorRepository authorRepository)
+        public GetAuthorByIdUseCase(
+            IAuthorRepository authorRepository,
+            IAuthorWritesBookRepository authorWritesBookRepository,
+            IBookRepository bookRepository,
+            IReaderLoansBookRepository readerLoansBookRepository,
+            IReaderRatesBookRepository readerRatesBookRepository,
+            IReaderRepository readerRepository,
+            IShelfRepository shelfRepository
+        )
         {
             this.authorRepository = authorRepository;
+            this.authorWritesBookRepository = authorWritesBookRepository;
+            this.bookRepository = bookRepository;
+            this.readerLoansBookRepository = readerLoansBookRepository;
+            this.readerRatesBookRepository = readerRatesBookRepository;
+            this.readerRepository = readerRepository;
+            this.shelfRepository = shelfRepository;
         }
 
         private readonly IAuthorRepository authorRepository;
+        private readonly IAuthorWritesBookRepository authorWritesBookRepository;
+        private readonly IBookRepository bookRepository;
+        private readonly IReaderLoansBookRepository readerLoansBookRepository;
+        private readonly IReaderRatesBookRepository readerRatesBookRepository;
+        private readonly IReaderRepository readerRepository;
+        private readonly IShelfRepository shelfRepository;
 
-        public async Task<bool> Handle(GetAuthorByIdRequest message, IOutputPort<UseCaseResponseMessage<Librarian.Core.Domain.Entities.Author>> outputPort)
+        public async Task<bool> Handle(GetAuthorByIdRequest message, IOutputPort<UseCaseResponseMessage<Author>> outputPort)
         {
-            if (!string.IsNullOrEmpty(message.Id))
+            if (!string.IsNullOrEmpty(message.AuthorId))
             {
-                GateawayResponse<Librarian.Core.Domain.Entities.Author> response = await this.authorRepository.Get(message.Id);
+                try
+                {
+                    Author author = await this.authorRepository.Get(message.AuthorId);
 
-                if (response.Success)
-                    outputPort.Handle(new UseCaseResponseMessage<Librarian.Core.Domain.Entities.Author>(response.Data, true));
-                else
-                    outputPort.Handle(new UseCaseResponseMessage<Librarian.Core.Domain.Entities.Author>(response.Errors.Select(e => e.Description)));
+                    if (author == null)
+                        throw new Exception("Author not found");
 
-                return response.Success;
+                    outputPort.Handle(new UseCaseResponseMessage<Author>(author, true));
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    outputPort.Handle(new UseCaseResponseMessage<Author>(null, false, e.Message));
+                }
             }
 
             return false;

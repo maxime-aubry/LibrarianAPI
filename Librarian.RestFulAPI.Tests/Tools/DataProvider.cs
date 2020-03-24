@@ -1,4 +1,5 @@
-﻿using Librarian.Core.Domain.Enums;
+﻿using Librarian.Core.Domain.Entities;
+using Librarian.Core.Domain.Enums;
 using Librarian.RestFulAPI.V1.ViewModels.Authors;
 using Librarian.RestFulAPI.V1.ViewModels.Books;
 using Librarian.RestFulAPI.V1.ViewModels.Readers;
@@ -15,159 +16,159 @@ namespace Librarian.RestFulAPI.Tests.Tools
 {
     public static class DataProvider
     {
-        public static IEnumerable<Librarian.Core.Domain.Entities.Reader> Readers { get; set; }
-        public static IEnumerable<Librarian.Core.Domain.Entities.Author> Authors { get; set; }
-        public static IEnumerable<Librarian.Core.Domain.Entities.Book> Books { get; set; }
-        public static IEnumerable<Librarian.Core.Domain.Entities.Shelf> Shelves { get; set; }
+        public static IEnumerable<Reader> Readers { get; set; }
+        public static IEnumerable<Author> Authors { get; set; }
+        public static IEnumerable<Book> Books { get; set; }
+        public static IEnumerable<Shelf> Shelves { get; set; }
 
-        public static void GenerateData()
+        public static void GenerateLocalData()
         {
-            DataProvider.Readers = new List<Librarian.Core.Domain.Entities.Reader>()
+            DataProvider.Readers = new List<Reader>()
             {
-                new Librarian.Core.Domain.Entities.Reader("Maxime", "AUBRY", new DateTime(1986, 12, 22), false),
-                new Librarian.Core.Domain.Entities.Reader("David", "Zippari", new DateTime(1978, 10, 7), false),
-                new Librarian.Core.Domain.Entities.Reader("Simon", "Louail", new DateTime(1995, 8, 5), false),
-                new Librarian.Core.Domain.Entities.Reader("Wilfrid", "Lepape", new DateTime(1991, 5, 10), false),
-                new Librarian.Core.Domain.Entities.Reader("Mathieu", "Decroocq", new DateTime(1989, 7, 21), false)
+                new Reader("Maxime", "AUBRY", new DateTime(1986, 12, 22), false),
+                new Reader("David", "Zippari", new DateTime(1978, 10, 7), false),
+                new Reader("Simon", "Louail", new DateTime(1995, 8, 5), false),
+                new Reader("Wilfrid", "Lepape", new DateTime(1991, 5, 10), false),
+                new Reader("Mathieu", "Decroocq", new DateTime(1989, 7, 21), false)
             };
-            DataProvider.Authors = new List<Librarian.Core.Domain.Entities.Author>()
+            DataProvider.Authors = new List<Author>()
             {
-                new Librarian.Core.Domain.Entities.Author("Jules", "Verne"),
-                new Librarian.Core.Domain.Entities.Author("William", "Shakespeare"),
-                new Librarian.Core.Domain.Entities.Author("Charles", "Baudelaire"),
-                new Librarian.Core.Domain.Entities.Author("Charles", "Dickens"),
-                new Librarian.Core.Domain.Entities.Author("J.R.R.", "Tolkien"),
-                new Librarian.Core.Domain.Entities.Author("J.K.", "Rowling"),
-                new Librarian.Core.Domain.Entities.Author("Stephen", "King"),
-                new Librarian.Core.Domain.Entities.Author("Victor", "Hugo"),
-                new Librarian.Core.Domain.Entities.Author("Ernest", "Hemingway"),
-                new Librarian.Core.Domain.Entities.Author("Antoine", "de Saint-Exupéry"),
-                new Librarian.Core.Domain.Entities.Author("R.L.", "Stine")
+                new Author("Jules", "Verne"),
+                new Author("William", "Shakespeare"),
+                new Author("Charles", "Baudelaire"),
+                new Author("Charles", "Dickens"),
+                new Author("J.R.R.", "Tolkien"),
+                new Author("J.K.", "Rowling"),
+                new Author("Stephen", "King"),
+                new Author("Victor", "Hugo"),
+                new Author("Ernest", "Hemingway"),
+                new Author("Antoine", "de Saint-Exupéry"),
+                new Author("R.L.", "Stine")
             };
-            DataProvider.Books = new List<Librarian.Core.Domain.Entities.Book>()
+            DataProvider.Books = new List<Book>()
             {
                 // Jules Verne
-                new Librarian.Core.Domain.Entities.Book("Vingt Mille Lieues sous les mers", new List<EBookCategory>() { EBookCategory.ActionAndAdventure, EBookCategory.ScienceFiction }, new DateTime(1870, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Voyage au centre de la Terre", new List<EBookCategory>() { EBookCategory.ActionAndAdventure, EBookCategory.ScienceFiction }, new DateTime(1864, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Le Tour du monde en quatre-vingts jours", new List<EBookCategory>() { EBookCategory.ActionAndAdventure }, new DateTime(1873, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("L'Île mystérieuse", new List<EBookCategory>() { EBookCategory.ActionAndAdventure, EBookCategory.ScienceFiction }, new DateTime(1874, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("De la Terre à la Lune", new List<EBookCategory>() { EBookCategory.ActionAndAdventure, EBookCategory.ScienceFiction }, new DateTime(1865, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Cinq Semaines en ballon", new List<EBookCategory>() { EBookCategory.ActionAndAdventure }, new DateTime(1863, 1, 1), 10, string.Empty),
+                new Book("Vingt Mille Lieues sous les mers", new List<EBookCategory>() { EBookCategory.ActionAndAdventure, EBookCategory.ScienceFiction }, new DateTime(1870, 1, 1, 0, 0, 0, DateTimeKind.Utc), 10, string.Empty),
+                new Book("Voyage au centre de la Terre", new List<EBookCategory>() { EBookCategory.ActionAndAdventure, EBookCategory.ScienceFiction }, new DateTime(1864, 1, 1), 10, string.Empty),
+                new Book("Le Tour du monde en quatre-vingts jours", new List<EBookCategory>() { EBookCategory.ActionAndAdventure }, new DateTime(1873, 1, 1), 10, string.Empty),
+                new Book("L'Île mystérieuse", new List<EBookCategory>() { EBookCategory.ActionAndAdventure, EBookCategory.ScienceFiction }, new DateTime(1874, 1, 1), 10, string.Empty),
+                new Book("De la Terre à la Lune", new List<EBookCategory>() { EBookCategory.ActionAndAdventure, EBookCategory.ScienceFiction }, new DateTime(1865, 1, 1), 10, string.Empty),
+                new Book("Cinq Semaines en ballon", new List<EBookCategory>() { EBookCategory.ActionAndAdventure }, new DateTime(1863, 1, 1), 10, string.Empty),
                 // William Shakespeare
-                new Librarian.Core.Domain.Entities.Book("Roméo et Juliette", new List<EBookCategory>() { EBookCategory.Drama }, new DateTime(1595, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Hamlet", new List<EBookCategory>() { EBookCategory.Drama }, new DateTime(1603, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Macbeth", new List<EBookCategory>() { EBookCategory.Drama }, new DateTime(1623, 1, 1), 10, string.Empty),
+                new Book("Roméo et Juliette", new List<EBookCategory>() { EBookCategory.Drama }, new DateTime(1595, 1, 1), 10, string.Empty),
+                new Book("Hamlet", new List<EBookCategory>() { EBookCategory.Drama }, new DateTime(1603, 1, 1), 10, string.Empty),
+                new Book("Macbeth", new List<EBookCategory>() { EBookCategory.Drama }, new DateTime(1623, 1, 1), 10, string.Empty),
                 // Charles Baudelaire
-                new Librarian.Core.Domain.Entities.Book("Les Fleurs du mal", new List<EBookCategory>() { EBookCategory.Poetry }, new DateTime(1857, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Petits Poèmes en prose", new List<EBookCategory>() { EBookCategory.Poetry }, new DateTime(1869, 1, 1), 10, string.Empty),
+                new Book("Les Fleurs du mal", new List<EBookCategory>() { EBookCategory.Poetry }, new DateTime(1857, 1, 1), 10, string.Empty),
+                new Book("Petits Poèmes en prose", new List<EBookCategory>() { EBookCategory.Poetry }, new DateTime(1869, 1, 1), 10, string.Empty),
                 // Charkes Dickens
-                new Librarian.Core.Domain.Entities.Book("Oliver Twist", new List<EBookCategory>() { EBookCategory.Drama }, new DateTime(1839, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Les Grandes Espérances", new List<EBookCategory>() { EBookCategory.BiographyAndAutobiography, EBookCategory.ComicAndGraphicNovel }, new DateTime(1861, 1, 1), 10, string.Empty),
+                new Book("Oliver Twist", new List<EBookCategory>() { EBookCategory.Drama }, new DateTime(1839, 1, 1), 10, string.Empty),
+                new Book("Les Grandes Espérances", new List<EBookCategory>() { EBookCategory.BiographyAndAutobiography, EBookCategory.ComicAndGraphicNovel }, new DateTime(1861, 1, 1), 10, string.Empty),
                 // J.R.R. Tolkien
-                new Librarian.Core.Domain.Entities.Book("Bilbo le Hobbit", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1937, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Le Silmarillion", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1977, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Le Seigneur des anneaux - La Communauté de l'Anneau", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1954, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Le Seigneur des anneaux - Les Deux Tours", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1954, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Le Seigneur des anneaux - Le Retour du Roi", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1955, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Les Enfants de Húrin", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(2007, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Contes et légendes inachevés, tome 1", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1980, 1, 1), 10, string.Empty),
+                new Book("Bilbo le Hobbit", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1937, 1, 1), 10, string.Empty),
+                new Book("Le Silmarillion", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1977, 1, 1), 10, string.Empty),
+                new Book("Le Seigneur des anneaux - La Communauté de l'Anneau", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1954, 1, 1), 10, string.Empty),
+                new Book("Le Seigneur des anneaux - Les Deux Tours", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1954, 1, 1), 10, string.Empty),
+                new Book("Le Seigneur des anneaux - Le Retour du Roi", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1955, 1, 1), 10, string.Empty),
+                new Book("Les Enfants de Húrin", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(2007, 1, 1), 10, string.Empty),
+                new Book("Contes et légendes inachevés, tome 1", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1980, 1, 1), 10, string.Empty),
                 // J.K. Rowling
-                new Librarian.Core.Domain.Entities.Book("Harry Potter à l'École des Sorciers", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1997, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Harry Potter et la Chambre des Secrets", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1998, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Harry Potter et le Prisonnier d'Azkaban", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1999, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Harry Potter et la Coupe de Feu", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(2000, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Harry Potter et l'Ordre du Phénix", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(2003, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Harry Potter et le Prince de Sang-Mêlé", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(2005, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Harry Potter et les Reliques de la Mort", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(2007, 1, 1), 10, string.Empty),
+                new Book("Harry Potter à l'École des Sorciers", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1997, 1, 1), 10, string.Empty),
+                new Book("Harry Potter et la Chambre des Secrets", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1998, 1, 1), 10, string.Empty),
+                new Book("Harry Potter et le Prisonnier d'Azkaban", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(1999, 1, 1), 10, string.Empty),
+                new Book("Harry Potter et la Coupe de Feu", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(2000, 1, 1), 10, string.Empty),
+                new Book("Harry Potter et l'Ordre du Phénix", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(2003, 1, 1), 10, string.Empty),
+                new Book("Harry Potter et le Prince de Sang-Mêlé", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(2005, 1, 1), 10, string.Empty),
+                new Book("Harry Potter et les Reliques de la Mort", new List<EBookCategory>() { EBookCategory.Fantasy }, new DateTime(2007, 1, 1), 10, string.Empty),
                 // Stephen King
-                new Librarian.Core.Domain.Entities.Book("Ça", new List<EBookCategory>() { EBookCategory.Horror, EBookCategory.SuspenseAndThriller }, new DateTime(1956, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Shining, l'enfant lumière", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1977, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Misery", new List<EBookCategory>() { EBookCategory.Horror, EBookCategory.SuspenseAndThriller }, new DateTime(1987, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("La Ligne verte", new List<EBookCategory>() { EBookCategory.Fantasy, EBookCategory.MagicalRealism }, new DateTime(1996, 1, 1), 10, string.Empty),
+                new Book("Ça", new List<EBookCategory>() { EBookCategory.Horror, EBookCategory.SuspenseAndThriller }, new DateTime(1956, 1, 1), 10, string.Empty),
+                new Book("Shining, l'enfant lumière", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1977, 1, 1), 10, string.Empty),
+                new Book("Misery", new List<EBookCategory>() { EBookCategory.Horror, EBookCategory.SuspenseAndThriller }, new DateTime(1987, 1, 1), 10, string.Empty),
+                new Book("La Ligne verte", new List<EBookCategory>() { EBookCategory.Fantasy, EBookCategory.MagicalRealism }, new DateTime(1996, 1, 1), 10, string.Empty),
                 // Victor Hugo
-                new Librarian.Core.Domain.Entities.Book("Les Misérables", new List<EBookCategory>() { EBookCategory.Classic }, new DateTime(1862, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Notre-Dame de Paris", new List<EBookCategory>() { EBookCategory.Classic }, new DateTime(1831, 1, 1), 10, string.Empty),
+                new Book("Les Misérables", new List<EBookCategory>() { EBookCategory.Classic }, new DateTime(1862, 1, 1), 10, string.Empty),
+                new Book("Notre-Dame de Paris", new List<EBookCategory>() { EBookCategory.Classic }, new DateTime(1831, 1, 1), 10, string.Empty),
                 // Ernest Hemingway
-                new Librarian.Core.Domain.Entities.Book("Le Vieil Homme et la Mer", new List<EBookCategory>() { EBookCategory.ShortAndStory }, new DateTime(1852, 1, 1), 10, string.Empty),
+                new Book("Le Vieil Homme et la Mer", new List<EBookCategory>() { EBookCategory.ShortAndStory }, new DateTime(1852, 1, 1), 10, string.Empty),
                 // Antoine de Saint-Exupéry
-                new Librarian.Core.Domain.Entities.Book("Le Petit Prince", new List<EBookCategory>() { EBookCategory.ShortAndStory }, new DateTime(1943, 1, 1), 10, string.Empty),
+                new Book("Le Petit Prince", new List<EBookCategory>() { EBookCategory.ShortAndStory }, new DateTime(1943, 1, 1), 10, string.Empty),
                 // R.L. Stine
-                new Librarian.Core.Domain.Entities.Book("La Nuit des pantins", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1993, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Sang de monstre", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1992, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Dangereuses Photos", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1992, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Le Masque hanté", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1993, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("La Maison des morts", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1993, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Le Loup-garou des marécages", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1993, 1, 1), 10, string.Empty),
-                new Librarian.Core.Domain.Entities.Book("Sous-sol interdit", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1992, 1, 1), 10, string.Empty)
+                new Book("La Nuit des pantins", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1993, 1, 1), 10, string.Empty),
+                new Book("Sang de monstre", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1992, 1, 1), 10, string.Empty),
+                new Book("Dangereuses Photos", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1992, 1, 1), 10, string.Empty),
+                new Book("Le Masque hanté", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1993, 1, 1), 10, string.Empty),
+                new Book("La Maison des morts", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1993, 1, 1), 10, string.Empty),
+                new Book("Le Loup-garou des marécages", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1993, 1, 1), 10, string.Empty),
+                new Book("Sous-sol interdit", new List<EBookCategory>() { EBookCategory.Horror }, new DateTime(1992, 1, 1), 10, string.Empty)
             };
-            DataProvider.Shelves = new List<Librarian.Core.Domain.Entities.Shelf>()
+            DataProvider.Shelves = new List<Shelf>()
             {
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.BiographyAndAutobiography),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.BiographyAndAutobiography),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.Essay),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.Essay),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.Memoir),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.Memoir),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.NarrativeNonfiction),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.NarrativeNonfiction),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.Periodicals),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.Periodicals),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.ReferenceBooks),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.ReferenceBooks),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.SelfhelpBook),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.SelfhelpBook),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.Speech),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.Speech),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.Textbook),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.Textbook),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.Poetry),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.FirstFloor, EBookCategory.Poetry),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.ActionAndAdventure),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.ActionAndAdventure),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Anthology),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Anthology),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Classic),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Classic),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.ComicAndGraphicNovel),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.ComicAndGraphicNovel),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.CrimeAndDetective),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.CrimeAndDetective),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Drama),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Drama),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Fable),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Fable),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.FairyTale),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.FairyTale),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.FanFiction),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.FanFiction),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Fantasy),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Fantasy),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.HistoricalFiction),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.HistoricalFiction),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Horror),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Horror),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Humor),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Humor),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Legend),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Legend),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.MagicalRealism),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.MagicalRealism),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Mystery),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Mystery),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Mythology),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Mythology),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.RealisticFiction),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.RealisticFiction),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Romance),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Romance),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Satire),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.Satire),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.ScienceFiction),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.ScienceFiction),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.ShortAndStory),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.ShortAndStory),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.SuspenseAndThriller),
-                new Librarian.Core.Domain.Entities.Shelf(string.Empty, 600, EFloor.SecondFloor, EBookCategory.SuspenseAndThriller)
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.BiographyAndAutobiography),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.BiographyAndAutobiography),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.Essay),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.Essay),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.Memoir),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.Memoir),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.NarrativeNonfiction),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.NarrativeNonfiction),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.Periodicals),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.Periodicals),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.ReferenceBooks),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.ReferenceBooks),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.SelfhelpBook),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.SelfhelpBook),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.Speech),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.Speech),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.Textbook),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.Textbook),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.Poetry),
+                new Shelf(string.Empty, 600, 600, EFloor.FirstFloor, EBookCategory.Poetry),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.ActionAndAdventure),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.ActionAndAdventure),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Anthology),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Anthology),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Classic),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Classic),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.ComicAndGraphicNovel),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.ComicAndGraphicNovel),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.CrimeAndDetective),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.CrimeAndDetective),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Drama),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Drama),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Fable),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Fable),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.FairyTale),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.FairyTale),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.FanFiction),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.FanFiction),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Fantasy),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Fantasy),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.HistoricalFiction),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.HistoricalFiction),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Horror),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Horror),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Humor),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Humor),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Legend),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Legend),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.MagicalRealism),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.MagicalRealism),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Mystery),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Mystery),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Mythology),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Mythology),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.RealisticFiction),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.RealisticFiction),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Romance),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Romance),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Satire),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.Satire),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.ScienceFiction),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.ScienceFiction),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.ShortAndStory),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.ShortAndStory),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.SuspenseAndThriller),
+                new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.SuspenseAndThriller)
             };
         }
 
@@ -178,11 +179,11 @@ namespace Librarian.RestFulAPI.Tests.Tools
 
         public static async Task PopulateDatabase(HttpClient client)
         {
-            DataProvider.GenerateData();
+            DataProvider.GenerateLocalData();
 
             await client.PostAsync("/api/v1/Admin/cleanDatabase", null);
 
-            foreach (Librarian.Core.Domain.Entities.Reader reader in DataProvider.Readers)
+            foreach (Reader reader in DataProvider.Readers)
             {
                 CreateReaderViewModel viewModel = new CreateReaderViewModel()
                 {
@@ -201,7 +202,7 @@ namespace Librarian.RestFulAPI.Tests.Tools
                 reader.Id = result.Result;
             }
 
-            foreach (Librarian.Core.Domain.Entities.Shelf shelf in DataProvider.Shelves)
+            foreach (Shelf shelf in DataProvider.Shelves)
             {
                 CreateShelfViewModel viewModel = new CreateShelfViewModel()
                 {
@@ -220,7 +221,7 @@ namespace Librarian.RestFulAPI.Tests.Tools
                 shelf.Id = result.Result;
             }
 
-            foreach (Librarian.Core.Domain.Entities.Author author in DataProvider.Authors)
+            foreach (Author author in DataProvider.Authors)
             {
                 CreateAuthorViewModel viewModel = new CreateAuthorViewModel()
                 {
@@ -238,9 +239,9 @@ namespace Librarian.RestFulAPI.Tests.Tools
                 author.Id = result.Result;
             }
 
-            foreach (Librarian.Core.Domain.Entities.Book book in DataProvider.Books)
+            foreach (Book book in DataProvider.Books)
             {
-                Librarian.Core.Domain.Entities.Shelf shelf = (from s in Shelves
+                Shelf shelf = (from s in Shelves
                                                               join b in Books on s.Id equals b.ShelfId into bookItems
                                                               where s.BookCategory == book.Categories.First()
                                                               && (bookItems.Sum(bi => bi.NumberOfCopies) + book.NumberOfCopies) <= s.MaxQtyOfBooks
@@ -372,8 +373,8 @@ namespace Librarian.RestFulAPI.Tests.Tools
 
         private static async Task AuthorWritesBook(HttpClient client, string firstname, string lastname, string title)
         {
-            Librarian.Core.Domain.Entities.Author author = DataProvider.GetAuthorByName(firstname, lastname);
-            Librarian.Core.Domain.Entities.Book book = DataProvider.GetBookByName(title);
+            Author author = DataProvider.GetAuthorByName(firstname, lastname);
+            Book book = DataProvider.GetBookByName(title);
 
             if (author == null | book == null)
                 throw new Exception();
@@ -381,7 +382,7 @@ namespace Librarian.RestFulAPI.Tests.Tools
             AddAuthorsToBookViewModel viewModel = new AddAuthorsToBookViewModel()
             {
                 BookId = book.Id,
-                AuthorIds = new List<string>() { author.Id }
+                AuthorId = author.Id
             };
             string json = JsonConvert.SerializeObject(viewModel);
             StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
@@ -390,8 +391,8 @@ namespace Librarian.RestFulAPI.Tests.Tools
 
         private static async Task ReaderLoansBook(HttpClient client, string firstname, string lastname, string title)
         {
-            Librarian.Core.Domain.Entities.Reader reader = DataProvider.GetReaderByName(firstname, lastname);
-            Librarian.Core.Domain.Entities.Book book = DataProvider.GetBookByName(title);
+            Reader reader = DataProvider.GetReaderByName(firstname, lastname);
+            Book book = DataProvider.GetBookByName(title);
 
             if (reader == null | book == null)
                 throw new Exception();
@@ -408,8 +409,8 @@ namespace Librarian.RestFulAPI.Tests.Tools
 
         private static async Task ReaderRatesBook(HttpClient client, string firstname, string lastname, string title)
         {
-            Librarian.Core.Domain.Entities.Reader reader = DataProvider.GetReaderByName(firstname, lastname);
-            Librarian.Core.Domain.Entities.Book book = DataProvider.GetBookByName(title);
+            Reader reader = DataProvider.GetReaderByName(firstname, lastname);
+            Book book = DataProvider.GetBookByName(title);
 
             if (reader == null | book == null)
                 throw new Exception();
@@ -429,27 +430,27 @@ namespace Librarian.RestFulAPI.Tests.Tools
             string response = await client.PostAsync("/api/v1/Books/rating/add", formContent).Result.Content.ReadAsStringAsync();
         }
 
-        private static Librarian.Core.Domain.Entities.Reader GetReaderByName(string firstname, string lastname)
+        private static Reader GetReaderByName(string firstname, string lastname)
         {
-            Librarian.Core.Domain.Entities.Reader reader = (from r in DataProvider.Readers
+            Reader reader = (from r in DataProvider.Readers
                                                             where r.FirstName.ToLower() == firstname.ToLower()
                                                             && r.LastName.ToLower() == lastname.ToLower()
                                                             select r).SingleOrDefault();
             return reader;
         }
 
-        private static Librarian.Core.Domain.Entities.Author GetAuthorByName(string firstname, string lastname)
+        private static Author GetAuthorByName(string firstname, string lastname)
         {
-            Librarian.Core.Domain.Entities.Author author = (from a in DataProvider.Authors
+            Author author = (from a in DataProvider.Authors
                                                             where a.FirstName.ToLower() == firstname.ToLower()
                                                             && a.LastName.ToLower() == lastname.ToLower()
                                                             select a).SingleOrDefault();
             return author;
         }
 
-        private static Librarian.Core.Domain.Entities.Book GetBookByName(string title)
+        private static Book GetBookByName(string title)
         {
-            Librarian.Core.Domain.Entities.Book book = (from b in DataProvider.Books
+            Book book = (from b in DataProvider.Books
                                                         where b.Title.ToLower() == title.ToLower()
                                                         select b).SingleOrDefault();
             return book;

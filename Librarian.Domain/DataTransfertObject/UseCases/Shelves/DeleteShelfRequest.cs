@@ -4,9 +4,9 @@
     {
         public DeleteShelfRequest(string id)
         {
-            this.Id = id;
+            this.ShelfId = id;
         }
 
-        public string Id { get; set; }
+        public string ShelfId { get; set; }
     }
 }

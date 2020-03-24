@@ -1,20 +1,40 @@
 ﻿using Librarian.Core.DataTransfertObject;
-using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Shelves;
+using Librarian.Core.Domain.Entities;
 using Librarian.Core.Domain.Enums;
-using System.Linq;
+using System;
 using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.Shelves
 {
     public class CreateShelfUseCase : ICreateShelfUseCase
     {
-        public CreateShelfUseCase(IShelfRepository shelfRepository)
+        public CreateShelfUseCase(
+            IAuthorRepository authorRepository,
+            IAuthorWritesBookRepository authorWritesBookRepository,
+            IBookRepository bookRepository,
+            IReaderLoansBookRepository readerLoansBookRepository,
+            IReaderRatesBookRepository readerRatesBookRepository,
+            IReaderRepository readerRepository,
+            IShelfRepository shelfRepository
+        )
         {
+            this.authorRepository = authorRepository;
+            this.authorWritesBookRepository = authorWritesBookRepository;
+            this.bookRepository = bookRepository;
+            this.readerLoansBookRepository = readerLoansBookRepository;
+            this.readerRatesBookRepository = readerRatesBookRepository;
+            this.readerRepository = readerRepository;
             this.shelfRepository = shelfRepository;
         }
 
+        private readonly IAuthorRepository authorRepository;
+        private readonly IAuthorWritesBookRepository authorWritesBookRepository;
+        private readonly IBookRepository bookRepository;
+        private readonly IReaderLoansBookRepository readerLoansBookRepository;
+        private readonly IReaderRatesBookRepository readerRatesBookRepository;
+        private readonly IReaderRepository readerRepository;
         private readonly IShelfRepository shelfRepository;
 
         public async Task<bool> Handle(CreateShelfRequest message, IOutputPort<UseCaseResponseMessage<string>> outputPort)
@@ -23,20 +43,21 @@ namespace Librarian.Core.UseCases.Shelves
                 message.Floor != EFloor.Default &&
                 message.BookCategory != EBookCategory.Default)
             {
-                Librarian.Core.Domain.Entities.Shelf reader = new Librarian.Core.Domain.Entities.Shelf(
-                    string.Empty,
-                    message.MaxQtyOfBooks,
-                    message.Floor,
-                    message.BookCategory
-                );
-                GateawayResponse<string> response = await this.shelfRepository.Add(reader);
+                try
+                {
+                    Shelf shelf = new Shelf(string.Empty, message.MaxQtyOfBooks, message.MaxQtyOfBooks, message.Floor, message.BookCategory);
+                    string shelfId = await this.shelfRepository.Add(shelf);
 
-                if (response.Success)
-                    outputPort.Handle(new UseCaseResponseMessage<string>(response.Data, true));
-                else
-                    outputPort.Handle(new UseCaseResponseMessage<string>(response.Errors.Select(e => e.Description)));
+                    if (string.IsNullOrEmpty(shelfId))
+                        throw new Exception("Shelf not saved");
 
-                return response.Success;
+                    outputPort.Handle(new UseCaseResponseMessage<string>(shelfId, true));
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message));
+                }
             }
 
             return false;

@@ -9,7 +9,6 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Repositories
         public ReaderRatesBookRepository(IMongoDbContext dbContext, IMapper mapper)
             : base(dbContext, mapper)
         {
-
         }
     }
 }

@@ -1,12 +1,14 @@
-﻿namespace Librarian.Core.DataTransfertObject.UseCases.Shelves
+﻿using Librarian.Core.Domain.Entities;
+
+namespace Librarian.Core.DataTransfertObject.UseCases.Shelves
 {
-    public class GetShelfByIdRequest : IUseCaseRequest<UseCaseResponseMessage<Librarian.Core.Domain.Entities.Shelf>>
+    public class GetShelfByIdRequest : IUseCaseRequest<UseCaseResponseMessage<Shelf>>
     {
         public GetShelfByIdRequest(string id)
         {
-            this.Id = id;
+            this.ShelfId = id;
         }
 
-        public string Id { get; set; }
+        public string ShelfId { get; set; }
     }
 }

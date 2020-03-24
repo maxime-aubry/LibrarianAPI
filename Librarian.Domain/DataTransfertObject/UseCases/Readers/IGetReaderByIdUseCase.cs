@@ -1,6 +1,8 @@
-﻿namespace Librarian.Core.DataTransfertObject.UseCases.Readers
+﻿using Librarian.Core.Domain.Entities;
+
+namespace Librarian.Core.DataTransfertObject.UseCases.Readers
 {
-    public interface IGetReaderByIdUseCase : IUseCaseRequestHandler<GetReaderByIdRequest, UseCaseResponseMessage<Librarian.Core.Domain.Entities.Reader>>
+    public interface IGetReaderByIdUseCase : IUseCaseRequestHandler<GetReaderByIdRequest, UseCaseResponseMessage<Reader>>
     {
     }
 }

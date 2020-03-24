@@ -28,8 +28,8 @@ namespace Librarian.RestFulAPI.V1.Controllers
         #region Secondaries CRUD Presenters
         private readonly IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.FindBooksByFilters>> getBooksByFiltersPresenter;
         private readonly IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Author>> getAuthorsPresenter;
-        private readonly IJsonPresenter<IEnumerable<string>> addAuthorsPresenter;
-        private readonly IJsonPresenter<string> deleteAuthorsPresenter;
+        private readonly IJsonPresenter<string> addAuthorPresenter;
+        private readonly IJsonPresenter<string> deleteAuthorPresenter;
         private readonly IJsonPresenter<string> ratesBookPresenter;
         #endregion
 
@@ -43,8 +43,8 @@ namespace Librarian.RestFulAPI.V1.Controllers
             IJsonPresenter<string> deleteBookPresenter,
             IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.FindBooksByFilters>> getBooksByFiltersPresenter,
             IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Author>> getAuthorsPresenter,
-            IJsonPresenter<IEnumerable<string>> addAuthorsPresenter,
-            IJsonPresenter<string> deleteAuthorsPresenter,
+            IJsonPresenter<string> addAuthorPresenter,
+            IJsonPresenter<string> deleteAuthorPresenter,
             IJsonPresenter<string> ratesBookPresenter,
             IUseCasesProvider useCasesProvider)
         {
@@ -55,8 +55,8 @@ namespace Librarian.RestFulAPI.V1.Controllers
             this.deleteBookPresenter = deleteBookPresenter;
             this.getBooksByFiltersPresenter = getBooksByFiltersPresenter;
             this.getAuthorsPresenter = getAuthorsPresenter;
-            this.addAuthorsPresenter = addAuthorsPresenter;
-            this.deleteAuthorsPresenter = deleteAuthorsPresenter;
+            this.addAuthorPresenter = addAuthorPresenter;
+            this.deleteAuthorPresenter = deleteAuthorPresenter;
             this.ratesBookPresenter = ratesBookPresenter;
             this.useCasesProvider = useCasesProvider;
         }
@@ -105,12 +105,12 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update(string bookId, [FromBody] CreateBookViewModel viewmodel)
+        public async Task<IActionResult> Update(string bookId, [FromBody] UpdateBookViewModel viewmodel)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.Books.Update.Handle(new UpdateBookRequest(bookId, viewmodel.Title, viewmodel.Categories, viewmodel.ReleaseDate, viewmodel.NumberOfCopies, viewmodel.ShelfId), this.updateBookPresenter);
+            await this.useCasesProvider.Books.Update.Handle(new UpdateBookRequest(bookId, viewmodel.Title, viewmodel.Categories, viewmodel.ReleaseDate, viewmodel.ShelfId), this.updateBookPresenter);
             return this.updateBookPresenter.ContentResult;
         }
 
@@ -165,8 +165,8 @@ namespace Librarian.RestFulAPI.V1.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.BooksOfAuthors.AddAuthors.Handle(new AddAuthorsRequest(viewmodel.BookId, viewmodel.AuthorIds), this.addAuthorsPresenter);
-            return this.addAuthorsPresenter.ContentResult;
+            await this.useCasesProvider.BooksOfAuthors.AddAuthor.Handle(new AddAuthorRequest(viewmodel.BookId, viewmodel.AuthorId), this.addAuthorPresenter);
+            return this.addAuthorPresenter.ContentResult;
         }
 
         [HttpPost("authors/delete")]
@@ -180,8 +180,8 @@ namespace Librarian.RestFulAPI.V1.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.BooksOfAuthors.DeleteAuthors.Handle(new DeleteAuthorsRequest(viewmodel.BookId, viewmodel.AuthorIds), this.deleteAuthorsPresenter);
-            return this.deleteAuthorsPresenter.ContentResult;
+            await this.useCasesProvider.BooksOfAuthors.DeleteAuthor.Handle(new DeleteAuthorRequest(viewmodel.BookId, viewmodel.AuthorId), this.deleteAuthorPresenter);
+            return this.deleteAuthorPresenter.ContentResult;
         }
 
         [HttpPost("rating/add")]

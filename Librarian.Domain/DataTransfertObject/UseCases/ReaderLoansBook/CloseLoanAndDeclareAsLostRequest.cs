@@ -1,14 +1,12 @@
-﻿using System;
-
-namespace Librarian.Core.DataTransfertObject.UseCases.ReaderLoansBook
+﻿namespace Librarian.Core.DataTransfertObject.UseCases.ReaderLoansBook
 {
     public class CloseLoanAndDeclareAsLostRequest : IUseCaseRequest<UseCaseResponseMessage<string>>
     {
-        public CloseLoanAndDeclareAsLostRequest(string id)
+        public CloseLoanAndDeclareAsLostRequest(string loanId)
         {
-            this.Id = id;
+            this.LoanId = loanId;
         }
 
-        public string Id { get; set; }
+        public string LoanId { get; set; }
     }
 }

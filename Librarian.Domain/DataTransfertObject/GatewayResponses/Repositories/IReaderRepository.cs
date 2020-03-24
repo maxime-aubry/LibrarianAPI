@@ -1,6 +1,8 @@
-﻿namespace Librarian.Core.DataTransfertObject.GatewayResponses.Repositories
+﻿using Librarian.Core.Domain.Entities;
+
+namespace Librarian.Core.DataTransfertObject.GatewayResponses.Repositories
 {
-    public interface IReaderRepository : Librarian.Core.DataTransfertObject.GatewayResponses.Repositories.IRepository<Librarian.Core.Domain.Entities.Reader>
+    public interface IReaderRepository : IRepository<Reader>
     {
     }
 }

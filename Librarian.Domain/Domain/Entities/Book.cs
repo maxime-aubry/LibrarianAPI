@@ -38,7 +38,6 @@ namespace Librarian.Core.Domain.Entities
         public IEnumerable<EBookCategory> Categories { get; set; }
         public DateTime RealeaseDate { get; set; }
         public int NumberOfCopies { get; set; }
-        public IEnumerable<AuthorOfBook> Authors { get; set; }
         public string ShelfId { get; set; }
     }
 }

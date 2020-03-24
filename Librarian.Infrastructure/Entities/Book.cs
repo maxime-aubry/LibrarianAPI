@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 
 namespace Librarian.Infrastructure.Entities
@@ -17,6 +19,7 @@ namespace Librarian.Infrastructure.Entities
 
         public string Title { get; set; }
         public IEnumerable<int> Categories { get; set; }
+        [BsonDateTimeOptions(DateOnly = true, Kind = DateTimeKind.Utc, Representation = BsonType.Document)]
         public DateTime RealeaseDate { get; set; }
         public int NumberOfCopies { get; set; }
         public string ShelfId { get; set; }

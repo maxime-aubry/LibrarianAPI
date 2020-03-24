@@ -1,5 +1,4 @@
 ﻿using Librarian.Core.Domain.Enums;
-using System;
 
 namespace Librarian.Core.DataTransfertObject.UseCases.Shelves
 {

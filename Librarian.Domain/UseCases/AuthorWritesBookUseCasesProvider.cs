@@ -7,18 +7,18 @@ namespace Librarian.Core.UseCases
         public AuthorWritesBookUseCasesProvider(
             IGetBooksByAuthorIdUseCase getBooks,
             IGetAuthorsByBookIdUseCase getAuthors,
-            IAddAuthorsUseCase addAuthors,
-            IDeleteAuthorsUseCase deleteAuthors)
+            IAddAuthorUseCase addAuthors,
+            IDeleteAuthorUseCase deleteAuthors)
         {
             this.GetBooks = getBooks;
             this.GetAuthors = getAuthors;
-            this.AddAuthors = addAuthors;
-            this.DeleteAuthors = deleteAuthors;
+            this.AddAuthor = addAuthors;
+            this.DeleteAuthor = deleteAuthors;
         }
 
         public IGetBooksByAuthorIdUseCase GetBooks { get; set; }
         public IGetAuthorsByBookIdUseCase GetAuthors { get; set; }
-        public IAddAuthorsUseCase AddAuthors { get; set; }
-        public IDeleteAuthorsUseCase DeleteAuthors { get; set; }
+        public IAddAuthorUseCase AddAuthor { get; set; }
+        public IDeleteAuthorUseCase DeleteAuthor { get; set; }
     }
 }

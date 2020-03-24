@@ -10,6 +10,6 @@ namespace Librarian.RestFulAPI.V1.ViewModels.Books
         public string BookId { get; set; }
 
         [Required]
-        public List<string> AuthorIds { get; set; }
+        public string AuthorId { get; set; }
     }
 }

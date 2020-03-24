@@ -1,11 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Librarian.Core.Domain.Entities;
 
 namespace Librarian.Core.DataTransfertObject.GatewayResponses.Repositories
 {
-    public interface IReaderLoansBookRepository : Librarian.Core.DataTransfertObject.GatewayResponses.Repositories.IRepository<Librarian.Core.Domain.Entities.ReaderLoansBook>
+    public interface IReaderLoansBookRepository : IRepository<ReaderLoansBook>
     {
-        Task<GateawayResponse<string>> Close(string id);
-        Task<GateawayResponse<string>> CloseAndDeclareAsLost(string id);
     }
 }

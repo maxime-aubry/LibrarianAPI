@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace Librarian.Infrastructure.Entities
 {
@@ -19,6 +21,7 @@ namespace Librarian.Infrastructure.Entities
         public string BookId { get; set; }
         public float Rate { get; set; }
         public string Comment { get; set; }
+        [BsonDateTimeOptions(DateOnly = false, Kind = DateTimeKind.Utc, Representation = BsonType.Document)]
         public DateTime DateOfRate { get; set; }
     }
 }

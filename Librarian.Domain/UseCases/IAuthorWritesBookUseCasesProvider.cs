@@ -6,7 +6,7 @@ namespace Librarian.Core.UseCases
     {
         IGetBooksByAuthorIdUseCase GetBooks { get; set; }
         IGetAuthorsByBookIdUseCase GetAuthors { get; set; }
-        IAddAuthorsUseCase AddAuthors { get; set; }
-        IDeleteAuthorsUseCase DeleteAuthors { get; set; }
+        IAddAuthorUseCase AddAuthor { get; set; }
+        IDeleteAuthorUseCase DeleteAuthor { get; set; }
     }
 }

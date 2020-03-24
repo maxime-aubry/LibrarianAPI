@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Librarian.Core.Domain.Entities;
 
 namespace Librarian.Core.DataTransfertObject.GatewayResponses.Repositories
 {
-    public interface IAuthorRepository : Librarian.Core.DataTransfertObject.GatewayResponses.Repositories.IRepository<Librarian.Core.Domain.Entities.Author>
+    public interface IAuthorRepository : IRepository<Author>
     {
-        Task<GateawayResponse<IEnumerable<Librarian.Core.Domain.Entities.FindAuthorsByFilters>>> GetByFilters(string firstName, string lastName);
     }
 }

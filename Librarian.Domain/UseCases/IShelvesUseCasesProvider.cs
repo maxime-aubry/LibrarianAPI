@@ -7,7 +7,6 @@ namespace Librarian.Core.UseCases
         IGetShelfByIdUseCase GetShelfById { get; set; }
         IGetShelvesUseCase GetShelves { get; set; }
         ICreateShelfUseCase CreateShelf { get; set; }
-        IUpdateShelfUseCase UpdateShelf { get; set; }
         IDeleteShelfUseCase DeleteShelf { get; set; }
         IGetAvailableShelvesUseCase GetAvailableShelves { get; set; }
     }

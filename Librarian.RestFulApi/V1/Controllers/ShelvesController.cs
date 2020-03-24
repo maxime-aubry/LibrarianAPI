@@ -83,20 +83,6 @@ namespace Librarian.RestFulAPI.V1.Controllers
             return this.createShelfPresenter.ContentResult;
         }
 
-        [HttpPut("update/{shelfId}")]
-        [Produces("application/json")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update(string shelfId, [FromBody] UpdateShelfViewModel viewmodel)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            await this.useCasesProvider.Shelves.UpdateShelf.Handle(new UpdateShelfRequest(shelfId, viewmodel.MaxQtyOfBooks, viewmodel.Floor, viewmodel.BookCategory), this.updateShelfPresenter);
-            return this.updateShelfPresenter.ContentResult;
-        }
-
         [HttpDelete("delete/{shelfId}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]

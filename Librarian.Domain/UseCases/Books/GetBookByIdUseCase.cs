@@ -1,33 +1,59 @@
 ﻿using Librarian.Core.DataTransfertObject;
-using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Books;
-using System.Linq;
+using Librarian.Core.Domain.Entities;
+using System;
 using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.Books
 {
     public class GetBookByIdUseCase : IGetBookByIdUseCase
     {
-        public GetBookByIdUseCase(IBookRepository bookRepository)
+        public GetBookByIdUseCase(
+            IAuthorRepository authorRepository,
+            IAuthorWritesBookRepository authorWritesBookRepository,
+            IBookRepository bookRepository,
+            IReaderLoansBookRepository readerLoansBookRepository,
+            IReaderRatesBookRepository readerRatesBookRepository,
+            IReaderRepository readerRepository,
+            IShelfRepository shelfRepository
+        )
         {
+            this.authorRepository = authorRepository;
+            this.authorWritesBookRepository = authorWritesBookRepository;
             this.bookRepository = bookRepository;
+            this.readerLoansBookRepository = readerLoansBookRepository;
+            this.readerRatesBookRepository = readerRatesBookRepository;
+            this.readerRepository = readerRepository;
+            this.shelfRepository = shelfRepository;
         }
 
+        private readonly IAuthorRepository authorRepository;
+        private readonly IAuthorWritesBookRepository authorWritesBookRepository;
         private readonly IBookRepository bookRepository;
+        private readonly IReaderLoansBookRepository readerLoansBookRepository;
+        private readonly IReaderRatesBookRepository readerRatesBookRepository;
+        private readonly IReaderRepository readerRepository;
+        private readonly IShelfRepository shelfRepository;
 
-        public async Task<bool> Handle(GetBookByIdRequest message, IOutputPort<UseCaseResponseMessage<Librarian.Core.Domain.Entities.Book>> outputPort)
+        public async Task<bool> Handle(GetBookByIdRequest message, IOutputPort<UseCaseResponseMessage<Book>> outputPort)
         {
-            if (!string.IsNullOrEmpty(message.Id))
+            if (!string.IsNullOrEmpty(message.BookId))
             {
-                GateawayResponse<Librarian.Core.Domain.Entities.Book> response = await this.bookRepository.Get(message.Id);
+                try
+                {
+                    Book book = await this.bookRepository.Get(message.BookId);
 
-                if (response.Success)
-                    outputPort.Handle(new UseCaseResponseMessage<Librarian.Core.Domain.Entities.Book>(response.Data, true));
-                else
-                    outputPort.Handle(new UseCaseResponseMessage<Librarian.Core.Domain.Entities.Book>(response.Errors.Select(e => e.Description)));
+                    if (book == null)
+                        throw new Exception("Book not found");
 
-                return response.Success;
+                    outputPort.Handle(new UseCaseResponseMessage<Book>(book, true));
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    outputPort.Handle(new UseCaseResponseMessage<Book>(null, false, e.Message));
+                }
             }
 
             return false;

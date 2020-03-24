@@ -18,7 +18,6 @@ namespace Librarian.RestFulAPI.V1.ViewModels.Books
         public DateTime ReleaseDate { get; set; }
 
         [Required]
-        [Range(1, int.MaxValue)]
         public int NumberOfCopies { get; set; }
 
         [Required]

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Librarian.Core.DataTransfertObject.UseCases.ReaderLoansBook
+﻿namespace Librarian.Core.DataTransfertObject.UseCases.ReaderLoansBook
 {
     public class AddLoanRequest : IUseCaseRequest<UseCaseResponseMessage<string>>
     {

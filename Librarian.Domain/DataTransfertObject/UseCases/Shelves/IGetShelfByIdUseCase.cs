@@ -1,6 +1,8 @@
-﻿namespace Librarian.Core.DataTransfertObject.UseCases.Shelves
+﻿using Librarian.Core.Domain.Entities;
+
+namespace Librarian.Core.DataTransfertObject.UseCases.Shelves
 {
-    public interface IGetShelfByIdUseCase : IUseCaseRequestHandler<GetShelfByIdRequest, UseCaseResponseMessage<Librarian.Core.Domain.Entities.Shelf>>
+    public interface IGetShelfByIdUseCase : IUseCaseRequestHandler<GetShelfByIdRequest, UseCaseResponseMessage<Shelf>>
     {
     }
 }

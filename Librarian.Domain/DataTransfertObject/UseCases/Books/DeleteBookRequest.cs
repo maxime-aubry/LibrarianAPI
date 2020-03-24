@@ -2,11 +2,11 @@
 {
     public class DeleteBookRequest : IUseCaseRequest<UseCaseResponseMessage<string>>
     {
-        public DeleteBookRequest(string id)
+        public DeleteBookRequest(string bookId)
         {
-            this.Id = id;
+            this.BookId = bookId;
         }
 
-        public string Id { get; set; }
+        public string BookId { get; set; }
     }
 }

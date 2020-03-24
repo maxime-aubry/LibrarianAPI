@@ -1,14 +1,12 @@
-﻿using System;
-
-namespace Librarian.Core.DataTransfertObject.UseCases.ReaderLoansBook
+﻿namespace Librarian.Core.DataTransfertObject.UseCases.ReaderLoansBook
 {
     public class DeleteLoanRequest : IUseCaseRequest<UseCaseResponseMessage<string>>
     {
-        public DeleteLoanRequest(string id)
+        public DeleteLoanRequest(string loanId)
         {
-            this.Id = id;
+            this.LoanId = loanId;
         }
 
-        public string Id { get; set; }
+        public string LoanId { get; set; }
     }
 }

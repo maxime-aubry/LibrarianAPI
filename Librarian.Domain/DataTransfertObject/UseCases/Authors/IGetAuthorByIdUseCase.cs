@@ -1,6 +1,8 @@
-﻿namespace Librarian.Core.DataTransfertObject.UseCases.Authors
+﻿using Librarian.Core.Domain.Entities;
+
+namespace Librarian.Core.DataTransfertObject.UseCases.Authors
 {
-    public interface IGetAuthorByIdUseCase : IUseCaseRequestHandler<GetAuthorByIdRequest, UseCaseResponseMessage<Librarian.Core.Domain.Entities.Author>>
+    public interface IGetAuthorByIdUseCase : IUseCaseRequestHandler<GetAuthorByIdRequest, UseCaseResponseMessage<Author>>
     {
     }
 }

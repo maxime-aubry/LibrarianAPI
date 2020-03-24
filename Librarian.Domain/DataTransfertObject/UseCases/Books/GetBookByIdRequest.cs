@@ -2,11 +2,11 @@
 {
     public class GetBookByIdRequest : IUseCaseRequest<UseCaseResponseMessage<Librarian.Core.Domain.Entities.Book>>
     {
-        public GetBookByIdRequest(string id)
+        public GetBookByIdRequest(string bookId)
         {
-            this.Id = id;
+            this.BookId = bookId;
         }
 
-        public string Id { get; set; }
+        public string BookId { get; set; }
     }
 }

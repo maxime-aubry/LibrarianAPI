@@ -113,7 +113,7 @@ namespace Librarian.RestFulAPI.V1.Controllers
             if (string.IsNullOrEmpty(authorId))
                 return BadRequest(Librarian.RestFulAPI.Properties.Resources.AuthorsController_forgotten_author_id_on_request);
 
-            await this.useCasesProvider.Authors.Delete.Handle(new DeleteAuthorRequest(authorId), this.deleteAuthorPresenter);
+            await this.useCasesProvider.Authors.Delete.Handle(new Core.DataTransfertObject.UseCases.Authors.DeleteAuthorRequest(authorId), this.deleteAuthorPresenter);
             return this.deleteAuthorPresenter.ContentResult;
         }
         #endregion

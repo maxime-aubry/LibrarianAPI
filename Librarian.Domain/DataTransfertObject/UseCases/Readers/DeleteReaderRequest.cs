@@ -4,9 +4,9 @@
     {
         public DeleteReaderRequest(string id)
         {
-            this.Id = id;
+            this.ReaderId = id;
         }
 
-        public string Id { get; set; }
+        public string ReaderId { get; set; }
     }
 }

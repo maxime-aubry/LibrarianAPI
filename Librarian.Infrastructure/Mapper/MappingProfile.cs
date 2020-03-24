@@ -55,6 +55,7 @@ namespace Librarian.Infrastructure.Mapper
                 src.Id,
                 src.Name,
                 src.MaxQtyOfBooks,
+                src.QtyOfRemainingPlaces,
                 (int)src.Floor,
                 (int)src.BookCategory
             ));
@@ -105,6 +106,7 @@ namespace Librarian.Infrastructure.Mapper
                 src.Id,
                 src.Name,
                 src.MaxQtyOfBooks,
+                src.QtyOfRemainingPlaces,
                 (EFloor)Enum.ToObject(typeof(EFloor), src.Floor),
                 (EBookCategory)Enum.ToObject(typeof(EBookCategory), src.BookCategory)
             ));

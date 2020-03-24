@@ -1,9 +1,9 @@
 ﻿using Librarian.Core.DataTransfertObject;
-using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Books;
+using Librarian.Core.Domain.Entities;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.Books
@@ -17,16 +17,21 @@ namespace Librarian.Core.UseCases.Books
 
         private readonly IBookRepository bookRepository;
 
-        public async Task<bool> Handle(GetBooksRequest message, IOutputPort<UseCaseResponseMessage<IEnumerable<Librarian.Core.Domain.Entities.Book>>> outputPort)
+        public async Task<bool> Handle(GetBooksRequest message, IOutputPort<UseCaseResponseMessage<IEnumerable<Book>>> outputPort)
         {
-            GateawayResponse<IEnumerable<Librarian.Core.Domain.Entities.Book>> response = await this.bookRepository.Get();
+            try
+            {
+                IEnumerable<Book> books = await this.bookRepository.Get();
 
-            if (response.Success)
-                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Librarian.Core.Domain.Entities.Book>>(response.Data, true));
-            else
-                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Librarian.Core.Domain.Entities.Book>>(response.Errors.Select(e => e.Description)));
+                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Book>>(books, true));
+                return true;
+            }
+            catch (Exception e)
+            {
+                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Book>>(null, false, e.Message));
+            }
 
-            return response.Success;
+            return false;
         }
     }
 }

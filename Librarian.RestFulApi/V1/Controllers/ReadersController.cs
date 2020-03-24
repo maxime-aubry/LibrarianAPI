@@ -88,7 +88,7 @@ namespace Librarian.RestFulAPI.V1.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.Readers.Create.Handle(new CreateReaderRequest(viewmodel.FirstName, viewmodel.LastName, viewmodel.Birthday, false), this.createReaderPresenter);
+            await this.useCasesProvider.Readers.Create.Handle(new CreateReaderRequest(viewmodel.FirstName, viewmodel.LastName, viewmodel.Birthday), this.createReaderPresenter);
             return this.createReaderPresenter.ContentResult;
         }
 
@@ -97,7 +97,7 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update(string readerId, [FromBody] CreateReaderViewModel viewmodel)
+        public async Task<IActionResult> Update(string readerId, [FromBody] UpdateReaderViewModel viewmodel)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

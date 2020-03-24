@@ -22,9 +22,6 @@ namespace Librarian.RestFulAPI.V1.ViewModels.Books
         public DateTime ReleaseDate { get; set; }
 
         [Required]
-        public int NumberOfCopies { get; set; }
-
-        [Required]
         [StringLength(24)]
         public string ShelfId { get; set; }
     }

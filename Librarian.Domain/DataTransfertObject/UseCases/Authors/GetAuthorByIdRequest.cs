@@ -1,12 +1,14 @@
-﻿namespace Librarian.Core.DataTransfertObject.UseCases.Authors
+﻿using Librarian.Core.Domain.Entities;
+
+namespace Librarian.Core.DataTransfertObject.UseCases.Authors
 {
-    public class GetAuthorByIdRequest : IUseCaseRequest<UseCaseResponseMessage<Librarian.Core.Domain.Entities.Author>>
+    public class GetAuthorByIdRequest : IUseCaseRequest<UseCaseResponseMessage<Author>>
     {
-        public GetAuthorByIdRequest(string id)
+        public GetAuthorByIdRequest(string authorId)
         {
-            this.Id = id;
+            this.AuthorId = authorId;
         }
 
-        public string Id { get; set; }
+        public string AuthorId { get; set; }
     }
 }
