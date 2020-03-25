@@ -1,6 +1,7 @@
 ﻿using Librarian.Core.DataTransfertObject.UseCases.AuthorWritesBook;
 using Librarian.Core.DataTransfertObject.UseCases.Books;
 using Librarian.Core.DataTransfertObject.UseCases.ReaderRatesBook;
+using Librarian.Core.Domain.Entities;
 using Librarian.Core.Domain.Enums;
 using Librarian.Core.UseCases;
 using Librarian.RestFulAPI.Tools.Presenters;
@@ -17,48 +18,8 @@ namespace Librarian.RestFulAPI.V1.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        #region Main CRUD Presenters
-        private readonly IJsonPresenter<Librarian.Core.Domain.Entities.Book> getBookByIdPresenter;
-        private readonly IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Book>> getBooksPresenter;
-        private readonly IJsonPresenter<string> createBookPresenter;
-        private readonly IJsonPresenter<string> updateBookPresenter;
-        private readonly IJsonPresenter<string> deleteBookPresenter;
-        #endregion
-
-        #region Secondaries CRUD Presenters
-        private readonly IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.FindBooksByFilters>> getBooksByFiltersPresenter;
-        private readonly IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Author>> getAuthorsPresenter;
-        private readonly IJsonPresenter<string> addAuthorPresenter;
-        private readonly IJsonPresenter<string> deleteAuthorPresenter;
-        private readonly IJsonPresenter<string> ratesBookPresenter;
-        #endregion
-
-        private readonly IUseCasesProvider useCasesProvider;
-
-        public BooksController(
-            IJsonPresenter<Librarian.Core.Domain.Entities.Book> getBookByIdPresenter,
-            IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Book>> getBooksPresenter,
-            IJsonPresenter<string> createBookPresenter,
-            IJsonPresenter<string> updateBookPresenter,
-            IJsonPresenter<string> deleteBookPresenter,
-            IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.FindBooksByFilters>> getBooksByFiltersPresenter,
-            IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Author>> getAuthorsPresenter,
-            IJsonPresenter<string> addAuthorPresenter,
-            IJsonPresenter<string> deleteAuthorPresenter,
-            IJsonPresenter<string> ratesBookPresenter,
-            IUseCasesProvider useCasesProvider)
+        public BooksController()
         {
-            this.getBookByIdPresenter = getBookByIdPresenter;
-            this.getBooksPresenter = getBooksPresenter;
-            this.createBookPresenter = createBookPresenter;
-            this.updateBookPresenter = updateBookPresenter;
-            this.deleteBookPresenter = deleteBookPresenter;
-            this.getBooksByFiltersPresenter = getBooksByFiltersPresenter;
-            this.getAuthorsPresenter = getAuthorsPresenter;
-            this.addAuthorPresenter = addAuthorPresenter;
-            this.deleteAuthorPresenter = deleteAuthorPresenter;
-            this.ratesBookPresenter = ratesBookPresenter;
-            this.useCasesProvider = useCasesProvider;
         }
 
         #region Main CRUD Methods
@@ -66,23 +27,30 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Get(string bookId)
+        public async Task<IActionResult> Get(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<Book> presenter,
+            string bookId
+        )
         {
             if (string.IsNullOrEmpty(bookId))
                 return BadRequest(Librarian.RestFulAPI.Properties.Resources.BooksController_forgotten_book_id_on_request);
 
-            await this.useCasesProvider.Books.GetById.Handle(new GetBookByIdRequest(bookId), this.getBookByIdPresenter);
-            return this.getBookByIdPresenter.ContentResult;
+            await useCasesProvider.Books.GetById.Handle(new GetBookByIdRequest(bookId), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpGet("list")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<IEnumerable<Book>> presenter
+        )
         {
-            await this.useCasesProvider.Books.GetList.Handle(new GetBooksRequest(), this.getBooksPresenter);
-            return this.getBooksPresenter.ContentResult;
+            await useCasesProvider.Books.GetList.Handle(new GetBooksRequest(), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpPost("create")]
@@ -91,13 +59,17 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create([FromBody] CreateBookViewModel viewmodel)
+        public async Task<IActionResult> Create(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] CreateBookViewModel viewmodel
+        )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.Books.Create.Handle(new CreateBookRequest(viewmodel.Title, viewmodel.Categories, viewmodel.ReleaseDate, viewmodel.NumberOfCopies, viewmodel.ShelfId), this.createBookPresenter);
-            return this.createBookPresenter.ContentResult;
+            await useCasesProvider.Books.Create.Handle(new CreateBookRequest(viewmodel.Title, viewmodel.Categories, viewmodel.ReleaseDate, viewmodel.NumberOfCopies, viewmodel.ShelfId), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpPut("update/{bookId}")]
@@ -105,13 +77,18 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update(string bookId, [FromBody] UpdateBookViewModel viewmodel)
+        public async Task<IActionResult> Update(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] UpdateBookViewModel viewmodel,
+            string bookId
+        )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.Books.Update.Handle(new UpdateBookRequest(bookId, viewmodel.Title, viewmodel.Categories, viewmodel.ReleaseDate, viewmodel.ShelfId), this.updateBookPresenter);
-            return this.updateBookPresenter.ContentResult;
+            await useCasesProvider.Books.Update.Handle(new UpdateBookRequest(bookId, viewmodel.Title, viewmodel.Categories, viewmodel.ReleaseDate, viewmodel.ShelfId), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpDelete("delete/{bookId}")]
@@ -119,13 +96,17 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Delete(string bookId)
+        public async Task<IActionResult> Delete(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            string bookId
+        )
         {
             if (string.IsNullOrEmpty(bookId))
                 return BadRequest(Librarian.RestFulAPI.Properties.Resources.BooksController_forgotten_book_id_on_request);
 
-            await this.useCasesProvider.Books.Delete.Handle(new DeleteBookRequest(bookId), this.deleteBookPresenter);
-            return this.deleteBookPresenter.ContentResult;
+            await useCasesProvider.Books.Delete.Handle(new DeleteBookRequest(bookId), presenter);
+            return presenter.ContentResult;
         }
         #endregion
 
@@ -135,23 +116,29 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAllByFilters(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<IEnumerable<FindBooksByFilters>> presenter,
             [FromQuery(Name = "title")] string title,
             [FromQuery(Name = "categories")] List<EBookCategory> categories,
             [FromQuery(Name = "authorIds")] List<string> authorIds
         )
         {
-            await this.useCasesProvider.Books.GetBooksByFilters.Handle(new GetBooksByFiltersRequest(title, categories, authorIds), this.getBooksByFiltersPresenter);
-            return this.getBooksByFiltersPresenter.ContentResult;
+            await useCasesProvider.Books.GetBooksByFilters.Handle(new GetBooksByFiltersRequest(title, categories, authorIds), presenter);
+            return presenter.ContentResult;
         }
 
-        [HttpGet("authors")]
+        [HttpGet("authors/{bookId}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAuthors(string bookId)
+        public async Task<IActionResult> GetAuthors(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<IEnumerable<Author>> presenter,
+            string bookId
+        )
         {
-            await this.useCasesProvider.BooksOfAuthors.GetAuthors.Handle(new GetAuthorsByBookIdRequest(bookId), this.getAuthorsPresenter);
-            return this.getAuthorsPresenter.ContentResult;
+            await useCasesProvider.BooksOfAuthors.GetAuthors.Handle(new GetAuthorsByBookIdRequest(bookId), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpPost("authors/add")]
@@ -160,13 +147,17 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddAuthors([FromBody] AddAuthorsToBookViewModel viewmodel)
+        public async Task<IActionResult> AddAuthor(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] AddAuthorsToBookViewModel viewmodel
+        )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.BooksOfAuthors.AddAuthor.Handle(new AddAuthorRequest(viewmodel.BookId, viewmodel.AuthorId), this.addAuthorPresenter);
-            return this.addAuthorPresenter.ContentResult;
+            await useCasesProvider.BooksOfAuthors.AddAuthor.Handle(new AddAuthorRequest(viewmodel.BookId, viewmodel.AuthorId), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpPost("authors/delete")]
@@ -175,28 +166,55 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteAuthors([FromBody] DeleteAuthorsOfBookViewModel viewmodel)
+        public async Task<IActionResult> DeleteAuthor(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] DeleteAuthorsOfBookViewModel viewmodel
+        )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.BooksOfAuthors.DeleteAuthor.Handle(new DeleteAuthorRequest(viewmodel.BookId, viewmodel.AuthorId), this.deleteAuthorPresenter);
-            return this.deleteAuthorPresenter.ContentResult;
+            await useCasesProvider.BooksOfAuthors.DeleteAuthor.Handle(new DeleteAuthorRequest(viewmodel.BookId, viewmodel.AuthorId), presenter);
+            return presenter.ContentResult;
         }
 
-        [HttpPost("rating/add")]
+        [HttpPost("rates/{bookId}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RateBook([FromBody] CreateRateBookViewModel viewmodel)
+        public async Task<IActionResult> GetRates(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<IEnumerable<ReaderRatesBook>> presenter,
+            string bookId
+        )
+        {
+            if (string.IsNullOrEmpty(bookId))
+                return BadRequest(ModelState);
+
+            await useCasesProvider.ReadersRates.GetRates.Handle(new GetRatesRequest(bookId), presenter);
+            return presenter.ContentResult;
+        }
+
+        [HttpPost("rates/add")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddRate(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] CreateRateBookViewModel viewmodel
+        )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.ReadersRates.AddRate.Handle(new AddRateRequest(viewmodel.ReaderId, viewmodel.BookId, viewmodel.Rate, viewmodel.Commment), this.ratesBookPresenter);
-            return this.ratesBookPresenter.ContentResult;
+            await useCasesProvider.ReadersRates.AddRate.Handle(new AddRateRequest(viewmodel.ReaderId, viewmodel.BookId, viewmodel.Rate, viewmodel.Commment), presenter);
+            return presenter.ContentResult;
         }
         #endregion
     }

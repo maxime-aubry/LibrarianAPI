@@ -45,7 +45,7 @@ namespace Librarian.Core.UseCases.AuthorWritesBook
                 try
                 {
                     IEnumerable<Author> authorsOfBook = (from awb in await this.authorWritesBookRepository.Get()
-                                                           join a in await this.authorRepository.Get() on awb.BookId equals a.Id
+                                                           join a in await this.authorRepository.Get() on awb.AuthorId equals a.Id
                                                            where awb.BookId == message.BookId
                                                            select a);
 

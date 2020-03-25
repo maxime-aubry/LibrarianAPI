@@ -1,16 +1,16 @@
 ﻿using Librarian.Core.DataTransfertObject;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
-using Librarian.Core.DataTransfertObject.UseCases.ReaderLoansBook;
+using Librarian.Core.DataTransfertObject.UseCases.ReaderRatesBook;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Librarian.Core.UseCases.ReaderLoansBook
+namespace Librarian.Core.UseCases.ReaderRatesBook
 {
-    public class AddLoanUseCase : IAddLoanUseCase
+    public class GetRatesUseCase : IGetRatesUseCase
     {
-        public AddLoanUseCase(
+        public GetRatesUseCase(
             IAuthorRepository authorRepository,
             IAuthorWritesBookRepository authorWritesBookRepository,
             IBookRepository bookRepository,
@@ -37,34 +37,22 @@ namespace Librarian.Core.UseCases.ReaderLoansBook
         private readonly IReaderRepository readerRepository;
         private readonly IShelfRepository shelfRepository;
 
-        public async Task<bool> Handle(AddLoanRequest message, IOutputPort<UseCaseResponseMessage<string>> outputPort)
+        public async Task<bool> Handle(GetRatesRequest message, IOutputPort<UseCaseResponseMessage<IEnumerable<Librarian.Core.Domain.Entities.ReaderRatesBook>>> outputPort)
         {
-            if (!string.IsNullOrEmpty(message.ReaderId) &&
-                !string.IsNullOrEmpty(message.BookId))
+            if (!string.IsNullOrEmpty(message.BookId))
             {
                 try
                 {
-                    IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook> loans = (from rlb in await this.readerLoansBookRepository.Get()
-                                                                                         where rlb.ReaderId == message.ReaderId
-                                                                                         && rlb.BookId == message.BookId
-                                                                                         && rlb.EndDateOfLoaning == null
-                                                                                         select rlb);
+                    IEnumerable<Librarian.Core.Domain.Entities.ReaderRatesBook> rates = (from rrb in await this.readerRatesBookRepository.Get()
+                                                                                         where rrb.BookId == message.BookId
+                                                                                         select rrb);
 
-                    if (loans.Any())
-                        throw new Exception("Reader has already loaned this book");
-
-                    Librarian.Core.Domain.Entities.ReaderLoansBook loan = new Librarian.Core.Domain.Entities.ReaderLoansBook(message.ReaderId, message.BookId, DateTime.UtcNow.Date);
-                    string loanId = await this.readerLoansBookRepository.Add(loan);
-
-                    if (string.IsNullOrEmpty(loanId))
-                        throw new Exception("Loan not saved");
-
-                    outputPort.Handle(new UseCaseResponseMessage<string>(loanId, true));
+                    outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Librarian.Core.Domain.Entities.ReaderRatesBook>>(rates, true));
                     return true;
                 }
                 catch (Exception e)
                 {
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message));
+                    outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Librarian.Core.Domain.Entities.ReaderRatesBook>>(null, false, e.Message));
                 }
             }
 

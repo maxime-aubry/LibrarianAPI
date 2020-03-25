@@ -1,4 +1,5 @@
 ﻿using Librarian.Core.DataTransfertObject.UseCases.Shelves;
+using Librarian.Core.Domain.Entities;
 using Librarian.Core.Domain.Enums;
 using Librarian.Core.UseCases;
 using Librarian.RestFulAPI.Tools.Presenters;
@@ -15,36 +16,8 @@ namespace Librarian.RestFulAPI.V1.Controllers
     [ApiController]
     public class ShelvesController : ControllerBase
     {
-        #region Main CRUD Presenters
-        private readonly IJsonPresenter<string> createShelfPresenter;
-        private readonly IJsonPresenter<string> updateShelfPresenter;
-        private readonly IJsonPresenter<string> deleteShelfPresenter;
-        private readonly IJsonPresenter<Librarian.Core.Domain.Entities.Shelf> getShelfByIdPresenter;
-        private readonly IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Shelf>> getShelvesPresenter;
-        #endregion
-
-        #region Main CRUD Presenters
-        private readonly IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Shelf>> getAvailableShelves;
-        #endregion
-
-        private readonly IUseCasesProvider useCasesProvider;
-
-        public ShelvesController(
-            IJsonPresenter<string> createShelfPresenter,
-            IJsonPresenter<string> updateShelfPresenter,
-            IJsonPresenter<string> deleteShelfPresenter,
-            IJsonPresenter<Librarian.Core.Domain.Entities.Shelf> getShelfByIdPresenter,
-            IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Shelf>> getShelvesPresenter,
-            IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Shelf>> getAvailableShelves,
-            IUseCasesProvider useCasesProvider)
+        public ShelvesController()
         {
-            this.createShelfPresenter = createShelfPresenter;
-            this.updateShelfPresenter = updateShelfPresenter;
-            this.deleteShelfPresenter = deleteShelfPresenter;
-            this.getShelfByIdPresenter = getShelfByIdPresenter;
-            this.getShelvesPresenter = getShelvesPresenter;
-            this.getAvailableShelves = getAvailableShelves;
-            this.useCasesProvider = useCasesProvider;
         }
 
         #region Main CRUD Methods
@@ -52,20 +25,27 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Get(string shelfId)
+        public async Task<IActionResult> Get(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<Shelf> presenter,
+            string shelfId
+        )
         {
             if (string.IsNullOrEmpty(shelfId))
                 return BadRequest(Librarian.RestFulAPI.Properties.Resources.ShelvesController_forgotten_reader_id_on_request);
 
-            await this.useCasesProvider.Shelves.GetShelfById.Handle(new GetShelfByIdRequest(shelfId), this.getShelfByIdPresenter);
-            return this.getShelfByIdPresenter.ContentResult;
+            await useCasesProvider.Shelves.GetShelfById.Handle(new GetShelfByIdRequest(shelfId), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpGet("list")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<IEnumerable<Shelf>> presenter
+        )
         {
-            await this.useCasesProvider.Shelves.GetShelves.Handle(new GetShelvesRequest(), this.getShelvesPresenter);
-            return this.getShelvesPresenter.ContentResult;
+            await useCasesProvider.Shelves.GetShelves.Handle(new GetShelvesRequest(), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpPost("create")]
@@ -74,13 +54,17 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create([FromBody] CreateShelfViewModel viewmodel)
+        public async Task<IActionResult> Create(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] CreateShelfViewModel viewmodel
+        )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.Shelves.CreateShelf.Handle(new CreateShelfRequest(viewmodel.MaxQtyOfBooks, viewmodel.Floor, viewmodel.BookCategory), this.createShelfPresenter);
-            return this.createShelfPresenter.ContentResult;
+            await useCasesProvider.Shelves.CreateShelf.Handle(new CreateShelfRequest(viewmodel.MaxQtyOfBooks, viewmodel.Floor, viewmodel.BookCategory), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpDelete("delete/{shelfId}")]
@@ -88,13 +72,17 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Delete(string shelfId)
+        public async Task<IActionResult> Delete(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            string shelfId
+        )
         {
             if (string.IsNullOrEmpty(shelfId))
                 return BadRequest(Librarian.RestFulAPI.Properties.Resources.ShelvesController_forgotten_reader_id_on_request);
 
-            await this.useCasesProvider.Shelves.DeleteShelf.Handle(new DeleteShelfRequest(shelfId), this.deleteShelfPresenter);
-            return this.deleteShelfPresenter.ContentResult;
+            await useCasesProvider.Shelves.DeleteShelf.Handle(new DeleteShelfRequest(shelfId), presenter);
+            return presenter.ContentResult;
         }
         #endregion
 
@@ -104,10 +92,15 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAvailableShelves(EBookCategory category, int numberOfCopies)
+        public async Task<IActionResult> GetAvailableShelves(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<IEnumerable<Shelf>> presenter,
+            EBookCategory category,
+            int numberOfCopies
+        )
         {
-            await this.useCasesProvider.Shelves.GetAvailableShelves.Handle(new GetAvailableShelvesRequest(category, numberOfCopies), this.getAvailableShelves);
-            return this.getAvailableShelves.ContentResult;
+            await useCasesProvider.Shelves.GetAvailableShelves.Handle(new GetAvailableShelvesRequest(category, numberOfCopies), presenter);
+            return presenter.ContentResult;
         }
         #endregion
     }

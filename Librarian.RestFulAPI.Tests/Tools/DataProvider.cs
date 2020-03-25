@@ -20,6 +20,9 @@ namespace Librarian.RestFulAPI.Tests.Tools
         public static IEnumerable<Author> Authors { get; set; }
         public static IEnumerable<Book> Books { get; set; }
         public static IEnumerable<Shelf> Shelves { get; set; }
+        public static IDictionary<string, AuthorWritesBook> AuthorWritesBook { get; set; }
+        public static List<ReaderLoansBook> ReaderLoansBook { get; set; }
+        public static List<ReaderRatesBook> ReaderRatesBook { get; set; }
 
         public static void GenerateLocalData()
         {
@@ -170,6 +173,9 @@ namespace Librarian.RestFulAPI.Tests.Tools
                 new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.SuspenseAndThriller),
                 new Shelf(string.Empty, 600, 600, EFloor.SecondFloor, EBookCategory.SuspenseAndThriller)
             };
+            DataProvider.AuthorWritesBook = new Dictionary<string, AuthorWritesBook>();
+            DataProvider.ReaderLoansBook = new List<ReaderLoansBook>();
+            DataProvider.ReaderRatesBook = new List<ReaderRatesBook>();
         }
 
         public static async Task CleanDatabase(HttpClient client)
@@ -267,111 +273,111 @@ namespace Librarian.RestFulAPI.Tests.Tools
                 book.Id = result.Result;
             }
 
-            await DataProvider.AuthorWritesBook(client, "Jules", "Verne", "Vingt Mille Lieues sous les mers");
-            await DataProvider.AuthorWritesBook(client, "Jules", "Verne", "Voyage au centre de la Terre");
-            await DataProvider.AuthorWritesBook(client, "Jules", "Verne", "Le Tour du monde en quatre-vingts jours");
-            await DataProvider.AuthorWritesBook(client, "Jules", "Verne", "L'Île mystérieuse");
-            await DataProvider.AuthorWritesBook(client, "Jules", "Verne", "De la Terre à la Lune");
-            await DataProvider.AuthorWritesBook(client, "Jules", "Verne", "Cinq Semaines en ballon");
-            await DataProvider.AuthorWritesBook(client, "William", "Shakespeare", "Roméo et Juliette");
-            await DataProvider.AuthorWritesBook(client, "William", "Shakespeare", "Hamlet");
-            await DataProvider.AuthorWritesBook(client, "William", "Shakespeare", "Macbeth");
-            await DataProvider.AuthorWritesBook(client, "Charles", "Baudelaire", "Les Fleurs du mal");
-            await DataProvider.AuthorWritesBook(client, "Charles", "Baudelaire", "Petits Poèmes en prose");
-            await DataProvider.AuthorWritesBook(client, "Charles", "Dickens", "Oliver Twist");
-            await DataProvider.AuthorWritesBook(client, "Charles", "Dickens", "Les Grandes Espérances");
-            await DataProvider.AuthorWritesBook(client, "J.R.R.", "Tolkien", "Bilbo le Hobbit");
-            await DataProvider.AuthorWritesBook(client, "J.R.R.", "Tolkien", "Le Silmarillion");
-            await DataProvider.AuthorWritesBook(client, "J.R.R.", "Tolkien", "Le Seigneur des anneaux - La Communauté de l'Anneau");
-            await DataProvider.AuthorWritesBook(client, "J.R.R.", "Tolkien", "Le Seigneur des anneaux - Les Deux Tours");
-            await DataProvider.AuthorWritesBook(client, "J.R.R.", "Tolkien", "Le Seigneur des anneaux - Le Retour du Roi");
-            await DataProvider.AuthorWritesBook(client, "J.R.R.", "Tolkien", "Les Enfants de Húrin");
-            await DataProvider.AuthorWritesBook(client, "J.R.R.", "Tolkien", "Contes et légendes inachevés, tome 1");
-            await DataProvider.AuthorWritesBook(client, "J.K.", "Rowling", "Harry Potter à l'École des Sorciers");
-            await DataProvider.AuthorWritesBook(client, "J.K.", "Rowling", "Harry Potter et la Chambre des Secrets");
-            await DataProvider.AuthorWritesBook(client, "J.K.", "Rowling", "Harry Potter et le Prisonnier d'Azkaban");
-            await DataProvider.AuthorWritesBook(client, "J.K.", "Rowling", "Harry Potter et la Coupe de Feu");
-            await DataProvider.AuthorWritesBook(client, "J.K.", "Rowling", "Harry Potter et l'Ordre du Phénix");
-            await DataProvider.AuthorWritesBook(client, "J.K.", "Rowling", "Harry Potter et le Prince de Sang-Mêlé");
-            await DataProvider.AuthorWritesBook(client, "J.K.", "Rowling", "Harry Potter et les Reliques de la Mort");
-            await DataProvider.AuthorWritesBook(client, "Stephen", "King", "Ça");
-            await DataProvider.AuthorWritesBook(client, "Stephen", "King", "Shining, l'enfant lumière");
-            await DataProvider.AuthorWritesBook(client, "Stephen", "King", "Misery");
-            await DataProvider.AuthorWritesBook(client, "Stephen", "King", "La Ligne verte");
-            await DataProvider.AuthorWritesBook(client, "Victor", "Hugo", "Les Misérables");
-            await DataProvider.AuthorWritesBook(client, "Victor", "Hugo", "Notre-Dame de Paris");
-            await DataProvider.AuthorWritesBook(client, "Ernest", "Hemingway", "Le Vieil Homme et la Mer");
-            await DataProvider.AuthorWritesBook(client, "Antoine", "de Saint-Exupéry", "Le Petit Prince");
-            await DataProvider.AuthorWritesBook(client, "R.L.", "Stine", "La Nuit des pantins");
-            await DataProvider.AuthorWritesBook(client, "R.L.", "Stine", "Sang de monstre");
-            await DataProvider.AuthorWritesBook(client, "R.L.", "Stine", "Dangereuses Photos");
-            await DataProvider.AuthorWritesBook(client, "R.L.", "Stine", "Le Masque hanté");
-            await DataProvider.AuthorWritesBook(client, "R.L.", "Stine", "La Maison des morts");
-            await DataProvider.AuthorWritesBook(client, "R.L.", "Stine", "Le Loup-garou des marécages");
-            await DataProvider.AuthorWritesBook(client, "R.L.", "Stine", "Sous-sol interdit");
+            await DataProvider.AddAuthorWritesBook(client, "Jules", "Verne", "Vingt Mille Lieues sous les mers");
+            await DataProvider.AddAuthorWritesBook(client, "Jules", "Verne", "Voyage au centre de la Terre");
+            await DataProvider.AddAuthorWritesBook(client, "Jules", "Verne", "Le Tour du monde en quatre-vingts jours");
+            await DataProvider.AddAuthorWritesBook(client, "Jules", "Verne", "L'Île mystérieuse");
+            await DataProvider.AddAuthorWritesBook(client, "Jules", "Verne", "De la Terre à la Lune");
+            await DataProvider.AddAuthorWritesBook(client, "Jules", "Verne", "Cinq Semaines en ballon");
+            await DataProvider.AddAuthorWritesBook(client, "William", "Shakespeare", "Roméo et Juliette");
+            await DataProvider.AddAuthorWritesBook(client, "William", "Shakespeare", "Hamlet");
+            await DataProvider.AddAuthorWritesBook(client, "William", "Shakespeare", "Macbeth");
+            await DataProvider.AddAuthorWritesBook(client, "Charles", "Baudelaire", "Les Fleurs du mal");
+            await DataProvider.AddAuthorWritesBook(client, "Charles", "Baudelaire", "Petits Poèmes en prose");
+            await DataProvider.AddAuthorWritesBook(client, "Charles", "Dickens", "Oliver Twist");
+            await DataProvider.AddAuthorWritesBook(client, "Charles", "Dickens", "Les Grandes Espérances");
+            await DataProvider.AddAuthorWritesBook(client, "J.R.R.", "Tolkien", "Bilbo le Hobbit");
+            await DataProvider.AddAuthorWritesBook(client, "J.R.R.", "Tolkien", "Le Silmarillion");
+            await DataProvider.AddAuthorWritesBook(client, "J.R.R.", "Tolkien", "Le Seigneur des anneaux - La Communauté de l'Anneau");
+            await DataProvider.AddAuthorWritesBook(client, "J.R.R.", "Tolkien", "Le Seigneur des anneaux - Les Deux Tours");
+            await DataProvider.AddAuthorWritesBook(client, "J.R.R.", "Tolkien", "Le Seigneur des anneaux - Le Retour du Roi");
+            await DataProvider.AddAuthorWritesBook(client, "J.R.R.", "Tolkien", "Les Enfants de Húrin");
+            await DataProvider.AddAuthorWritesBook(client, "J.R.R.", "Tolkien", "Contes et légendes inachevés, tome 1");
+            await DataProvider.AddAuthorWritesBook(client, "J.K.", "Rowling", "Harry Potter à l'École des Sorciers");
+            await DataProvider.AddAuthorWritesBook(client, "J.K.", "Rowling", "Harry Potter et la Chambre des Secrets");
+            await DataProvider.AddAuthorWritesBook(client, "J.K.", "Rowling", "Harry Potter et le Prisonnier d'Azkaban");
+            await DataProvider.AddAuthorWritesBook(client, "J.K.", "Rowling", "Harry Potter et la Coupe de Feu");
+            await DataProvider.AddAuthorWritesBook(client, "J.K.", "Rowling", "Harry Potter et l'Ordre du Phénix");
+            await DataProvider.AddAuthorWritesBook(client, "J.K.", "Rowling", "Harry Potter et le Prince de Sang-Mêlé");
+            await DataProvider.AddAuthorWritesBook(client, "J.K.", "Rowling", "Harry Potter et les Reliques de la Mort");
+            await DataProvider.AddAuthorWritesBook(client, "Stephen", "King", "Ça");
+            await DataProvider.AddAuthorWritesBook(client, "Stephen", "King", "Shining, l'enfant lumière");
+            await DataProvider.AddAuthorWritesBook(client, "Stephen", "King", "Misery");
+            await DataProvider.AddAuthorWritesBook(client, "Stephen", "King", "La Ligne verte");
+            await DataProvider.AddAuthorWritesBook(client, "Victor", "Hugo", "Les Misérables");
+            await DataProvider.AddAuthorWritesBook(client, "Victor", "Hugo", "Notre-Dame de Paris");
+            await DataProvider.AddAuthorWritesBook(client, "Ernest", "Hemingway", "Le Vieil Homme et la Mer");
+            await DataProvider.AddAuthorWritesBook(client, "Antoine", "de Saint-Exupéry", "Le Petit Prince");
+            await DataProvider.AddAuthorWritesBook(client, "R.L.", "Stine", "La Nuit des pantins");
+            await DataProvider.AddAuthorWritesBook(client, "R.L.", "Stine", "Sang de monstre");
+            await DataProvider.AddAuthorWritesBook(client, "R.L.", "Stine", "Dangereuses Photos");
+            await DataProvider.AddAuthorWritesBook(client, "R.L.", "Stine", "Le Masque hanté");
+            await DataProvider.AddAuthorWritesBook(client, "R.L.", "Stine", "La Maison des morts");
+            await DataProvider.AddAuthorWritesBook(client, "R.L.", "Stine", "Le Loup-garou des marécages");
+            await DataProvider.AddAuthorWritesBook(client, "R.L.", "Stine", "Sous-sol interdit");
 
-            await DataProvider.ReaderLoansBook(client, "Maxime", "AUBRY", "Vingt Mille Lieues sous les mers");
-            await DataProvider.ReaderLoansBook(client, "Maxime", "AUBRY", "Le Silmarillion");
-            await DataProvider.ReaderLoansBook(client, "Maxime", "AUBRY", "Misery");
-            await DataProvider.ReaderLoansBook(client, "Maxime", "AUBRY", "Le Petit Prince");
-            await DataProvider.ReaderLoansBook(client, "Maxime", "AUBRY", "La Nuit des pantins");
-            await DataProvider.ReaderLoansBook(client, "David", "Zippari", "Roméo et Juliette");
-            await DataProvider.ReaderLoansBook(client, "David", "Zippari", "Hamlet");
-            await DataProvider.ReaderLoansBook(client, "David", "Zippari", "Macbeth");
-            await DataProvider.ReaderLoansBook(client, "Simon", "Louail", "La Nuit des pantins");
-            await DataProvider.ReaderLoansBook(client, "Simon", "Louail", "Sang de monstre");
-            await DataProvider.ReaderLoansBook(client, "Simon", "Louail", "Dangereuses Photos");
-            await DataProvider.ReaderLoansBook(client, "Simon", "Louail", "Le Masque hanté");
-            await DataProvider.ReaderLoansBook(client, "Simon", "Louail", "Vingt Mille Lieues sous les mers");
-            await DataProvider.ReaderLoansBook(client, "Simon", "Louail", "Misery");
-            await DataProvider.ReaderLoansBook(client, "Wilfrid", "Lepape", "Ça");
-            await DataProvider.ReaderLoansBook(client, "Wilfrid", "Lepape", "Shining, l'enfant lumière");
-            await DataProvider.ReaderLoansBook(client, "Wilfrid", "Lepape", "Misery");
-            await DataProvider.ReaderLoansBook(client, "Wilfrid", "Lepape", "La Ligne verte");
-            await DataProvider.ReaderLoansBook(client, "Wilfrid", "Lepape", "Le Silmarillion");
-            await DataProvider.ReaderLoansBook(client, "Mathieu", "Decroocq", "Bilbo le Hobbit");
-            await DataProvider.ReaderLoansBook(client, "Mathieu", "Decroocq", "Le Silmarillion");
-            await DataProvider.ReaderLoansBook(client, "Mathieu", "Decroocq", "Le Seigneur des anneaux - La Communauté de l'Anneau");
-            await DataProvider.ReaderLoansBook(client, "Mathieu", "Decroocq", "Le Seigneur des anneaux - Les Deux Tours");
-            await DataProvider.ReaderLoansBook(client, "Mathieu", "Decroocq", "Le Seigneur des anneaux - Le Retour du Roi");
-            await DataProvider.ReaderLoansBook(client, "Mathieu", "Decroocq", "Les Enfants de Húrin");
-            await DataProvider.ReaderLoansBook(client, "Mathieu", "Decroocq", "Contes et légendes inachevés, tome 1");
-            await DataProvider.ReaderLoansBook(client, "Mathieu", "Decroocq", "Dangereuses Photos");
-            await DataProvider.ReaderLoansBook(client, "Mathieu", "Decroocq", "Misery");
-            await DataProvider.ReaderLoansBook(client, "Mathieu", "Decroocq", "Le Petit Prince");
+            await DataProvider.AddReaderLoansBook(client, "Maxime", "AUBRY", "Vingt Mille Lieues sous les mers");
+            await DataProvider.AddReaderLoansBook(client, "Maxime", "AUBRY", "Le Silmarillion");
+            await DataProvider.AddReaderLoansBook(client, "Maxime", "AUBRY", "Misery");
+            await DataProvider.AddReaderLoansBook(client, "Maxime", "AUBRY", "Le Petit Prince");
+            await DataProvider.AddReaderLoansBook(client, "Maxime", "AUBRY", "La Nuit des pantins");
+            await DataProvider.AddReaderLoansBook(client, "David", "Zippari", "Roméo et Juliette");
+            await DataProvider.AddReaderLoansBook(client, "David", "Zippari", "Hamlet");
+            await DataProvider.AddReaderLoansBook(client, "David", "Zippari", "Macbeth");
+            await DataProvider.AddReaderLoansBook(client, "Simon", "Louail", "La Nuit des pantins");
+            await DataProvider.AddReaderLoansBook(client, "Simon", "Louail", "Sang de monstre");
+            await DataProvider.AddReaderLoansBook(client, "Simon", "Louail", "Dangereuses Photos");
+            await DataProvider.AddReaderLoansBook(client, "Simon", "Louail", "Le Masque hanté");
+            await DataProvider.AddReaderLoansBook(client, "Simon", "Louail", "Vingt Mille Lieues sous les mers");
+            await DataProvider.AddReaderLoansBook(client, "Simon", "Louail", "Misery");
+            await DataProvider.AddReaderLoansBook(client, "Wilfrid", "Lepape", "Ça");
+            await DataProvider.AddReaderLoansBook(client, "Wilfrid", "Lepape", "Shining, l'enfant lumière");
+            await DataProvider.AddReaderLoansBook(client, "Wilfrid", "Lepape", "Misery");
+            await DataProvider.AddReaderLoansBook(client, "Wilfrid", "Lepape", "La Ligne verte");
+            await DataProvider.AddReaderLoansBook(client, "Wilfrid", "Lepape", "Le Silmarillion");
+            await DataProvider.AddReaderLoansBook(client, "Mathieu", "Decroocq", "Bilbo le Hobbit");
+            await DataProvider.AddReaderLoansBook(client, "Mathieu", "Decroocq", "Le Silmarillion");
+            await DataProvider.AddReaderLoansBook(client, "Mathieu", "Decroocq", "Le Seigneur des anneaux - La Communauté de l'Anneau");
+            await DataProvider.AddReaderLoansBook(client, "Mathieu", "Decroocq", "Le Seigneur des anneaux - Les Deux Tours");
+            await DataProvider.AddReaderLoansBook(client, "Mathieu", "Decroocq", "Le Seigneur des anneaux - Le Retour du Roi");
+            await DataProvider.AddReaderLoansBook(client, "Mathieu", "Decroocq", "Les Enfants de Húrin");
+            await DataProvider.AddReaderLoansBook(client, "Mathieu", "Decroocq", "Contes et légendes inachevés, tome 1");
+            await DataProvider.AddReaderLoansBook(client, "Mathieu", "Decroocq", "Dangereuses Photos");
+            await DataProvider.AddReaderLoansBook(client, "Mathieu", "Decroocq", "Misery");
+            await DataProvider.AddReaderLoansBook(client, "Mathieu", "Decroocq", "Le Petit Prince");
 
-            await DataProvider.ReaderRatesBook(client, "Maxime", "AUBRY", "Vingt Mille Lieues sous les mers");
-            await DataProvider.ReaderRatesBook(client, "Maxime", "AUBRY", "Le Silmarillion");
-            await DataProvider.ReaderRatesBook(client, "Maxime", "AUBRY", "Misery");
-            await DataProvider.ReaderRatesBook(client, "Maxime", "AUBRY", "Le Petit Prince");
-            await DataProvider.ReaderRatesBook(client, "Maxime", "AUBRY", "La Nuit des pantins");
-            await DataProvider.ReaderRatesBook(client, "David", "Zippari", "Roméo et Juliette");
-            await DataProvider.ReaderRatesBook(client, "David", "Zippari", "Hamlet");
-            await DataProvider.ReaderRatesBook(client, "David", "Zippari", "Macbeth");
-            await DataProvider.ReaderRatesBook(client, "Simon", "Louail", "La Nuit des pantins");
-            await DataProvider.ReaderRatesBook(client, "Simon", "Louail", "Sang de monstre");
-            await DataProvider.ReaderRatesBook(client, "Simon", "Louail", "Dangereuses Photos");
-            await DataProvider.ReaderRatesBook(client, "Simon", "Louail", "Le Masque hanté");
-            await DataProvider.ReaderRatesBook(client, "Simon", "Louail", "Vingt Mille Lieues sous les mers");
-            await DataProvider.ReaderRatesBook(client, "Simon", "Louail", "Misery");
-            await DataProvider.ReaderRatesBook(client, "Wilfrid", "Lepape", "Ça");
-            await DataProvider.ReaderRatesBook(client, "Wilfrid", "Lepape", "Shining, l'enfant lumière");
-            await DataProvider.ReaderRatesBook(client, "Wilfrid", "Lepape", "Misery");
-            await DataProvider.ReaderRatesBook(client, "Wilfrid", "Lepape", "La Ligne verte");
-            await DataProvider.ReaderRatesBook(client, "Wilfrid", "Lepape", "Le Silmarillion");
-            await DataProvider.ReaderRatesBook(client, "Mathieu", "Decroocq", "Bilbo le Hobbit");
-            await DataProvider.ReaderRatesBook(client, "Mathieu", "Decroocq", "Le Silmarillion");
-            await DataProvider.ReaderRatesBook(client, "Mathieu", "Decroocq", "Le Seigneur des anneaux - La Communauté de l'Anneau");
-            await DataProvider.ReaderRatesBook(client, "Mathieu", "Decroocq", "Le Seigneur des anneaux - Les Deux Tours");
-            await DataProvider.ReaderRatesBook(client, "Mathieu", "Decroocq", "Le Seigneur des anneaux - Le Retour du Roi");
-            await DataProvider.ReaderRatesBook(client, "Mathieu", "Decroocq", "Les Enfants de Húrin");
-            await DataProvider.ReaderRatesBook(client, "Mathieu", "Decroocq", "Contes et légendes inachevés, tome 1");
-            await DataProvider.ReaderRatesBook(client, "Mathieu", "Decroocq", "Dangereuses Photos");
-            await DataProvider.ReaderRatesBook(client, "Mathieu", "Decroocq", "Misery");
-            await DataProvider.ReaderRatesBook(client, "Mathieu", "Decroocq", "Le Petit Prince");
+            await DataProvider.AddReaderRatesBook(client, "Maxime", "AUBRY", "Vingt Mille Lieues sous les mers");
+            await DataProvider.AddReaderRatesBook(client, "Maxime", "AUBRY", "Le Silmarillion");
+            await DataProvider.AddReaderRatesBook(client, "Maxime", "AUBRY", "Misery");
+            await DataProvider.AddReaderRatesBook(client, "Maxime", "AUBRY", "Le Petit Prince");
+            await DataProvider.AddReaderRatesBook(client, "Maxime", "AUBRY", "La Nuit des pantins");
+            await DataProvider.AddReaderRatesBook(client, "David", "Zippari", "Roméo et Juliette");
+            await DataProvider.AddReaderRatesBook(client, "David", "Zippari", "Hamlet");
+            await DataProvider.AddReaderRatesBook(client, "David", "Zippari", "Macbeth");
+            await DataProvider.AddReaderRatesBook(client, "Simon", "Louail", "La Nuit des pantins");
+            await DataProvider.AddReaderRatesBook(client, "Simon", "Louail", "Sang de monstre");
+            await DataProvider.AddReaderRatesBook(client, "Simon", "Louail", "Dangereuses Photos");
+            await DataProvider.AddReaderRatesBook(client, "Simon", "Louail", "Le Masque hanté");
+            await DataProvider.AddReaderRatesBook(client, "Simon", "Louail", "Vingt Mille Lieues sous les mers");
+            await DataProvider.AddReaderRatesBook(client, "Simon", "Louail", "Misery");
+            await DataProvider.AddReaderRatesBook(client, "Wilfrid", "Lepape", "Ça");
+            await DataProvider.AddReaderRatesBook(client, "Wilfrid", "Lepape", "Shining, l'enfant lumière");
+            await DataProvider.AddReaderRatesBook(client, "Wilfrid", "Lepape", "Misery");
+            await DataProvider.AddReaderRatesBook(client, "Wilfrid", "Lepape", "La Ligne verte");
+            await DataProvider.AddReaderRatesBook(client, "Wilfrid", "Lepape", "Le Silmarillion");
+            await DataProvider.AddReaderRatesBook(client, "Mathieu", "Decroocq", "Bilbo le Hobbit");
+            await DataProvider.AddReaderRatesBook(client, "Mathieu", "Decroocq", "Le Silmarillion");
+            await DataProvider.AddReaderRatesBook(client, "Mathieu", "Decroocq", "Le Seigneur des anneaux - La Communauté de l'Anneau");
+            await DataProvider.AddReaderRatesBook(client, "Mathieu", "Decroocq", "Le Seigneur des anneaux - Les Deux Tours");
+            await DataProvider.AddReaderRatesBook(client, "Mathieu", "Decroocq", "Le Seigneur des anneaux - Le Retour du Roi");
+            await DataProvider.AddReaderRatesBook(client, "Mathieu", "Decroocq", "Les Enfants de Húrin");
+            await DataProvider.AddReaderRatesBook(client, "Mathieu", "Decroocq", "Contes et légendes inachevés, tome 1");
+            await DataProvider.AddReaderRatesBook(client, "Mathieu", "Decroocq", "Dangereuses Photos");
+            await DataProvider.AddReaderRatesBook(client, "Mathieu", "Decroocq", "Misery");
+            await DataProvider.AddReaderRatesBook(client, "Mathieu", "Decroocq", "Le Petit Prince");
         }
 
-        private static async Task AuthorWritesBook(HttpClient client, string firstname, string lastname, string title)
+        private static async Task AddAuthorWritesBook(HttpClient client, string firstname, string lastname, string title)
         {
             Author author = DataProvider.GetAuthorByName(firstname, lastname);
             Book book = DataProvider.GetBookByName(title);
@@ -386,10 +392,13 @@ namespace Librarian.RestFulAPI.Tests.Tools
             };
             string json = JsonConvert.SerializeObject(viewModel);
             StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
-            string response = await client.PostAsync("/api/v1/Books/authors/add", formContent).Result.Content.ReadAsStringAsync();
+            string response1 = await client.PostAsync($"/api/v1/Books/authors/add", formContent).Result.Content.ReadAsStringAsync();
+            ContentResult<string> result1 = JsonConvert.DeserializeObject<ContentResult<string>>(response1);
+
+            DataProvider.AuthorWritesBook.Add(result1.Result, new AuthorWritesBook(author.Id, book.Id));
         }
 
-        private static async Task ReaderLoansBook(HttpClient client, string firstname, string lastname, string title)
+        private static async Task AddReaderLoansBook(HttpClient client, string firstname, string lastname, string title)
         {
             Reader reader = DataProvider.GetReaderByName(firstname, lastname);
             Book book = DataProvider.GetBookByName(title);
@@ -404,10 +413,17 @@ namespace Librarian.RestFulAPI.Tests.Tools
             };
             string json = JsonConvert.SerializeObject(viewModel);
             StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
-            string response = await client.PostAsync("/api/v1/Readers/loan/add", formContent).Result.Content.ReadAsStringAsync();
+            string response1 = await client.PostAsync($"/api/v1/Readers/loans/add", formContent).Result.Content.ReadAsStringAsync();
+            ContentResult<string> result1 = JsonConvert.DeserializeObject<ContentResult<string>>(response1);
+
+            // get loans
+            string response2 = await client.GetAsync($"/api/v1/Readers/loans/{reader.Id}").Result.Content.ReadAsStringAsync();
+            ContentResult<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>> result2 = JsonConvert.DeserializeObject<ContentResult<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>>>(response2);
+
+            DataProvider.ReaderLoansBook.Add(result2.Result.Where(r => r.Id == result1.Result).Single());
         }
 
-        private static async Task ReaderRatesBook(HttpClient client, string firstname, string lastname, string title)
+        private static async Task AddReaderRatesBook(HttpClient client, string firstname, string lastname, string title)
         {
             Reader reader = DataProvider.GetReaderByName(firstname, lastname);
             Book book = DataProvider.GetBookByName(title);
@@ -427,32 +443,38 @@ namespace Librarian.RestFulAPI.Tests.Tools
             };
             string json = JsonConvert.SerializeObject(viewModel);
             StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
-            string response = await client.PostAsync("/api/v1/Books/rating/add", formContent).Result.Content.ReadAsStringAsync();
+            string response1 = await client.PostAsync("/api/v1/Books/rating/add", formContent).Result.Content.ReadAsStringAsync();
+            ContentResult<string> result1 = JsonConvert.DeserializeObject<ContentResult<string>>(response1);
+
+            // get rates
+            string response2 = await client.GetAsync($"/api/v1/Readers/rates/{reader.Id}").Result.Content.ReadAsStringAsync();
+            ContentResult<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>> result2 = JsonConvert.DeserializeObject<ContentResult<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>>>(response2);
+
         }
 
         private static Reader GetReaderByName(string firstname, string lastname)
         {
             Reader reader = (from r in DataProvider.Readers
-                                                            where r.FirstName.ToLower() == firstname.ToLower()
-                                                            && r.LastName.ToLower() == lastname.ToLower()
-                                                            select r).SingleOrDefault();
+                            where r.FirstName.ToLower() == firstname.ToLower()
+                            && r.LastName.ToLower() == lastname.ToLower()
+                            select r).SingleOrDefault();
             return reader;
         }
 
         private static Author GetAuthorByName(string firstname, string lastname)
         {
             Author author = (from a in DataProvider.Authors
-                                                            where a.FirstName.ToLower() == firstname.ToLower()
-                                                            && a.LastName.ToLower() == lastname.ToLower()
-                                                            select a).SingleOrDefault();
+                            where a.FirstName.ToLower() == firstname.ToLower()
+                            && a.LastName.ToLower() == lastname.ToLower()
+                            select a).SingleOrDefault();
             return author;
         }
 
         private static Book GetBookByName(string title)
         {
             Book book = (from b in DataProvider.Books
-                                                        where b.Title.ToLower() == title.ToLower()
-                                                        select b).SingleOrDefault();
+                        where b.Title.ToLower() == title.ToLower()
+                        select b).SingleOrDefault();
             return book;
         }
     }

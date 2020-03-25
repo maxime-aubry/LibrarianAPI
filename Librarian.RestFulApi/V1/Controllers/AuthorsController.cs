@@ -1,5 +1,6 @@
 ﻿using Librarian.Core.DataTransfertObject.UseCases.Authors;
 using Librarian.Core.DataTransfertObject.UseCases.AuthorWritesBook;
+using Librarian.Core.Domain.Entities;
 using Librarian.Core.UseCases;
 using Librarian.RestFulAPI.Tools.Presenters;
 using Librarian.RestFulAPI.V1.ViewModels.Authors;
@@ -15,39 +16,8 @@ namespace Librarian.RestFulAPI.V1.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        #region Main CRUD Presenters
-        private readonly IJsonPresenter<Librarian.Core.Domain.Entities.Author> getAuthorByIdPresenter;
-        private readonly IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Author>> getAuthorsPresenter;
-        private readonly IJsonPresenter<string> createAuthorPresenter;
-        private readonly IJsonPresenter<string> updateAuthorPresenter;
-        private readonly IJsonPresenter<string> deleteAuthorPresenter;
-        #endregion
-
-        #region Secondaries CRUD Presenters
-        private readonly IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.FindAuthorsByFilters>> getAuthorsByFiltersPresenter;
-        private readonly IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Book>> getBooksPresenter;
-        #endregion
-
-        private readonly IUseCasesProvider useCasesProvider;
-
-        public AuthorsController(
-            IJsonPresenter<Librarian.Core.Domain.Entities.Author> getAuthorByIdPresenter,
-            IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Author>> getAuthorsPresenter,
-            IJsonPresenter<string> createAuthorPresenter,
-            IJsonPresenter<string> updateAuthorPresenter,
-            IJsonPresenter<string> deleteAuthorPresenter,
-            IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.FindAuthorsByFilters>> getAuthorsByFiltersPresenter,
-            IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Book>> getBooksPresenter,
-            IUseCasesProvider useCasesProvider)
+        public AuthorsController()
         {
-            this.getAuthorByIdPresenter = getAuthorByIdPresenter;
-            this.getAuthorsPresenter = getAuthorsPresenter;
-            this.getAuthorsByFiltersPresenter = getAuthorsByFiltersPresenter;
-            this.createAuthorPresenter = createAuthorPresenter;
-            this.updateAuthorPresenter = updateAuthorPresenter;
-            this.deleteAuthorPresenter = deleteAuthorPresenter;
-            this.getBooksPresenter = getBooksPresenter;
-            this.useCasesProvider = useCasesProvider;
         }
 
         #region Main CRUD Methods
@@ -55,23 +25,30 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Get(string authorId)
+        public async Task<IActionResult> Get(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<Author> presenter,
+            string authorId
+        )
         {
             if (string.IsNullOrEmpty(authorId))
                 return BadRequest(Librarian.RestFulAPI.Properties.Resources.AuthorsController_forgotten_author_id_on_request);
 
-            await this.useCasesProvider.Authors.GetById.Handle(new GetAuthorByIdRequest(authorId), this.getAuthorByIdPresenter);
-            return this.getAuthorByIdPresenter.ContentResult;
+            await useCasesProvider.Authors.GetById.Handle(new GetAuthorByIdRequest(authorId), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpGet("list")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<IEnumerable<Author>> presenter
+        )
         {
-            await this.useCasesProvider.Authors.GetList.Handle(new GetAuthorsRequest(), this.getAuthorsPresenter);
-            return this.getAuthorsPresenter.ContentResult;
+            await useCasesProvider.Authors.GetList.Handle(new GetAuthorsRequest(), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpPost("create")]
@@ -80,13 +57,17 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create([FromBody] CreateAuthorViewModel viewmodel)
+        public async Task<IActionResult> Create(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] CreateAuthorViewModel viewmodel
+        )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.Authors.Create.Handle(new CreateAuthorRequest(viewmodel.FirstName, viewmodel.LastName), this.createAuthorPresenter);
-            return this.createAuthorPresenter.ContentResult;
+            await useCasesProvider.Authors.Create.Handle(new CreateAuthorRequest(viewmodel.FirstName, viewmodel.LastName), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpPut("update/{authorId}")]
@@ -94,13 +75,18 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update(string authorId, [FromBody] UpdateAuthorViewModel viewmodel)
+        public async Task<IActionResult> Update(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] UpdateAuthorViewModel viewmodel,
+            string authorId
+        )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.Authors.Update.Handle(new UpdateAuthorRequest(authorId, viewmodel.FirstName, viewmodel.LastName), this.updateAuthorPresenter);
-            return this.updateAuthorPresenter.ContentResult;
+            await useCasesProvider.Authors.Update.Handle(new UpdateAuthorRequest(authorId, viewmodel.FirstName, viewmodel.LastName), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpDelete("delete/{authorId}")]
@@ -108,13 +94,17 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Delete(string authorId)
+        public async Task<IActionResult> Delete(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            string authorId
+        )
         {
             if (string.IsNullOrEmpty(authorId))
                 return BadRequest(Librarian.RestFulAPI.Properties.Resources.AuthorsController_forgotten_author_id_on_request);
 
-            await this.useCasesProvider.Authors.Delete.Handle(new Core.DataTransfertObject.UseCases.Authors.DeleteAuthorRequest(authorId), this.deleteAuthorPresenter);
-            return this.deleteAuthorPresenter.ContentResult;
+            await useCasesProvider.Authors.Delete.Handle(new Core.DataTransfertObject.UseCases.Authors.DeleteAuthorRequest(authorId), presenter);
+            return presenter.ContentResult;
         }
         #endregion
 
@@ -124,22 +114,28 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAllByFilters(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<IEnumerable<FindAuthorsByFilters>> presenter,
             [FromQuery(Name = "firstName")] string firstName,
             [FromQuery(Name = "lastName")] string lastName
         )
         {
-            await this.useCasesProvider.Authors.GetAuthorsByFilters.Handle(new GetAuthorsByFiltersRequest(firstName, lastName), this.getAuthorsByFiltersPresenter);
-            return this.getAuthorsPresenter.ContentResult;
+            await useCasesProvider.Authors.GetAuthorsByFilters.Handle(new GetAuthorsByFiltersRequest(firstName, lastName), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpGet("books/list/{authorId}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetBooks(string authorId)
+        public async Task<IActionResult> GetBooks(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<IEnumerable<Book>> presenter,
+            string authorId
+        )
         {
-            await this.useCasesProvider.BooksOfAuthors.GetBooks.Handle(new GetBooksByAuthorIdRequest(authorId), this.getBooksPresenter);
-            return this.getAuthorsPresenter.ContentResult;
+            await useCasesProvider.BooksOfAuthors.GetBooks.Handle(new GetBooksByAuthorIdRequest(authorId), presenter);
+            return presenter.ContentResult;
         }
         #endregion
     }

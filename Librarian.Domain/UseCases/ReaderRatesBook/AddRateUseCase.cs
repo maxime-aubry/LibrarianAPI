@@ -60,7 +60,7 @@ namespace Librarian.Core.UseCases.ReaderRatesBook
                     if (string.IsNullOrEmpty(rateId))
                         throw new Exception("Rate not saved");
 
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, true));
+                    outputPort.Handle(new UseCaseResponseMessage<string>(rateId, true));
                     return true;
                 }
                 catch (Exception e)

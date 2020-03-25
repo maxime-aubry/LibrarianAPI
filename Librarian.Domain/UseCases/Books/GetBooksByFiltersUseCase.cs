@@ -85,15 +85,15 @@ namespace Librarian.Core.UseCases.Books
                                                           b.RealeaseDate,
                                                           authors.Select(author => new AuthorOfBook(author.Id, author.FirstName, author.LastName)).ToList(),
                                                           0,
-                                                          loans?.Count() ?? 0,
-                                                          rates?.Select(r => r.Rate)?.Average() ?? 0
-                                                      ));
+                                                          loans.Any() ? loans.Count() : 0,
+                                                          rates.Any() ? rates.Select(r => r.Rate).Average() : 0
+                                                      )).ToList();
 
                     foreach (FindBooksByFilters book in books)
                         SetPertinence(book);
-                    books = books.Where(b => b.Pertinence > 0);
+                    books = books.Where(b => b.Pertinence > 0).ToList();
 
-                    outputPort.Handle(new UseCaseResponseMessage<IEnumerable<FindBooksByFilters>>(null, true));
+                    outputPort.Handle(new UseCaseResponseMessage<IEnumerable<FindBooksByFilters>>(books, true));
                     return true;
                 }
                 catch (Exception e)

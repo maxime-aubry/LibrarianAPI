@@ -335,42 +335,62 @@ namespace Librarian.RestFulAPI.Tests
                 new KeyValuePair<string, string>("authorIds", "5e79ca27bc7f674b08a17608"),
                 new KeyValuePair<string, string>("authorIds", "5e79ca27bc7f674b08a1760d"),
             }).ReadAsStringAsync().Result;
-            string response1 = await this.client.GetAsync($"/api/v1/Books/search?{query}").Result.Content.ReadAsStringAsync();
-            ContentResult<string> result1 = JsonConvert.DeserializeObject<ContentResult<string>>(response1);
+            string response = await this.client.GetAsync($"/api/v1/Books/search?{query}").Result.Content.ReadAsStringAsync();
+            ContentResult<IEnumerable<FindBooksByFilters>> result = JsonConvert.DeserializeObject<ContentResult<IEnumerable<FindBooksByFilters>>>(response);
 
-            Assert.True(result1.Success);
-            Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
-            Assert.Collection(result1.Result,
+            Assert.True(result.Success);
+            Assert.Null(result.Message);
+            Assert.Null(result.Errors);
+            Assert.Collection(result.Result,
                 item =>
                 {
-
+                    Assert.Equal("Vingt Mille Lieues sous les mers", item.Title);
+                    Assert.Equal((float)0.6, item.Pertinence);
                 },
                 item =>
                 {
-
+                    Assert.Equal("Voyage au centre de la Terre", item.Title);
+                    Assert.Equal((float)0.4, item.Pertinence);
                 },
                 item =>
                 {
-
+                    Assert.Equal("Le Tour du monde en quatre-vingts jours", item.Title);
+                    Assert.Equal((float)0.2, item.Pertinence);
                 },
                 item =>
                 {
-
+                    Assert.Equal("L'Île mystérieuse", item.Title);
+                    Assert.Equal((float)0.4, item.Pertinence);
                 },
                 item =>
                 {
-
+                    Assert.Equal("De la Terre à la Lune", item.Title);
+                    Assert.Equal((float)0.4, item.Pertinence);
                 },
                 item =>
                 {
-
+                    Assert.Equal("Cinq Semaines en ballon", item.Title);
+                    Assert.Equal((float)0.2, item.Pertinence);
                 },
                 item =>
                 {
-
+                    Assert.Equal("Le Vieil Homme et la Mer", item.Title);
+                    Assert.Equal((float)0.2, item.Pertinence);
                 }
             );
+        }
+
+        [Fact]
+        public async Task Get_authors_results_are_ok()
+        {
+            await DataProvider.PopulateDatabase(this.client);
+
+            //string response = await this.client.GetAsync($"/api/v1/Books/authors").Result.Content.ReadAsStringAsync();
+            //ContentResult<IEnumerable<Author>> result = JsonConvert.DeserializeObject<ContentResult<IEnumerable<Author>>>(response);
+
+            //Assert.True(result.Success);
+            //Assert.Null(result.Message);
+            //Assert.Null(result.Errors);
         }
     }
 }

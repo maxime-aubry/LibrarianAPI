@@ -1,5 +1,6 @@
 ﻿using Librarian.Core.DataTransfertObject.UseCases.ReaderLoansBook;
 using Librarian.Core.DataTransfertObject.UseCases.Readers;
+using Librarian.Core.Domain.Entities;
 using Librarian.Core.UseCases;
 using Librarian.RestFulAPI.Tools.Presenters;
 using Librarian.RestFulAPI.V1.ViewModels.Readers;
@@ -15,45 +16,8 @@ namespace Librarian.RestFulAPI.V1.Controllers
     [ApiController]
     public class ReadersController : ControllerBase
     {
-        #region Main CRUD Presenters
-        private readonly IJsonPresenter<Librarian.Core.Domain.Entities.Reader> getReaderByIdPresenter;
-        private readonly IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Reader>> getReadersPresenter;
-        private readonly IJsonPresenter<string> createReaderPresenter;
-        private readonly IJsonPresenter<string> updateReaderPresenter;
-        private readonly IJsonPresenter<string> deleteReaderPresenter;
-        #endregion
-
-        #region Secondaries CRUD Presenters
-        private readonly IJsonPresenter<string> addLoanPresenter;
-        private readonly IJsonPresenter<string> closeLoanPresenter;
-        private readonly IJsonPresenter<string> closeLoanAdndDeclareAsLostPresenter;
-        private readonly IJsonPresenter<string> deleteLoanPresenter;
-        #endregion
-
-        private readonly IUseCasesProvider useCasesProvider;
-
-        public ReadersController(
-            IJsonPresenter<Librarian.Core.Domain.Entities.Reader> getReaderByIdPresenter,
-            IJsonPresenter<IEnumerable<Librarian.Core.Domain.Entities.Reader>> getReadersPresenter,
-            IJsonPresenter<string> createReaderPresenter,
-            IJsonPresenter<string> updateReaderPresenter,
-            IJsonPresenter<string> deleteReaderPresenter,
-            IJsonPresenter<string> addLoanPresenter,
-            IJsonPresenter<string> closeLoanPresenter,
-            IJsonPresenter<string> closeLoanAdndDeclareAsLostPresenter,
-            IJsonPresenter<string> deleteLoanPresenter,
-            IUseCasesProvider useCasesProvider)
+        public ReadersController()
         {
-            this.getReaderByIdPresenter = getReaderByIdPresenter;
-            this.getReadersPresenter = getReadersPresenter;
-            this.createReaderPresenter = createReaderPresenter;
-            this.updateReaderPresenter = updateReaderPresenter;
-            this.deleteReaderPresenter = deleteReaderPresenter;
-            this.addLoanPresenter = addLoanPresenter;
-            this.closeLoanPresenter = closeLoanPresenter;
-            this.closeLoanAdndDeclareAsLostPresenter = closeLoanAdndDeclareAsLostPresenter;
-            this.deleteLoanPresenter = deleteLoanPresenter;
-            this.useCasesProvider = useCasesProvider;
         }
 
         #region Main CRUD Methods
@@ -61,20 +25,27 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Get(string readerId)
+        public async Task<IActionResult> Get(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<Reader> presenter,
+            string readerId
+        )
         {
             if (string.IsNullOrEmpty(readerId))
                 return BadRequest(Librarian.RestFulAPI.Properties.Resources.ReadersController_forgotten_reader_id_on_request);
 
-            await this.useCasesProvider.Readers.GetById.Handle(new GetReaderByIdRequest(readerId), this.getReaderByIdPresenter);
-            return this.getReaderByIdPresenter.ContentResult;
+            await useCasesProvider.Readers.GetById.Handle(new GetReaderByIdRequest(readerId), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpGet("list")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<IEnumerable<Reader>> presenter
+        )
         {
-            await this.useCasesProvider.Readers.GetList.Handle(new GetReadersRequest(), this.getReadersPresenter);
-            return this.getReadersPresenter.ContentResult;
+            await useCasesProvider.Readers.GetList.Handle(new GetReadersRequest(), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpPost("create")]
@@ -83,13 +54,17 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create([FromBody] CreateReaderViewModel viewmodel)
+        public async Task<IActionResult> Create(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] CreateReaderViewModel viewmodel
+        )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.Readers.Create.Handle(new CreateReaderRequest(viewmodel.FirstName, viewmodel.LastName, viewmodel.Birthday), this.createReaderPresenter);
-            return this.createReaderPresenter.ContentResult;
+            await useCasesProvider.Readers.Create.Handle(new CreateReaderRequest(viewmodel.FirstName, viewmodel.LastName, viewmodel.Birthday), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpPut("update/{readerId}")]
@@ -97,13 +72,18 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update(string readerId, [FromBody] UpdateReaderViewModel viewmodel)
+        public async Task<IActionResult> Update(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] UpdateReaderViewModel viewmodel,
+            string readerId
+        )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.Readers.Update.Handle(new UpdateReaderRequest(readerId, viewmodel.FirstName, viewmodel.LastName, viewmodel.Birthday, false), this.updateReaderPresenter);
-            return this.updateReaderPresenter.ContentResult;
+            await useCasesProvider.Readers.Update.Handle(new UpdateReaderRequest(readerId, viewmodel.FirstName, viewmodel.LastName, viewmodel.Birthday, false), presenter);
+            return presenter.ContentResult;
         }
 
         [HttpDelete("delete/{readerId}")]
@@ -111,71 +91,109 @@ namespace Librarian.RestFulAPI.V1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Delete(string readerId)
+        public async Task<IActionResult> Delete(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            string readerId
+        )
         {
             if (string.IsNullOrEmpty(readerId))
                 return BadRequest(Librarian.RestFulAPI.Properties.Resources.ReadersController_forgotten_reader_id_on_request);
 
-            await this.useCasesProvider.Readers.Delete.Handle(new DeleteReaderRequest(readerId), this.deleteReaderPresenter);
-            return this.deleteReaderPresenter.ContentResult;
+            await useCasesProvider.Readers.Delete.Handle(new DeleteReaderRequest(readerId), presenter);
+            return presenter.ContentResult;
         }
         #endregion
 
         #region Secondaries CRUD Methods
-        [HttpPost("loan/add")]
+        [HttpGet("loans/{readerId}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddLoan([FromBody] AddLoanViewModel viewmodel)
+        public async Task<IActionResult> GetLoans(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<IEnumerable<ReaderLoansBook>> presenter,
+            string readerId
+        )
+        {
+            if (string.IsNullOrEmpty(readerId))
+                return BadRequest(Librarian.RestFulAPI.Properties.Resources.ReadersController_forgotten_reader_id_on_request);
+
+            await useCasesProvider.ReadersLoans.GetLoans.Handle(new GetLoansRequest(readerId), presenter);
+            return presenter.ContentResult;
+        }
+
+        [HttpPost("loans/add")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddLoan(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] AddLoanViewModel viewmodel
+        )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.ReadersLoans.AddLoan.Handle(new AddLoanRequest(viewmodel.ReaderId, viewmodel.BookId), this.addLoanPresenter);
-            return this.addLoanPresenter.ContentResult;
+            await useCasesProvider.ReadersLoans.AddLoan.Handle(new AddLoanRequest(viewmodel.ReaderId, viewmodel.BookId), presenter);
+            return presenter.ContentResult;
         }
 
-        [HttpPost("loan/close")]
+        [HttpPost("loans/close")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CloseLoan([FromBody] CloseLoanViewModel viewmodel)
+        public async Task<IActionResult> CloseLoan(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] CloseLoanViewModel viewmodel
+        )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.ReadersLoans.CloseLoan.Handle(new CloseLoanRequest(viewmodel.LoanId), this.closeLoanPresenter);
-            return this.closeLoanPresenter.ContentResult;
+            await useCasesProvider.ReadersLoans.CloseLoan.Handle(new CloseLoanRequest(viewmodel.LoanId), presenter);
+            return presenter.ContentResult;
         }
 
-        [HttpPost("loan/lost")]
+        [HttpPost("loans/lost")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CloseLoanAndDeclareAsLost([FromBody] CloseLoanViewModel viewmodel)
+        public async Task<IActionResult> CloseLoanAndDeclareAsLost(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] CloseLoanViewModel viewmodel
+        )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await this.useCasesProvider.ReadersLoans.CloseLoanAndDeclareAsLost.Handle(new CloseLoanAndDeclareAsLostRequest(viewmodel.LoanId), this.closeLoanAdndDeclareAsLostPresenter);
-            return this.closeLoanAdndDeclareAsLostPresenter.ContentResult;
+            await useCasesProvider.ReadersLoans.CloseLoanAndDeclareAsLost.Handle(new CloseLoanAndDeclareAsLostRequest(viewmodel.LoanId), presenter);
+            return presenter.ContentResult;
         }
 
-        [HttpDelete("loan/delete/{loanId}")]
+        [HttpDelete("loans/delete/{loanId}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteLoan(string loanId)
+        public async Task<IActionResult> DeleteLoan(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            string loanId
+        )
         {
             if (string.IsNullOrEmpty(loanId))
                 return BadRequest(Librarian.RestFulAPI.Properties.Resources.ReadersController_forgotten_loan_id_on_request);
 
-            await this.useCasesProvider.ReadersLoans.DeleteLoan.Handle(new DeleteLoanRequest(loanId), this.deleteLoanPresenter);
-            return this.deleteLoanPresenter.ContentResult;
+            await useCasesProvider.ReadersLoans.DeleteLoan.Handle(new DeleteLoanRequest(loanId), presenter);
+            return presenter.ContentResult;
         }
         #endregion
     }

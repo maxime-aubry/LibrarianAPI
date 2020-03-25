@@ -116,11 +116,13 @@ namespace Librarian.RestFulAPI
             services.AddScoped<IUpdateReaderUseCase, UpdateReaderUseCase>();
             services.AddScoped<IDeleteReaderUseCase, DeleteReaderUseCase>();
 
+            services.AddScoped<IGetLoansUseCase, GetLoansUseCase>();
             services.AddScoped<IAddLoanUseCase, AddLoanUseCase>();
             services.AddScoped<ICloseLoanUseCase, CloseLoanUseCase>();
             services.AddScoped<ICloseLoanAndDeclareAsLostUseCase, CloseLoanAndDeclareAsLostUseCase>();
             services.AddScoped<IDeleteLoanUseCase, DeleteLoanUseCase>();
 
+            services.AddScoped<IGetRatesUseCase, GetRatesUseCase>();
             services.AddScoped<IAddRateUseCase, AddRateUseCase>();
 
             services.AddScoped<IGetShelfByIdUseCase, GetShelfByIdUseCase>();
