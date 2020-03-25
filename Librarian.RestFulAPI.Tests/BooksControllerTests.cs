@@ -2,12 +2,9 @@ using Librarian.Core.Domain.Entities;
 using Librarian.Core.Domain.Enums;
 using Librarian.RestFulAPI.Tests.Tools;
 using Librarian.RestFulAPI.V1.ViewModels.Books;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -27,9 +24,8 @@ namespace Librarian.RestFulAPI.Tests
         {
             await DataProvider.PopulateDatabase(this.client);
 
-            Book model = DataProvider.Books.First();
-            string response = await this.client.GetAsync($"/api/v1/Books/getById/{model.Id}").Result.Content.ReadAsStringAsync();
-            ContentResult<Book> result = JsonConvert.DeserializeObject<ContentResult<Book>>(response);
+            Book model = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single();
+            ContentResult<Book> result = await HttpHelper.Get<Book>(this.client, $"/api/v1/Books/getById/{model.Id}");
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
@@ -42,8 +38,7 @@ namespace Librarian.RestFulAPI.Tests
         {
             await DataProvider.PopulateDatabase(this.client);
 
-            string response = await this.client.GetAsync($"/api/v1/Books/list").Result.Content.ReadAsStringAsync();
-            ContentResult<IEnumerable<Book>> result = JsonConvert.DeserializeObject<ContentResult<IEnumerable<Book>>>(response);
+            ContentResult<IEnumerable<Book>> result = await HttpHelper.Get<IEnumerable<Book>>(this.client, $"/api/v1/Books/list");
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
@@ -235,10 +230,7 @@ namespace Librarian.RestFulAPI.Tests
                 NumberOfCopies = 10,
                 ShelfId = shelves.Id
             };
-            string json = JsonConvert.SerializeObject(viewModel);
-            StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
-            string response1 = await this.client.PostAsync($"/api/v1/Books/create", formContent).Result.Content.ReadAsStringAsync();
-            ContentResult<string> result1 = JsonConvert.DeserializeObject<ContentResult<string>>(response1);
+            ContentResult<string> result1 = await HttpHelper.Post<CreateBookViewModel, string>(this.client, $"/api/v1/Books/create", viewModel);
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
@@ -246,8 +238,7 @@ namespace Librarian.RestFulAPI.Tests
             Assert.NotNull(result1.Result);
 
             // get book from database
-            string response2 = await this.client.GetAsync($"/api/v1/Books/getById/{result1.Result}").Result.Content.ReadAsStringAsync();
-            ContentResult<Book> result2 = JsonConvert.DeserializeObject<ContentResult<Book>>(response2);
+            ContentResult<Book> result2 = await HttpHelper.Get<Book>(this.client, $"/api/v1/Books/getById/{result1.Result}");
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
@@ -266,7 +257,7 @@ namespace Librarian.RestFulAPI.Tests
             await DataProvider.PopulateDatabase(this.client);
 
             Shelf shelves = DataProvider.Shelves.Where(s => s.BookCategory == EBookCategory.ScienceFiction).First();
-            UpdateBookViewModel viewModel = DataProvider.Books.Select(b => new UpdateBookViewModel()
+            UpdateBookViewModel viewModel = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Select(b => new UpdateBookViewModel()
             {
                 Id = b.Id,
                 Title = $"{b.Title} - 2",
@@ -274,10 +265,7 @@ namespace Librarian.RestFulAPI.Tests
                 ReleaseDate = b.RealeaseDate,
                 ShelfId = b.ShelfId
             }).First();
-            string json = JsonConvert.SerializeObject(viewModel);
-            StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
-            string response1 = await this.client.PutAsync($"/api/v1/Books/update/{viewModel.Id}", formContent).Result.Content.ReadAsStringAsync();
-            ContentResult<string> result1 = JsonConvert.DeserializeObject<ContentResult<string>>(response1);
+            ContentResult<string> result1 = await HttpHelper.Put<UpdateBookViewModel, string>(this.client, $"/api/v1/Books/update/{viewModel.Id}", viewModel);
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
@@ -285,8 +273,7 @@ namespace Librarian.RestFulAPI.Tests
             Assert.NotNull(result1.Result);
 
             // get book from database
-            string response2 = await this.client.GetAsync($"/api/v1/Books/getById/{result1.Result}").Result.Content.ReadAsStringAsync();
-            ContentResult<Book> result2 = JsonConvert.DeserializeObject<ContentResult<Book>>(response2);
+            ContentResult<Book> result2 = await HttpHelper.Get<Book>(this.client, $"/api/v1/Books/getById/{result1.Result}");
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
@@ -303,10 +290,9 @@ namespace Librarian.RestFulAPI.Tests
         {
             await DataProvider.PopulateDatabase(this.client);
 
-            string bookId = DataProvider.Books.First().Id;
+            string bookId = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single().Id;
 
-            string response1 = await this.client.DeleteAsync($"/api/v1/Books/delete/{bookId}").Result.Content.ReadAsStringAsync();
-            ContentResult<string> result1 = JsonConvert.DeserializeObject<ContentResult<string>>(response1);
+            ContentResult<string> result1 = await HttpHelper.Delete<string>(this.client, $"/api/v1/Books/delete/{bookId}");
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
@@ -314,8 +300,7 @@ namespace Librarian.RestFulAPI.Tests
             Assert.Null(result1.Result);
 
             // try to get book from database
-            string response2 = await this.client.GetAsync($"/api/v1/Books/getById/{bookId}").Result.Content.ReadAsStringAsync();
-            ContentResult<Book> result2 = JsonConvert.DeserializeObject<ContentResult<Book>>(response2);
+            ContentResult<Book> result2 = await HttpHelper.Get<Book>(this.client, $"/api/v1/Books/getById/{bookId}");
 
             Assert.False(result2.Success);
             Assert.Equal("Book not found", result2.Message);
@@ -328,15 +313,15 @@ namespace Librarian.RestFulAPI.Tests
         {
             await DataProvider.PopulateDatabase(this.client);
 
-            string query = new FormUrlEncodedContent(new KeyValuePair<string, string>[]{
+            List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>()
+            {
                 new KeyValuePair<string, string>("title", "mer"),
                 new KeyValuePair<string, string>("categories", "11"),
                 new KeyValuePair<string, string>("categories", "31"),
                 new KeyValuePair<string, string>("authorIds", "5e79ca27bc7f674b08a17608"),
                 new KeyValuePair<string, string>("authorIds", "5e79ca27bc7f674b08a1760d"),
-            }).ReadAsStringAsync().Result;
-            string response = await this.client.GetAsync($"/api/v1/Books/search?{query}").Result.Content.ReadAsStringAsync();
-            ContentResult<IEnumerable<FindBooksByFilters>> result = JsonConvert.DeserializeObject<ContentResult<IEnumerable<FindBooksByFilters>>>(response);
+            };
+            ContentResult<IEnumerable<FindBooksByFilters>> result = await HttpHelper.Get<IEnumerable<FindBooksByFilters>>(this.client, $"/api/v1/Books/search", parameters);
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
@@ -381,16 +366,60 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Get_authors_results_are_ok()
+        public async Task Jules_verne_is_the_only_author_of_the_book()
         {
             await DataProvider.PopulateDatabase(this.client);
 
-            //string response = await this.client.GetAsync($"/api/v1/Books/authors").Result.Content.ReadAsStringAsync();
-            //ContentResult<IEnumerable<Author>> result = JsonConvert.DeserializeObject<ContentResult<IEnumerable<Author>>>(response);
+            string bookId = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single().Id;
 
-            //Assert.True(result.Success);
-            //Assert.Null(result.Message);
-            //Assert.Null(result.Errors);
+            ContentResult<IEnumerable<Author>> result = await HttpHelper.Get<IEnumerable<Author>>(this.client, $"/api/v1/Books/authors/{bookId}");
+
+            Assert.True(result.Success);
+            Assert.Null(result.Message);
+            Assert.Null(result.Errors);
+            Assert.Collection(result.Result,
+                item =>
+                {
+                    Assert.Equal("Jules", item.FirstName);
+                    Assert.Equal("Verne", item.LastName);
+                }
+            );
+        }
+
+        [Fact]
+        public async Task Author_is_correctly_added_and_deleted_from_book()
+        {
+            await DataProvider.PopulateDatabase(this.client);
+
+            AddAuthorsToBookViewModel viewModel = new AddAuthorsToBookViewModel()
+            {
+                BookId = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single().Id,
+                AuthorId = DataProvider.Authors.Where(a => a.LastName == "Rowling").Single().Id
+            };
+            ContentResult<string> result1 = await HttpHelper.Post<AddAuthorsToBookViewModel, string>(this.client, $"/api/v1/Books/authors/add", viewModel);
+
+            Assert.True(result1.Success);
+            Assert.Null(result1.Message);
+            Assert.Null(result1.Errors);
+            Assert.NotNull(result1.Result);
+
+            ContentResult<IEnumerable<Author>> result2 = await HttpHelper.Get<IEnumerable<Author>>(this.client, $"/api/v1/Books/authors/{viewModel.BookId}");
+
+            Assert.True(result1.Success);
+            Assert.Null(result1.Message);
+            Assert.Null(result1.Errors);
+            Assert.Collection(result2.Result,
+                item =>
+                {
+                    Assert.Equal("Jules", item.FirstName);
+                    Assert.Equal("Verne", item.LastName);
+                },
+                item =>
+                {
+                    Assert.Equal("J.K.", item.FirstName);
+                    Assert.Equal("Rowling", item.LastName);
+                }
+            );
         }
     }
 }

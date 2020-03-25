@@ -179,7 +179,7 @@ namespace Librarian.RestFulAPI.V1.Controllers
             return presenter.ContentResult;
         }
 
-        [HttpPost("rates/{bookId}")]
+        [HttpGet("rates/{bookId}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]

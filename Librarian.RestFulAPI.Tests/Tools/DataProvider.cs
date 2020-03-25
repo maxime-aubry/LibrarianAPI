@@ -4,12 +4,10 @@ using Librarian.RestFulAPI.V1.ViewModels.Authors;
 using Librarian.RestFulAPI.V1.ViewModels.Books;
 using Librarian.RestFulAPI.V1.ViewModels.Readers;
 using Librarian.RestFulAPI.V1.ViewModels.Shelves;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Librarian.RestFulAPI.Tests.Tools
@@ -197,10 +195,7 @@ namespace Librarian.RestFulAPI.Tests.Tools
                     LastName = reader.LastName,
                     Birthday = reader.Birthday
                 };
-                string json = JsonConvert.SerializeObject(viewModel);
-                StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
-                string response = await client.PostAsync("/api/v1/Readers/create", formContent).Result.Content.ReadAsStringAsync();
-                ContentResult<string> result = JsonConvert.DeserializeObject<ContentResult<string>>(response);
+                ContentResult<string> result = await HttpHelper.Post<CreateReaderViewModel, string>(client, "/api/v1/Readers/create", viewModel);
 
                 if (!result.Success)
                     throw new Exception();
@@ -216,10 +211,7 @@ namespace Librarian.RestFulAPI.Tests.Tools
                     Floor = shelf.Floor,
                     BookCategory = shelf.BookCategory
                 };
-                string json = JsonConvert.SerializeObject(viewModel);
-                StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
-                string response = await client.PostAsync("/api/v1/Shelves/create", formContent).Result.Content.ReadAsStringAsync();
-                ContentResult<string> result = JsonConvert.DeserializeObject<ContentResult<string>>(response);
+                ContentResult<string> result = await HttpHelper.Post<CreateShelfViewModel, string>(client, "/api/v1/Shelves/create", viewModel);
 
                 if (!result.Success)
                     throw new Exception();
@@ -234,10 +226,7 @@ namespace Librarian.RestFulAPI.Tests.Tools
                     FirstName = author.FirstName,
                     LastName = author.LastName
                 };
-                string json = JsonConvert.SerializeObject(viewModel);
-                StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
-                string response = await client.PostAsync("/api/v1/Authors/create", formContent).Result.Content.ReadAsStringAsync();
-                ContentResult<string> result = JsonConvert.DeserializeObject<ContentResult<string>>(response);
+                ContentResult<string> result = await HttpHelper.Post<CreateAuthorViewModel, string>(client, "/api/v1/Authors/create", viewModel);
 
                 if (!result.Success)
                     throw new Exception();
@@ -248,10 +237,10 @@ namespace Librarian.RestFulAPI.Tests.Tools
             foreach (Book book in DataProvider.Books)
             {
                 Shelf shelf = (from s in Shelves
-                                                              join b in Books on s.Id equals b.ShelfId into bookItems
-                                                              where s.BookCategory == book.Categories.First()
-                                                              && (bookItems.Sum(bi => bi.NumberOfCopies) + book.NumberOfCopies) <= s.MaxQtyOfBooks
-                                                                select s).FirstOrDefault();
+                                join b in Books on s.Id equals b.ShelfId into bookItems
+                                where s.BookCategory == book.Categories.First()
+                                && (bookItems.Sum(bi => bi.NumberOfCopies) + book.NumberOfCopies) <= s.MaxQtyOfBooks
+                                select s).FirstOrDefault();
                 book.ShelfId = shelf.Id;
 
                 CreateBookViewModel viewModel = new CreateBookViewModel()
@@ -262,10 +251,7 @@ namespace Librarian.RestFulAPI.Tests.Tools
                     NumberOfCopies = book.NumberOfCopies,
                     ShelfId = book.ShelfId
                 };
-                string json = JsonConvert.SerializeObject(viewModel);
-                StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
-                string response = await client.PostAsync("/api/v1/Books/create", formContent).Result.Content.ReadAsStringAsync();
-                ContentResult<string> result = JsonConvert.DeserializeObject<ContentResult<string>>(response);
+                ContentResult<string> result = await HttpHelper.Post<CreateBookViewModel, string>(client, "/api/v1/Books/create", viewModel);
 
                 if (!result.Success)
                     throw new Exception();
@@ -390,12 +376,9 @@ namespace Librarian.RestFulAPI.Tests.Tools
                 BookId = book.Id,
                 AuthorId = author.Id
             };
-            string json = JsonConvert.SerializeObject(viewModel);
-            StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
-            string response1 = await client.PostAsync($"/api/v1/Books/authors/add", formContent).Result.Content.ReadAsStringAsync();
-            ContentResult<string> result1 = JsonConvert.DeserializeObject<ContentResult<string>>(response1);
+            ContentResult<string> result = await HttpHelper.Post<AddAuthorsToBookViewModel, string>(client, "/api/v1/Books/authors/add", viewModel);
 
-            DataProvider.AuthorWritesBook.Add(result1.Result, new AuthorWritesBook(author.Id, book.Id));
+            DataProvider.AuthorWritesBook.Add(result.Result, new AuthorWritesBook(author.Id, book.Id));
         }
 
         private static async Task AddReaderLoansBook(HttpClient client, string firstname, string lastname, string title)
@@ -411,14 +394,10 @@ namespace Librarian.RestFulAPI.Tests.Tools
                 ReaderId = reader.Id,
                 BookId = book.Id
             };
-            string json = JsonConvert.SerializeObject(viewModel);
-            StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
-            string response1 = await client.PostAsync($"/api/v1/Readers/loans/add", formContent).Result.Content.ReadAsStringAsync();
-            ContentResult<string> result1 = JsonConvert.DeserializeObject<ContentResult<string>>(response1);
+            ContentResult<string> result1 = await HttpHelper.Post<AddLoanViewModel, string>(client, "/api/v1/Readers/loans/add", viewModel);
 
             // get loans
-            string response2 = await client.GetAsync($"/api/v1/Readers/loans/{reader.Id}").Result.Content.ReadAsStringAsync();
-            ContentResult<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>> result2 = JsonConvert.DeserializeObject<ContentResult<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>>>(response2);
+            ContentResult<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>> result2 = await HttpHelper.Get<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>>(client, $"/api/v1/Readers/loans/{reader.Id}");
 
             DataProvider.ReaderLoansBook.Add(result2.Result.Where(r => r.Id == result1.Result).Single());
         }
@@ -441,15 +420,12 @@ namespace Librarian.RestFulAPI.Tests.Tools
                 Rate = rate,
                 Commment = "J'ai adoré !"
             };
-            string json = JsonConvert.SerializeObject(viewModel);
-            StringContent formContent = new StringContent(json, Encoding.UTF8, "application/json");
-            string response1 = await client.PostAsync("/api/v1/Books/rating/add", formContent).Result.Content.ReadAsStringAsync();
-            ContentResult<string> result1 = JsonConvert.DeserializeObject<ContentResult<string>>(response1);
+            ContentResult<string> result1 = await HttpHelper.Post<CreateRateBookViewModel, string>(client, "/api/v1/Books/rates/add", viewModel);
 
             // get rates
-            string response2 = await client.GetAsync($"/api/v1/Readers/rates/{reader.Id}").Result.Content.ReadAsStringAsync();
-            ContentResult<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>> result2 = JsonConvert.DeserializeObject<ContentResult<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>>>(response2);
+            ContentResult<IEnumerable<Librarian.Core.Domain.Entities.ReaderRatesBook>> result2 = await HttpHelper.Get<IEnumerable<Librarian.Core.Domain.Entities.ReaderRatesBook>>(client, $"/api/v1/Books/rates/{book.Id}");
 
+            DataProvider.ReaderRatesBook.Add(result2.Result.Where(r => r.Id == result1.Result).Single());
         }
 
         private static Reader GetReaderByName(string firstname, string lastname)
