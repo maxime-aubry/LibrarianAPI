@@ -142,7 +142,7 @@ namespace Librarian.RestFulAPI.V1.Controllers
             return presenter.ContentResult;
         }
 
-        [HttpPost("loans/close")]
+        [HttpPut("loans/close")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -160,7 +160,7 @@ namespace Librarian.RestFulAPI.V1.Controllers
             return presenter.ContentResult;
         }
 
-        [HttpPost("loans/lost")]
+        [HttpPut("loans/lost")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

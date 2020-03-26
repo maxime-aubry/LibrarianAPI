@@ -45,7 +45,8 @@ namespace Librarian.Core.UseCases.Shelves
             {
                 IEnumerable<Shelf> shelves = (from s in await this.shelfRepository.Get()
                                               where s.BookCategory == message.Category
-                                              && (s.QtyOfRemainingPlaces + message.NumberOfCopies) <= s.MaxQtyOfBooks
+                                              && s.QtyOfRemainingPlaces > 0
+                                              //&& (s.QtyOfRemainingPlaces + message.NumberOfCopies) <= s.MaxQtyOfBooks
                                               select s);
 
                 outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Shelf>>(shelves, true));

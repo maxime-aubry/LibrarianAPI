@@ -41,65 +41,58 @@ namespace Librarian.Core.UseCases.Books
 
         public async Task<bool> Handle(GetBooksByFiltersRequest message, IOutputPort<UseCaseResponseMessage<IEnumerable<FindBooksByFilters>>> outputPort)
         {
-            if (!string.IsNullOrEmpty(message.Title) &&
-                message.Categories != null &&
-                message.Categories.Any() &&
-                message.AuthorIds != null &&
-                message.AuthorIds.Any())
+            int numberOfPoints = (1 + message.Categories.Count() + message.AuthorIds.Count());
+
+            void SetPertinence(FindBooksByFilters result)
             {
-                int numberOfPoints = (1 + message.Categories.Count() + message.AuthorIds.Count());
+                int numberOfPointsForItem = 0;
 
-                void SetPertinence(FindBooksByFilters result)
-                {
-                    int numberOfPointsForItem = 0;
+                // check title
+                if (result.Title.ToLower().Contains(message.Title.ToLower()))
+                    numberOfPointsForItem++;
 
-                    // check title
-                    if (result.Title.ToLower().Contains(message.Title.ToLower()))
+                // check categories
+                foreach (int category in message.Categories)
+                    if (result.Categories.Select(c => (int)c).Contains(category))
                         numberOfPointsForItem++;
 
-                    // check categories
-                    foreach (int category in message.Categories)
-                        if (result.Categories.Select(c => (int)c).Contains(category))
-                            numberOfPointsForItem++;
+                // check authors
+                foreach (string authorId in message.AuthorIds)
+                    if (result.Authors.Select(a => a.Id).Contains(authorId))
+                        numberOfPointsForItem++;
 
-                    // check authors
-                    foreach (string authorId in message.AuthorIds)
-                        if (result.Authors.Select(a => a.Id).Contains(authorId))
-                            numberOfPointsForItem++;
+                result.Pertinence = ((float)numberOfPointsForItem / numberOfPoints);
+            }
 
-                    result.Pertinence = ((float)numberOfPointsForItem / numberOfPoints);
-                }
+            try
+            {
+                IEnumerable<FindBooksByFilters> books = (from b in await this.bookRepository.Get()
+                                                    join awb in await this.authorWritesBookRepository.Get() on b.Id equals awb.BookId
+                                                    join a in await this.authorRepository.Get() on awb.AuthorId equals a.Id into authors
+                                                    join rlb in await this.readerLoansBookRepository.Get() on b.Id equals rlb.BookId into loans
+                                                    join rrb in await this.readerRatesBookRepository.Get() on b.Id equals rrb.BookId into rates
+                                                    select new FindBooksByFilters
+                                                    (
+                                                        b.Id,
+                                                        b.Title,
+                                                        b.Categories.Select(c => (EBookCategory)Enum.ToObject(typeof(EBookCategory), c)).ToList(),
+                                                        b.RealeaseDate,
+                                                        authors.Select(author => new AuthorOfBook(author.Id, author.FirstName, author.LastName)).ToList(),
+                                                        0,
+                                                        loans.Any() ? loans.Count() : 0,
+                                                        rates.Any() ? rates.Select(r => r.Rate).Average() : 0
+                                                    )).ToList();
 
-                try
-                {
-                    IEnumerable<FindBooksByFilters> books = (from b in await this.bookRepository.Get()
-                                                      join awb in await this.authorWritesBookRepository.Get() on b.Id equals awb.BookId
-                                                      join a in await this.authorRepository.Get() on awb.AuthorId equals a.Id into authors
-                                                      join rlb in await this.readerLoansBookRepository.Get() on b.Id equals rlb.BookId into loans
-                                                      join rrb in await this.readerRatesBookRepository.Get() on b.Id equals rrb.BookId into rates
-                                                      select new FindBooksByFilters
-                                                      (
-                                                          b.Id,
-                                                          b.Title,
-                                                          b.Categories.Select(c => (EBookCategory)Enum.ToObject(typeof(EBookCategory), c)).ToList(),
-                                                          b.RealeaseDate,
-                                                          authors.Select(author => new AuthorOfBook(author.Id, author.FirstName, author.LastName)).ToList(),
-                                                          0,
-                                                          loans.Any() ? loans.Count() : 0,
-                                                          rates.Any() ? rates.Select(r => r.Rate).Average() : 0
-                                                      )).ToList();
+                foreach (FindBooksByFilters book in books)
+                    SetPertinence(book);
+                books = books.Where(b => b.Pertinence > 0).ToList();
 
-                    foreach (FindBooksByFilters book in books)
-                        SetPertinence(book);
-                    books = books.Where(b => b.Pertinence > 0).ToList();
-
-                    outputPort.Handle(new UseCaseResponseMessage<IEnumerable<FindBooksByFilters>>(books, true));
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    outputPort.Handle(new UseCaseResponseMessage<IEnumerable<FindBooksByFilters>>(null, false, e.Message));
-                }
+                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<FindBooksByFilters>>(books, true));
+                return true;
+            }
+            catch (Exception e)
+            {
+                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<FindBooksByFilters>>(null, false, e.Message));
             }
 
             return false;

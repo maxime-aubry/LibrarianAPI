@@ -20,11 +20,12 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Get_by_id_result_is_equals_of_statis_object()
+        public async Task Targeted_book_is_got_from_database()
         {
             await DataProvider.PopulateDatabase(this.client);
 
             Book model = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single();
+
             ContentResult<Book> result = await HttpHelper.Get<Book>(this.client, $"/api/v1/Books/getById/{model.Id}");
 
             Assert.True(result.Success);
@@ -34,7 +35,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Get_list_results_are_equivalent_of_static_list()
+        public async Task Books_are_all_in_static_list()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -43,192 +44,22 @@ namespace Librarian.RestFulAPI.Tests
             Assert.True(result.Success);
             Assert.Null(result.Message);
             Assert.Null(result.Errors);
-            Assert.Collection(DataProvider.Books,
-                item =>
-                {
-                    Assert.Equal("Vingt Mille Lieues sous les mers", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Voyage au centre de la Terre", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Le Tour du monde en quatre-vingts jours", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("L'Île mystérieuse", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("De la Terre à la Lune", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Cinq Semaines en ballon", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Roméo et Juliette", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Hamlet", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Macbeth", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Les Fleurs du mal", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Petits Poèmes en prose", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Oliver Twist", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Les Grandes Espérances", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Bilbo le Hobbit", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Le Silmarillion", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Le Seigneur des anneaux - La Communauté de l'Anneau", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Le Seigneur des anneaux - Les Deux Tours", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Le Seigneur des anneaux - Le Retour du Roi", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Les Enfants de Húrin", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Contes et légendes inachevés, tome 1", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Harry Potter à l'École des Sorciers", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Harry Potter et la Chambre des Secrets", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Harry Potter et le Prisonnier d'Azkaban", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Harry Potter et la Coupe de Feu", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Harry Potter et l'Ordre du Phénix", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Harry Potter et le Prince de Sang-Mêlé", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Harry Potter et les Reliques de la Mort", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Ça", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Shining, l'enfant lumière", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Misery", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("La Ligne verte", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Les Misérables", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Notre-Dame de Paris", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Le Vieil Homme et la Mer", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Le Petit Prince", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("La Nuit des pantins", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Sang de monstre", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Dangereuses Photos", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Le Masque hanté", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("La Maison des morts", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Le Loup-garou des marécages", item.Title);
-                },
-                item =>
-                {
-                    Assert.Equal("Sous-sol interdit", item.Title);
-                }
-            );
+            Assert.Equal(DataProvider.Books.Select(b => b.Title), result.Result.Select(b => b.Title));
         }
 
         [Fact]
-        public async Task Create_book_should_return_book_id()
+        public async Task Book_is_created()
         {
             await DataProvider.PopulateDatabase(this.client);
 
-            Shelf shelves = DataProvider.Shelves.Where(s => s.BookCategory == EBookCategory.ScienceFiction).First();
-
+            Shelf shelf = DataProvider.Shelves.Where(s => s.BookCategory == EBookCategory.ScienceFiction).First();
             CreateBookViewModel viewModel = new CreateBookViewModel()
             {
                 Title = "Escadron spectre",
                 Categories = new List<EBookCategory>() { EBookCategory.ScienceFiction },
                 ReleaseDate = DateTime.UtcNow.Date,
                 NumberOfCopies = 10,
-                ShelfId = shelves.Id
+                ShelfId = shelf.Id
             };
             ContentResult<string> result1 = await HttpHelper.Post<CreateBookViewModel, string>(this.client, $"/api/v1/Books/create", viewModel);
 
@@ -252,28 +83,30 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Updated_book_is_equal_to_model()
+        public async Task Book_is_updated()
         {
             await DataProvider.PopulateDatabase(this.client);
 
-            Shelf shelves = DataProvider.Shelves.Where(s => s.BookCategory == EBookCategory.ScienceFiction).First();
-            UpdateBookViewModel viewModel = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Select(b => new UpdateBookViewModel()
+            Shelf shelf = DataProvider.Shelves.Where(s => s.BookCategory == EBookCategory.ScienceFiction).First();
+            Book book = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single();
+            UpdateBookViewModel viewModel = new UpdateBookViewModel()
             {
-                Id = b.Id,
-                Title = $"{b.Title} - 2",
-                Categories = b.Categories,
-                ReleaseDate = b.RealeaseDate,
-                ShelfId = b.ShelfId
-            }).First();
-            ContentResult<string> result1 = await HttpHelper.Put<UpdateBookViewModel, string>(this.client, $"/api/v1/Books/update/{viewModel.Id}", viewModel);
+                Id = book.Id,
+                Title = $"{book.Title} - 2",
+                Categories = book.Categories,
+                ReleaseDate = book.RealeaseDate,
+                ShelfId = book.ShelfId
+            };
+            ContentResult<string> result1 = await HttpHelper.Put<UpdateBookViewModel, string>(this.client, $"/api/v1/Books/update/{book.Id}", viewModel);
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
             Assert.Null(result1.Errors);
             Assert.NotNull(result1.Result);
+            Assert.Equal(book.Id, result1.Result);
 
             // get book from database
-            ContentResult<Book> result2 = await HttpHelper.Get<Book>(this.client, $"/api/v1/Books/getById/{result1.Result}");
+            ContentResult<Book> result2 = await HttpHelper.Get<Book>(this.client, $"/api/v1/Books/getById/{book.Id}");
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
@@ -286,13 +119,13 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Deleted_book_cannot_be_got()
+        public async Task Book_is_deleted()
         {
             await DataProvider.PopulateDatabase(this.client);
 
-            string bookId = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single().Id;
+            Book book = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single();
 
-            ContentResult<string> result1 = await HttpHelper.Delete<string>(this.client, $"/api/v1/Books/delete/{bookId}");
+            ContentResult<string> result1 = await HttpHelper.Delete<string>(this.client, $"/api/v1/Books/delete/{book.Id}");
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
@@ -300,7 +133,7 @@ namespace Librarian.RestFulAPI.Tests
             Assert.Null(result1.Result);
 
             // try to get book from database
-            ContentResult<Book> result2 = await HttpHelper.Get<Book>(this.client, $"/api/v1/Books/getById/{bookId}");
+            ContentResult<Book> result2 = await HttpHelper.Get<Book>(this.client, $"/api/v1/Books/getById/{book.Id}");
 
             Assert.False(result2.Success);
             Assert.Equal("Book not found", result2.Message);
@@ -309,7 +142,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Get_all_by_filters_results_are_ok()
+        public async Task Search_books_give_good_results()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -370,9 +203,9 @@ namespace Librarian.RestFulAPI.Tests
         {
             await DataProvider.PopulateDatabase(this.client);
 
-            string bookId = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single().Id;
+            Book book = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single();
 
-            ContentResult<IEnumerable<Author>> result = await HttpHelper.Get<IEnumerable<Author>>(this.client, $"/api/v1/Books/authors/{bookId}");
+            ContentResult<IEnumerable<Author>> result = await HttpHelper.Get<IEnumerable<Author>>(this.client, $"/api/v1/Books/authors/{book.Id}");
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
@@ -387,14 +220,17 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Author_is_correctly_added_and_deleted_from_book()
+        public async Task Author_is_added_to_book()
         {
             await DataProvider.PopulateDatabase(this.client);
 
+            Book book = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single();
+            Author author = DataProvider.Authors.Where(a => a.LastName == "Rowling").Single();
+
             AddAuthorsToBookViewModel viewModel = new AddAuthorsToBookViewModel()
             {
-                BookId = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single().Id,
-                AuthorId = DataProvider.Authors.Where(a => a.LastName == "Rowling").Single().Id
+                BookId = book.Id,
+                AuthorId = author.Id
             };
             ContentResult<string> result1 = await HttpHelper.Post<AddAuthorsToBookViewModel, string>(this.client, $"/api/v1/Books/authors/add", viewModel);
 
@@ -403,23 +239,44 @@ namespace Librarian.RestFulAPI.Tests
             Assert.Null(result1.Errors);
             Assert.NotNull(result1.Result);
 
-            ContentResult<IEnumerable<Author>> result2 = await HttpHelper.Get<IEnumerable<Author>>(this.client, $"/api/v1/Books/authors/{viewModel.BookId}");
+            ContentResult<IEnumerable<Author>> result2 = await HttpHelper.Get<IEnumerable<Author>>(this.client, $"/api/v1/Books/authors/{book.Id}");
+            Author addedAuthor = result2.Result.Where(a => a.Id == author.Id).SingleOrDefault();
+
+            Assert.True(result2.Success);
+            Assert.Null(result2.Message);
+            Assert.Null(result2.Errors);
+            Assert.NotNull(addedAuthor);
+            Assert.Equal(author.FirstName, addedAuthor.FirstName);
+            Assert.Equal(author.LastName, addedAuthor.LastName);
+        }
+
+        [Fact]
+        public async Task Author_is_deleted_from_book()
+        {
+            await DataProvider.PopulateDatabase(this.client);
+
+            Book book = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single();
+            Author author = DataProvider.Authors.Where(a => a.LastName == "Rowling").Single();
+
+            DeleteAuthorsOfBookViewModel viewModel = new DeleteAuthorsOfBookViewModel()
+            {
+                BookId = book.Id,
+                AuthorId = author.Id
+            };
+            ContentResult<string> result1 = await HttpHelper.Post<DeleteAuthorsOfBookViewModel, string>(this.client, $"/api/v1/Books/authors/delete", viewModel);
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
             Assert.Null(result1.Errors);
-            Assert.Collection(result2.Result,
-                item =>
-                {
-                    Assert.Equal("Jules", item.FirstName);
-                    Assert.Equal("Verne", item.LastName);
-                },
-                item =>
-                {
-                    Assert.Equal("J.K.", item.FirstName);
-                    Assert.Equal("Rowling", item.LastName);
-                }
-            );
+            Assert.NotNull(result1.Result);
+
+            ContentResult<IEnumerable<Author>> result2 = await HttpHelper.Get<IEnumerable<Author>>(this.client, $"/api/v1/Books/authors/{book.Id}");
+            Author deletedAuthor = result2.Result.Where(a => a.Id == author.Id).SingleOrDefault();
+
+            Assert.True(result2.Success);
+            Assert.Null(result2.Message);
+            Assert.Null(result2.Errors);
+            Assert.Null(deletedAuthor);
         }
     }
 }

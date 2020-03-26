@@ -97,6 +97,8 @@ namespace Librarian.RestFulAPI
             services.AddScoped<ICreateAuthorUseCase, CreateAuthorUseCase>();
             services.AddScoped<IUpdateAuthorUseCase, UpdateAuthorUseCase>();
             services.AddScoped<Core.DataTransfertObject.UseCases.Authors.IDeleteAuthorUseCase, Core.UseCases.Authors.DeleteAuthorUseCase>();
+            services.AddScoped<IAddCopiesUseCase, AddCopiesUseCase>();
+            services.AddScoped<IReduceCopiesUseCase, ReduceCopiesUseCase>();
 
             services.AddScoped<IAddAuthorUseCase, AddAuthorUseCase>();
             services.AddScoped<Core.DataTransfertObject.UseCases.AuthorWritesBook.IDeleteAuthorUseCase, Core.UseCases.AuthorWritesBook.DeleteAuthorUseCase>();

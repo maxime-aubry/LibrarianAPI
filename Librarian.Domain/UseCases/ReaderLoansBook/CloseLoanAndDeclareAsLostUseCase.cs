@@ -51,7 +51,7 @@ namespace Librarian.Core.UseCases.ReaderLoansBook
                     if (loan.EndDateOfLoaning != null)
                         throw new Exception("Loan is already closed");
 
-                    loan.EndDateOfLoaning = DateTime.Now;
+                    loan.EndDateOfLoaning = DateTime.UtcNow.Date;
                     loan.IsLost = true;
 
                     string loanId = await this.readerLoansBookRepository.Update(message.LoanId, loan);
@@ -59,7 +59,7 @@ namespace Librarian.Core.UseCases.ReaderLoansBook
                     if (string.IsNullOrEmpty(loanId))
                         throw new Exception("Loan not saved");
 
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, true));
+                    outputPort.Handle(new UseCaseResponseMessage<string>(loanId, true));
                     return true;
                 }
                 catch (Exception e)

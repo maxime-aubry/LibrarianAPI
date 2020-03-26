@@ -111,6 +111,40 @@ namespace Librarian.RestFulAPI.V1.Controllers
         #endregion
 
         #region Secondaries CRUD Methods
+        [HttpPost("copies/add")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AddCopies(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] AddCopiesViewModel viewModel
+        )
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await useCasesProvider.Books.AddCopiesUseCase.Handle(new AddCopiesRequest(viewModel.BookId, viewModel.NumberOfCopies), presenter);
+            return presenter.ContentResult;
+        }
+
+        [HttpPost("copies/delete")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ReduceCopies(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] ReduceCopiesViewModel viewModel
+        )
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await useCasesProvider.Books.ReduceCopiesUseCase.Handle(new ReduceCopiesRequest(viewModel.BookId, viewModel.NumberOfCopies), presenter);
+            return presenter.ContentResult;
+        }
+
         [HttpGet("search")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]

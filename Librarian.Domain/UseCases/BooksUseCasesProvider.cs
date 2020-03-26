@@ -10,7 +10,9 @@ namespace Librarian.Core.UseCases
             ICreateBookUseCase create,
             IUpdateBookUseCase update,
             IDeleteBookUseCase delete,
-            IGetBooksByFiltersUseCase getBooksByFilters
+            IGetBooksByFiltersUseCase getBooksByFilters,
+            IAddCopiesUseCase addCopiesUseCase,
+            IReduceCopiesUseCase reduceCopiesUseCase
         )
         {
             this.GetById = getById;
@@ -19,6 +21,8 @@ namespace Librarian.Core.UseCases
             this.Update = update;
             this.Delete = delete;
             this.GetBooksByFilters = getBooksByFilters;
+            this.AddCopiesUseCase = addCopiesUseCase;
+            this.ReduceCopiesUseCase = reduceCopiesUseCase;
         }
 
         public IGetBookByIdUseCase GetById { get; set; }
@@ -31,5 +35,7 @@ namespace Librarian.Core.UseCases
 
         public IDeleteBookUseCase Delete { get; set; }
         public IGetBooksByFiltersUseCase GetBooksByFilters { get; set; }
+        public IAddCopiesUseCase AddCopiesUseCase { get; set; }
+        public IReduceCopiesUseCase ReduceCopiesUseCase { get; set; }
     }
 }

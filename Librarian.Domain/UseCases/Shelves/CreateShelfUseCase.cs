@@ -4,6 +4,8 @@ using Librarian.Core.DataTransfertObject.UseCases.Shelves;
 using Librarian.Core.Domain.Entities;
 using Librarian.Core.Domain.Enums;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.Shelves
@@ -45,7 +47,11 @@ namespace Librarian.Core.UseCases.Shelves
             {
                 try
                 {
-                    Shelf shelf = new Shelf(string.Empty, message.MaxQtyOfBooks, message.MaxQtyOfBooks, message.Floor, message.BookCategory);
+                    IEnumerable<Shelf> shelves = (from s in await this.shelfRepository.Get()
+                                                  where s.Floor == message.Floor
+                                                  && s.BookCategory == message.BookCategory
+                                                  select s);
+                    Shelf shelf = new Shelf($"F{(int)message.Floor}-BC{(int)message.BookCategory}-NB{shelves.Count() + 1}", message.MaxQtyOfBooks, message.MaxQtyOfBooks, message.Floor, message.BookCategory);
                     string shelfId = await this.shelfRepository.Add(shelf);
 
                     if (string.IsNullOrEmpty(shelfId))

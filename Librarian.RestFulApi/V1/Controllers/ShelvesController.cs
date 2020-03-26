@@ -21,7 +21,7 @@ namespace Librarian.RestFulAPI.V1.Controllers
         }
 
         #region Main CRUD Methods
-        [HttpGet("getById/{id}")]
+        [HttpGet("getById/{shelfId}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -87,7 +87,7 @@ namespace Librarian.RestFulAPI.V1.Controllers
         #endregion
 
         #region Secondaries CRUD Methods
-        [HttpGet("availableShelves/{category}/{numberOfCopies}")]
+        [HttpGet("available/{category}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -99,7 +99,7 @@ namespace Librarian.RestFulAPI.V1.Controllers
             int numberOfCopies
         )
         {
-            await useCasesProvider.Shelves.GetAvailableShelves.Handle(new GetAvailableShelvesRequest(category, numberOfCopies), presenter);
+            await useCasesProvider.Shelves.GetAvailableShelves.Handle(new GetAvailableShelvesRequest(category), presenter);
             return presenter.ContentResult;
         }
         #endregion

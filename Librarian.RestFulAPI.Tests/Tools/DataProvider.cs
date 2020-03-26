@@ -211,12 +211,19 @@ namespace Librarian.RestFulAPI.Tests.Tools
                     Floor = shelf.Floor,
                     BookCategory = shelf.BookCategory
                 };
-                ContentResult<string> result = await HttpHelper.Post<CreateShelfViewModel, string>(client, "/api/v1/Shelves/create", viewModel);
+                ContentResult<string> result1 = await HttpHelper.Post<CreateShelfViewModel, string>(client, "/api/v1/Shelves/create", viewModel);
 
-                if (!result.Success)
+                if (!result1.Success)
                     throw new Exception();
 
-                shelf.Id = result.Result;
+                shelf.Id = result1.Result;
+
+                ContentResult<Shelf> result2 = await HttpHelper.Get<Shelf>(client, $"/api/v1/Shelves/getById/{shelf.Id}");
+
+                if (!result1.Success)
+                    throw new Exception();
+
+                shelf.Name = result2.Result.Name;
             }
 
             foreach (Author author in DataProvider.Authors)

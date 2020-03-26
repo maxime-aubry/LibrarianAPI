@@ -6,13 +6,11 @@ namespace Librarian.Core.DataTransfertObject.UseCases.Shelves
 {
     public class GetAvailableShelvesRequest : IUseCaseRequest<UseCaseResponseMessage<IEnumerable<Shelf>>>
     {
-        public GetAvailableShelvesRequest(EBookCategory category, int numberOfCopies)
+        public GetAvailableShelvesRequest(EBookCategory category)
         {
             this.Category = category;
-            this.NumberOfCopies = numberOfCopies;
         }
 
         public EBookCategory Category { get; set; }
-        public int NumberOfCopies { get; set; }
     }
 }
