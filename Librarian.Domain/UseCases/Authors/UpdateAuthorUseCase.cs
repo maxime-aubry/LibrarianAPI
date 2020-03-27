@@ -1,8 +1,8 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Authors;
 using Librarian.Core.Domain.Entities;
-using System;
 using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.Authors
@@ -38,23 +38,20 @@ namespace Librarian.Core.UseCases.Authors
 
         public async Task<bool> Handle(UpdateAuthorRequest message, IOutputPort<UseCaseResponseMessage<string>> outputPort)
         {
-            if (!string.IsNullOrEmpty(message.AuthorId) && !string.IsNullOrEmpty(message.FirstName) && !string.IsNullOrEmpty(message.LastName))
+            try
             {
-                try
-                {
-                    Author author = new Author(message.AuthorId, message.FirstName, message.LastName);
-                    string authorId = await this.authorRepository.Update(message.AuthorId, author);
+                Author author = new Author(message.AuthorId, message.FirstName, message.LastName);
+                GateawayResponse<string> authorId = await this.authorRepository.Update(message.AuthorId, author);
 
-                    if (string.IsNullOrEmpty(authorId))
-                        throw new Exception("Author not saved");
+                if (!authorId.Success)
+                    throw new UseCaseException("Author not saved", authorId.Errors);
 
-                    outputPort.Handle(new UseCaseResponseMessage<string>(authorId, true));
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message));
-                }
+                outputPort.Handle(new UseCaseResponseMessage<string>(authorId.Data, true));
+                return true;
+            }
+            catch (UseCaseException e)
+            {
+                outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message, e.Errors));
             }
 
             return false;

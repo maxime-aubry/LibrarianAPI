@@ -1,8 +1,8 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Shelves;
 using Librarian.Core.Domain.Entities;
-using System;
 using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.Shelves
@@ -36,25 +36,21 @@ namespace Librarian.Core.UseCases.Shelves
         private readonly IReaderRepository readerRepository;
         private readonly IShelfRepository shelfRepository;
 
-
         public async Task<bool> Handle(GetShelfByIdRequest message, IOutputPort<UseCaseResponseMessage<Shelf>> outputPort)
         {
-            if (!string.IsNullOrEmpty(message.ShelfId))
+            try
             {
-                try
-                {
-                    Shelf shelf = await this.shelfRepository.Get(message.ShelfId);
+                GateawayResponse<Shelf> shelf = await this.shelfRepository.Get(message.ShelfId);
 
-                    if (shelf == null)
-                        throw new Exception("Shelf not found");
+                if (!shelf.Success)
+                    throw new UseCaseException("Shelf not found", shelf.Errors);
 
-                    outputPort.Handle(new UseCaseResponseMessage<Shelf>(shelf, true));
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    outputPort.Handle(new UseCaseResponseMessage<Shelf>(null, false, e.Message));
-                }
+                outputPort.Handle(new UseCaseResponseMessage<Shelf>(shelf.Data, true));
+                return true;
+            }
+            catch (UseCaseException e)
+            {
+                outputPort.Handle(new UseCaseResponseMessage<Shelf>(null, false, e.Message, e.Errors));
             }
 
             return false;

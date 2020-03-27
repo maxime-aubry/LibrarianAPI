@@ -1,4 +1,5 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Readers;
 using Librarian.Core.Domain.Entities;
@@ -38,27 +39,20 @@ namespace Librarian.Core.UseCases.Readers
 
         public async Task<bool> Handle(UpdateReaderRequest message, IOutputPort<UseCaseResponseMessage<string>> outputPort)
         {
-            if (!string.IsNullOrEmpty(message.ReaderId) &&
-                !string.IsNullOrEmpty(message.FirstName) &&
-                !string.IsNullOrEmpty(message.LastName) &&
-                message.Birthday != null &&
-                message.Birthday != DateTime.MinValue)
+            try
             {
-                try
-                {
-                    Reader reader = new Reader(message.ReaderId, message.FirstName, message.LastName, message.Birthday, message.IsForbidden);
-                    string readerId = await this.readerRepository.Update(message.ReaderId, reader);
+                Reader reader = new Reader(message.ReaderId, message.FirstName, message.LastName, message.Birthday, message.IsForbidden);
+                GateawayResponse<string> readerId = await this.readerRepository.Update(message.ReaderId, reader);
 
-                    if (string.IsNullOrEmpty(readerId))
-                        throw new Exception("Reader not found");
+                if (!readerId.Success)
+                    throw new Exception("Reader not found");
 
-                    outputPort.Handle(new UseCaseResponseMessage<string>(readerId, true));
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message));
-                }
+                outputPort.Handle(new UseCaseResponseMessage<string>(readerId.Data, true));
+                return true;
+            }
+            catch (UseCaseException e)
+            {
+                outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message, e.Errors));
             }
 
             return false;

@@ -1,7 +1,7 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Books;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -43,19 +43,31 @@ namespace Librarian.Core.UseCases.Books
             {
                 try
                 {
-                    IEnumerable<string> awbIds = (from awb in await this.authorWritesBookRepository.Get()
+                    GateawayResponse<IEnumerable<Librarian.Core.Domain.Entities.AuthorWritesBook>> properties = await this.authorWritesBookRepository.Get();
+
+                    if (!properties.Success)
+                        throw new UseCaseException("Properties not found", properties.Errors);
+
+                    IEnumerable<string> awbIds = (from awb in properties.Data
                                                   where awb.BookId == message.BookId
                                                   select awb.Id);
-                    foreach (string awbId in awbIds)
-                        await this.authorWritesBookRepository.Delete(awbId);
-                    await this.bookRepository.Delete(message.BookId);
+
+                    GateawayResponse<string> deletedProperties = await this.authorWritesBookRepository.DeleteMany(awbIds);
+
+                    if (!deletedProperties.Success)
+                        throw new UseCaseException("Books not unlinked from authors", deletedProperties.Errors);
+
+                    GateawayResponse<string> deletedBook = await this.bookRepository.Delete(message.BookId);
+
+                    if (!deletedBook.Success)
+                        throw new UseCaseException("Book not deleted", deletedBook.Errors);
 
                     outputPort.Handle(new UseCaseResponseMessage<string>(null, true));
                     return true;
                 }
-                catch (Exception e)
+                catch (UseCaseException e)
                 {
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message));
+                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message, e.Errors));
                 }
             }
 

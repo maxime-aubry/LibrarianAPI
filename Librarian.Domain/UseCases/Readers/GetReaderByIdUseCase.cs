@@ -1,8 +1,8 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Readers;
 using Librarian.Core.Domain.Entities;
-using System;
 using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.Readers
@@ -42,17 +42,17 @@ namespace Librarian.Core.UseCases.Readers
             {
                 try
                 {
-                    Reader reader = await this.readerRepository.Get(message.ReaderId);
+                    GateawayResponse<Reader> reader = await this.readerRepository.Get(message.ReaderId);
 
-                    if (reader == null)
-                        throw new Exception("Reader not found");
+                    if (!reader.Success)
+                        throw new UseCaseException("Reader not found", reader.Errors);
 
-                    outputPort.Handle(new UseCaseResponseMessage<Reader>(reader, true));
+                    outputPort.Handle(new UseCaseResponseMessage<Reader>(reader.Data, true));
                     return true;
                 }
-                catch (Exception e)
+                catch (UseCaseException e)
                 {
-                    outputPort.Handle(new UseCaseResponseMessage<Reader>(null, false, e.Message));
+                    outputPort.Handle(new UseCaseResponseMessage<Reader>(null, false, e.Message, e.Errors));
                 }
             }
 

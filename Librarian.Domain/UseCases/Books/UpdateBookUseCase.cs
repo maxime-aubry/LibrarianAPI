@@ -1,8 +1,8 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Books;
 using Librarian.Core.Domain.Entities;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -47,20 +47,23 @@ namespace Librarian.Core.UseCases.Books
             {
                 try
                 {
-                    Book existingBook = await this.bookRepository.Get(message.BookId);
+                    GateawayResponse<Book> existingBook = await this.bookRepository.Get(message.BookId);
 
-                    Book book = new Book(message.BookId, message.Title, message.CategoryIds, message.ReleaseDate, existingBook.NumberOfCopies, message.ShelfId);
-                    string bookId = await this.bookRepository.Update(message.BookId, book);
+                    if (!existingBook.Success)
+                        throw new UseCaseException("Book not found", existingBook.Errors);
 
-                    if (string.IsNullOrEmpty(bookId))
-                        throw new Exception("Book not saved");
+                    Book book = new Book(message.BookId, message.Title, message.CategoryIds, message.ReleaseDate, existingBook.Data.NumberOfCopies, message.ShelfId);
+                    GateawayResponse<string> bookId = await this.bookRepository.Update(message.BookId, book);
 
-                    outputPort.Handle(new UseCaseResponseMessage<string>(bookId, true));
+                    if (!bookId.Success)
+                        throw new UseCaseException("Book not saved", bookId.Errors);
+
+                    outputPort.Handle(new UseCaseResponseMessage<string>(bookId.Data, true));
                     return true;
                 }
-                catch (Exception e)
+                catch (UseCaseException e)
                 {
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message));
+                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message, e.Errors));
                 }
             }
 

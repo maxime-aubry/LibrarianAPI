@@ -1,8 +1,8 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Shelves;
 using Librarian.Core.Domain.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,30 +40,35 @@ namespace Librarian.Core.UseCases.Shelves
 
         public async Task<bool> Handle(DeleteShelfRequest message, IOutputPort<UseCaseResponseMessage<string>> outputPort)
         {
-            if (!string.IsNullOrEmpty(message.ShelfId))
+            try
             {
-                try
-                {
-                    Shelf shelf = await this.shelfRepository.Get(message.ShelfId);
+                GateawayResponse<Shelf> shelf = await this.shelfRepository.Get(message.ShelfId);
 
-                    if (shelf == null)
-                        throw new Exception("Shelf not found");
+                if (!shelf.Success)
+                    throw new UseCaseException("Shelf not found", shelf.Errors);
 
-                    IEnumerable<Book> books = (from b in await this.bookRepository.Get()
-                                               where b.ShelfId == message.ShelfId
-                                                select b);
-                    if (books.Any())
-                        throw new Exception("This shelf is linked to books");
+                GateawayResponse<IEnumerable<Book>> books = await this.bookRepository.Get();
 
-                    await this.shelfRepository.Delete(message.ShelfId);
+                if (!books.Success)
+                    throw new UseCaseException("Books not found", books.Errors);
 
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, true));
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message));
-                }
+                IEnumerable<Book> booksOfShelf = (from b in books.Data
+                                                    where b.ShelfId == message.ShelfId
+                                                    select b);
+                if (booksOfShelf.Any())
+                    throw new UseCaseException("This shelf is alreader linked to books", null);
+
+                GateawayResponse<string> deletedShelf = await this.shelfRepository.Delete(message.ShelfId);
+
+                if (!deletedShelf.Success)
+                    throw new UseCaseException("Shelf not deleted", books.Errors);
+
+                outputPort.Handle(new UseCaseResponseMessage<string>(null, true));
+                return true;
+            }
+            catch (UseCaseException e)
+            {
+                outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message, e.Errors));
             }
 
             return false;

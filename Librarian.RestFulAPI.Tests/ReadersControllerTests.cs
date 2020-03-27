@@ -29,7 +29,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
-            Assert.Null(result.Errors);
             Assert.Equal(model.Id, result.Result.Id);
         }
 
@@ -42,7 +41,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
-            Assert.Null(result.Errors);
             Assert.Collection(result.Result,
                 item =>
                 {
@@ -87,7 +85,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.NotNull(result1.Result);
 
             // get reader from database
@@ -95,7 +92,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
-            Assert.Null(result2.Errors);
             Assert.NotNull(result2.Result);
             Assert.Equal(viewModel.FirstName, result2.Result.FirstName);
             Assert.Equal(viewModel.LastName, result2.Result.LastName);
@@ -119,7 +115,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.NotNull(result1.Result);
             Assert.Equal(viewModel.Id, result1.Result);
 
@@ -128,7 +123,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
-            Assert.Null(result2.Errors);
             Assert.NotNull(result2.Result);
             Assert.Equal(viewModel.FirstName, result2.Result.FirstName);
             Assert.Equal(viewModel.LastName, result2.Result.LastName);
@@ -145,7 +139,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.Null(result1.Result);
 
             // try to get book from database
@@ -153,7 +146,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.False(result2.Success);
             Assert.Equal("Reader not found", result2.Message);
-            Assert.Null(result2.Errors);
             Assert.Null(result2.Result);
         }
 
@@ -168,7 +160,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
-            Assert.Null(result.Errors);
             Assert.NotNull(result.Result);
         }
 
@@ -189,7 +180,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.NotNull(result1.Result);
 
             ContentResult<IEnumerable<ReaderLoansBook>> result2 = await HttpHelper.Get<IEnumerable<ReaderLoansBook>>(this.client, $"/api/v1/Readers/loans/{reader.Id}");
@@ -197,7 +187,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
-            Assert.Null(result2.Errors);
             Assert.NotNull(addedLoan);
             Assert.Equal(DateTime.UtcNow.Date, addedLoan.DateOfLoaning);
             Assert.Null(addedLoan.EndDateOfLoaning);
@@ -219,7 +208,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.NotNull(result1.Result);
             Assert.Equal(viewModel.LoanId, result1.Result);
 
@@ -228,7 +216,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
-            Assert.Null(result2.Errors);
             Assert.NotNull(closedLoan);
             Assert.Equal(DateTime.UtcNow.Date, closedLoan.EndDateOfLoaning);
             Assert.False(closedLoan.IsLost);
@@ -249,7 +236,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.NotNull(result1.Result);
             Assert.Equal(viewModel.LoanId, result1.Result);
 
@@ -258,7 +244,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
-            Assert.Null(result2.Errors);
             Assert.NotNull(lostLoan);
             Assert.Equal(DateTime.UtcNow.Date, lostLoan.EndDateOfLoaning);
             Assert.True(lostLoan.IsLost);
@@ -275,7 +260,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.Null(result1.Result);
 
             ContentResult<IEnumerable<ReaderLoansBook>> result2 = await HttpHelper.Get<IEnumerable<ReaderLoansBook>>(this.client, $"/api/v1/Readers/loans/{loan.ReaderId}");
@@ -283,7 +267,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
-            Assert.Null(result2.Errors);
             Assert.Null(deletedLoan);
         }
     }

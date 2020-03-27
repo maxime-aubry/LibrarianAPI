@@ -1,8 +1,8 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Readers;
 using Librarian.Core.Domain.Entities;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -41,14 +41,17 @@ namespace Librarian.Core.UseCases.Readers
         {
             try
             {
-                IEnumerable<Reader> readers = await this.readerRepository.Get();
+                GateawayResponse<IEnumerable<Reader>> readers = await this.readerRepository.Get();
 
-                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Reader>>(readers, true));
+                if (!readers.Success)
+                    throw new UseCaseException("Readers not found", readers.Errors);
+
+                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Reader>>(readers.Data, true));
                 return true;
             }
-            catch (Exception e)
+            catch (UseCaseException e)
             {
-                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Reader>>(null, false, e.Message));
+                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Reader>>(null, false, e.Message, e.Errors));
             }
 
             return false;

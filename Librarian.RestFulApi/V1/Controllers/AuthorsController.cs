@@ -63,9 +63,6 @@ namespace Librarian.RestFulAPI.V1.Controllers
             [FromBody] CreateAuthorViewModel viewmodel
         )
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             await useCasesProvider.Authors.Create.Handle(new CreateAuthorRequest(viewmodel.FirstName, viewmodel.LastName), presenter);
             return presenter.ContentResult;
         }

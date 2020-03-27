@@ -1,4 +1,5 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Books;
 using Librarian.Core.Domain.Entities;
@@ -66,33 +67,58 @@ namespace Librarian.Core.UseCases.Books
 
             try
             {
-                IEnumerable<FindBooksByFilters> books = (from b in await this.bookRepository.Get()
-                                                    join awb in await this.authorWritesBookRepository.Get() on b.Id equals awb.BookId
-                                                    join a in await this.authorRepository.Get() on awb.AuthorId equals a.Id into authors
-                                                    join rlb in await this.readerLoansBookRepository.Get() on b.Id equals rlb.BookId into loans
-                                                    join rrb in await this.readerRatesBookRepository.Get() on b.Id equals rrb.BookId into rates
-                                                    select new FindBooksByFilters
-                                                    (
-                                                        b.Id,
-                                                        b.Title,
-                                                        b.Categories.Select(c => (EBookCategory)Enum.ToObject(typeof(EBookCategory), c)).ToList(),
-                                                        b.RealeaseDate,
-                                                        authors.Select(author => new AuthorOfBook(author.Id, author.FirstName, author.LastName)).ToList(),
-                                                        0,
-                                                        loans.Any() ? loans.Count() : 0,
-                                                        rates.Any() ? rates.Select(r => r.Rate).Average() : 0
-                                                    )).ToList();
+                GateawayResponse<IEnumerable<Book>> books = await this.bookRepository.Get();
 
-                foreach (FindBooksByFilters book in books)
+                if (!books.Success)
+                    throw new UseCaseException("Books not found", books.Errors);
+
+                GateawayResponse<IEnumerable<Librarian.Core.Domain.Entities.AuthorWritesBook>> properties = await this.authorWritesBookRepository.Get();
+
+                if (!properties.Success)
+                    throw new UseCaseException("Properties not found", properties.Errors);
+
+                GateawayResponse<IEnumerable<Author>> authors = await this.authorRepository.Get();
+
+                if (!authors.Success)
+                    throw new UseCaseException("Authors not found", authors.Errors);
+
+                GateawayResponse<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>> loans = await this.readerLoansBookRepository.Get();
+
+                if (!loans.Success)
+                    throw new UseCaseException("Loans not found", loans.Errors);
+
+                GateawayResponse<IEnumerable<Librarian.Core.Domain.Entities.ReaderRatesBook>> rates = await this.readerRatesBookRepository.Get();
+
+                if (!rates.Success)
+                    throw new UseCaseException("Rates not found", rates.Errors);
+
+                IEnumerable<FindBooksByFilters> filteredBooks = (from b in books.Data
+                                                                 join awb in properties.Data on b.Id equals awb.BookId
+                                                                 join a in authors.Data on awb.AuthorId equals a.Id into authorsGroup
+                                                                 join rlb in loans.Data on b.Id equals rlb.BookId into loansGroup
+                                                                 join rrb in rates.Data on b.Id equals rrb.BookId into ratesGroup
+                                                                 select new FindBooksByFilters
+                                                                 (
+                                                                     b.Id,
+                                                                     b.Title,
+                                                                     b.Categories.Select(c => (EBookCategory)Enum.ToObject(typeof(EBookCategory), c)).ToList(),
+                                                                     b.RealeaseDate,
+                                                                     authorsGroup.Select(author => new AuthorOfBook(author.Id, author.FirstName, author.LastName)).ToList(),
+                                                                     0,
+                                                                     loansGroup.Any() ? loansGroup.Count() : 0,
+                                                                     ratesGroup.Any() ? ratesGroup.Select(r => r.Rate).Average() : 0
+                                                                 )).ToList();
+
+                foreach (FindBooksByFilters book in filteredBooks)
                     SetPertinence(book);
-                books = books.Where(b => b.Pertinence > 0).ToList();
+                filteredBooks = filteredBooks.Where(b => b.Pertinence > 0).ToList();
 
-                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<FindBooksByFilters>>(books, true));
+                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<FindBooksByFilters>>(filteredBooks, true));
                 return true;
             }
-            catch (Exception e)
+            catch (UseCaseException e)
             {
-                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<FindBooksByFilters>>(null, false, e.Message));
+                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<FindBooksByFilters>>(null, false, e.Message, e.Errors));
             }
 
             return false;

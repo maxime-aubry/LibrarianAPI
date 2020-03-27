@@ -1,4 +1,5 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.ReaderRatesBook;
 using System;
@@ -39,34 +40,33 @@ namespace Librarian.Core.UseCases.ReaderRatesBook
 
         public async Task<bool> Handle(AddRateRequest message, IOutputPort<UseCaseResponseMessage<string>> outputPort)
         {
-            if (!string.IsNullOrEmpty(message.ReaderId) &&
-                !string.IsNullOrEmpty(message.BookId) &&
-                message.Rate >= 0 &&
-                !string.IsNullOrEmpty(message.Comment))
+            try
             {
-                try
-                {
-                    IEnumerable<Librarian.Core.Domain.Entities.ReaderRatesBook> rates = (from rrb in await this.readerRatesBookRepository.Get()
-                                                                                         where rrb.ReaderId == message.ReaderId
-                                                                                         && rrb.BookId == message.BookId
-                                                                                         select rrb);
+                GateawayResponse<IEnumerable<Librarian.Core.Domain.Entities.ReaderRatesBook>> rates = await this.readerRatesBookRepository.Get();
 
-                    if (rates.Any())
-                        throw new Exception("Reader has already rated this book");
+                if (!rates.Success)
+                    throw new UseCaseException("Rates not found", rates.Errors);
 
-                    Librarian.Core.Domain.Entities.ReaderRatesBook rate = new Librarian.Core.Domain.Entities.ReaderRatesBook(message.ReaderId, message.BookId, message.Rate, message.Comment, DateTime.UtcNow);
-                    string rateId = await this.readerRatesBookRepository.Add(rate);
+                IEnumerable<Librarian.Core.Domain.Entities.ReaderRatesBook> bookOfRate = (from rrb in rates.Data
+                                                                                          where rrb.ReaderId == message.ReaderId
+                                                                                          && rrb.BookId == message.BookId
+                                                                                          select rrb);
 
-                    if (string.IsNullOrEmpty(rateId))
-                        throw new Exception("Rate not saved");
+                if (bookOfRate.Any())
+                    throw new UseCaseException("Reader has already rated this book", null);
 
-                    outputPort.Handle(new UseCaseResponseMessage<string>(rateId, true));
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message));
-                }
+                Librarian.Core.Domain.Entities.ReaderRatesBook rate = new Librarian.Core.Domain.Entities.ReaderRatesBook(message.ReaderId, message.BookId, message.Rate, message.Comment, DateTime.UtcNow);
+                GateawayResponse<string> rateId = await this.readerRatesBookRepository.Add(rate);
+
+                if (!rateId.Success)
+                    throw new UseCaseException("Rate not saved", rateId.Errors);
+
+                outputPort.Handle(new UseCaseResponseMessage<string>(rateId.Data, true));
+                return true;
+            }
+            catch (UseCaseException e)
+            {
+                outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message, e.Errors));
             }
 
             return false;

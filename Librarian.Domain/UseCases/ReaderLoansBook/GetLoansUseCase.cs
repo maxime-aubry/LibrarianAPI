@@ -1,7 +1,7 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.ReaderLoansBook;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,21 +39,23 @@ namespace Librarian.Core.UseCases.ReaderLoansBook
 
         public async Task<bool> Handle(GetLoansRequest message, IOutputPort<UseCaseResponseMessage<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>>> outputPort)
         {
-            if (!string.IsNullOrEmpty(message.ReaderId))
+            try
             {
-                try
-                {
-                    IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook> loans = (from rlb in await this.readerLoansBookRepository.Get()
-                                                                                         where rlb.ReaderId == message.ReaderId
-                                                                                         select rlb);
+                GateawayResponse<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>> loans = await this.readerLoansBookRepository.Get();
 
-                    outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>>(loans, true));
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>>(null, false, e.Message));
-                }
+                if (!loans.Success)
+                    throw new UseCaseException("Loans not found", loans.Errors);
+
+                IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook> readerLoans = (from rlb in loans.Data
+                                                                                            where rlb.ReaderId == message.ReaderId
+                                                                                            select rlb);
+
+                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>>(readerLoans, true));
+                return true;
+            }
+            catch (UseCaseException e)
+            {
+                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>>(null, false, e.Message, e.Errors));
             }
 
             return false;

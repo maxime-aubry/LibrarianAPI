@@ -11,6 +11,6 @@ namespace Librarian.Core.UseCases
         IDeleteBookUseCase Delete { get; set; }
         IGetBooksByFiltersUseCase GetBooksByFilters { get; set; }
         IAddCopiesUseCase AddCopiesUseCase { get; set; }
-        IReduceCopiesUseCase ReduceCopiesUseCase { get; set; }
+        IRemoveCopiesUseCase ReduceCopiesUseCase { get; set; }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Authors;
 using Librarian.Core.Domain.Entities;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -41,14 +41,17 @@ namespace Librarian.Core.UseCases.Authors
         {
             try
             {
-                IEnumerable<Author> authors = await this.authorRepository.Get();
+                GateawayResponse<IEnumerable<Author>> authors = await this.authorRepository.Get();
 
-                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Author>>(authors, true));
+                if (!authors.Success)
+                    throw new UseCaseException("Authors not found", authors.Errors);
+
+                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Author>>(authors.Data, true));
                 return true;
             }
-            catch (Exception e)
+            catch (UseCaseException e)
             {
-                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Author>>(null, false, e.Message));
+                outputPort.Handle(new UseCaseResponseMessage<IEnumerable<Author>>(null, false, e.Message, e.Errors));
             }
 
             return false;

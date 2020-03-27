@@ -1,7 +1,7 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.ReaderLoansBook;
-using System;
 using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.ReaderLoansBook
@@ -37,19 +37,19 @@ namespace Librarian.Core.UseCases.ReaderLoansBook
 
         public async Task<bool> Handle(DeleteLoanRequest message, IOutputPort<UseCaseResponseMessage<string>> outputPort)
         {
-            if (!string.IsNullOrEmpty(message.LoanId))
+            try
             {
-                try
-                {
-                    await this.readerLoansBookRepository.Delete(message.LoanId);
+                GateawayResponse<string> deletedLoan = await this.readerLoansBookRepository.Delete(message.LoanId);
 
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, true));
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message));
-                }
+                if (!deletedLoan.Success)
+                    throw new UseCaseException("Loan not deleted", deletedLoan.Errors);
+
+                outputPort.Handle(new UseCaseResponseMessage<string>(null, true));
+                return true;
+            }
+            catch (UseCaseException e)
+            {
+                outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message, e.Errors));
             }
 
             return false;

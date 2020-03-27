@@ -1,8 +1,8 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Books;
 using Librarian.Core.Domain.Entities;
-using System;
 using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.Books
@@ -42,17 +42,17 @@ namespace Librarian.Core.UseCases.Books
             {
                 try
                 {
-                    Book book = await this.bookRepository.Get(message.BookId);
+                    GateawayResponse<Book> book = await this.bookRepository.Get(message.BookId);
 
-                    if (book == null)
-                        throw new Exception("Book not found");
+                    if (!book.Success)
+                        throw new UseCaseException("Book not found", book.Errors);
 
-                    outputPort.Handle(new UseCaseResponseMessage<Book>(book, true));
+                    outputPort.Handle(new UseCaseResponseMessage<Book>(book.Data, true));
                     return true;
                 }
-                catch (Exception e)
+                catch (UseCaseException e)
                 {
-                    outputPort.Handle(new UseCaseResponseMessage<Book>(null, false, e.Message));
+                    outputPort.Handle(new UseCaseResponseMessage<Book>(null, false, e.Message, e.Errors));
                 }
             }
 

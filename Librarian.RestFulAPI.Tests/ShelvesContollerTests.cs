@@ -29,7 +29,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
-            Assert.Null(result.Errors);
             Assert.Equal(shelf.Id, result.Result.Id);
         }
 
@@ -42,7 +41,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
-            Assert.Null(result.Errors);
             Assert.Equal(DataProvider.Shelves.Select(s => s.Name), result.Result.Select(s => s.Name));
         }
 
@@ -61,7 +59,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.NotNull(result1.Result);
 
             // get book from database
@@ -69,7 +66,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
-            Assert.Null(result2.Errors);
             Assert.NotNull(result2.Result);
             Assert.Equal(viewModel.Floor, result2.Result.Floor);
             Assert.Equal(viewModel.BookCategory, result2.Result.BookCategory);
@@ -87,7 +83,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.Null(result1.Result);
 
             // try to get shelf from database
@@ -95,7 +90,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.False(result2.Success);
             Assert.Equal("Shelf not found", result2.Message);
-            Assert.Null(result2.Errors);
             Assert.Null(result2.Result);
         }
 
@@ -107,7 +101,6 @@ namespace Librarian.RestFulAPI.Tests
             ContentResult<IEnumerable<Shelf>> result = await HttpHelper.Get<IEnumerable<Shelf>>(this.client, $"/api/v1/Shelves/available/{(int)EBookCategory.ScienceFiction}");
 
             Assert.True(result.Success);
-            Assert.Null(result.Errors);
             Assert.NotNull(result.Result);
             Assert.Equal(DataProvider.Shelves.Where(s => s.BookCategory == EBookCategory.ScienceFiction).Select(s => s.Name), result.Result.Select(s => s.Name));
         }

@@ -30,7 +30,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
-            Assert.Null(result.Errors);
             Assert.Equal(model.Id, result.Result.Id);
         }
 
@@ -43,7 +42,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
-            Assert.Null(result.Errors);
             Assert.Equal(DataProvider.Books.Select(b => b.Title), result.Result.Select(b => b.Title));
         }
 
@@ -65,7 +63,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.NotNull(result1.Result);
 
             // get book from database
@@ -73,7 +70,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
-            Assert.Null(result2.Errors);
             Assert.NotNull(result2.Result);
             Assert.Equal(viewModel.Title, result2.Result.Title);
             Assert.Equal(viewModel.Categories, result2.Result.Categories);
@@ -101,7 +97,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.NotNull(result1.Result);
             Assert.Equal(book.Id, result1.Result);
 
@@ -110,7 +105,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
-            Assert.Null(result2.Errors);
             Assert.NotNull(result2.Result);
             Assert.Equal(viewModel.Title, result2.Result.Title);
             Assert.Equal(viewModel.Categories, result2.Result.Categories);
@@ -129,7 +123,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.Null(result1.Result);
 
             // try to get book from database
@@ -137,7 +130,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.False(result2.Success);
             Assert.Equal("Book not found", result2.Message);
-            Assert.Null(result2.Errors);
             Assert.Null(result2.Result);
         }
 
@@ -158,7 +150,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
-            Assert.Null(result.Errors);
             Assert.Collection(result.Result,
                 item =>
                 {
@@ -209,7 +200,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
-            Assert.Null(result.Errors);
             Assert.Collection(result.Result,
                 item =>
                 {
@@ -236,7 +226,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.NotNull(result1.Result);
 
             ContentResult<IEnumerable<Author>> result2 = await HttpHelper.Get<IEnumerable<Author>>(this.client, $"/api/v1/Books/authors/{book.Id}");
@@ -244,7 +233,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
-            Assert.Null(result2.Errors);
             Assert.NotNull(addedAuthor);
             Assert.Equal(author.FirstName, addedAuthor.FirstName);
             Assert.Equal(author.LastName, addedAuthor.LastName);
@@ -267,7 +255,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.NotNull(result1.Result);
 
             ContentResult<IEnumerable<Author>> result2 = await HttpHelper.Get<IEnumerable<Author>>(this.client, $"/api/v1/Books/authors/{book.Id}");
@@ -275,7 +262,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
-            Assert.Null(result2.Errors);
             Assert.Null(deletedAuthor);
         }
     }

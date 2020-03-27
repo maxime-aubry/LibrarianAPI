@@ -1,9 +1,9 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Shelves;
 using Librarian.Core.Domain.Entities;
 using Librarian.Core.Domain.Enums;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,22 +47,28 @@ namespace Librarian.Core.UseCases.Shelves
             {
                 try
                 {
-                    IEnumerable<Shelf> shelves = (from s in await this.shelfRepository.Get()
-                                                  where s.Floor == message.Floor
-                                                  && s.BookCategory == message.BookCategory
-                                                  select s);
-                    Shelf shelf = new Shelf($"F{(int)message.Floor}-BC{(int)message.BookCategory}-NB{shelves.Count() + 1}", message.MaxQtyOfBooks, message.MaxQtyOfBooks, message.Floor, message.BookCategory);
-                    string shelfId = await this.shelfRepository.Add(shelf);
+                    GateawayResponse<IEnumerable<Shelf>> shelves = await this.shelfRepository.Get();
 
-                    if (string.IsNullOrEmpty(shelfId))
-                        throw new Exception("Shelf not saved");
+                    if (!shelves.Success)
+                        throw new UseCaseException("Shelves not found", shelves.Errors);
 
-                    outputPort.Handle(new UseCaseResponseMessage<string>(shelfId, true));
+                    int nbShelves = (from s in shelves.Data
+                                     where s.Floor == message.Floor
+                                     && s.BookCategory == message.BookCategory
+                                     select s).Count();
+
+                    Shelf shelf = new Shelf($"F{(int)message.Floor}-BC{(int)message.BookCategory}-NB{nbShelves + 1}", message.MaxQtyOfBooks, message.MaxQtyOfBooks, message.Floor, message.BookCategory);
+                    GateawayResponse<string> shelfId = await this.shelfRepository.Add(shelf);
+
+                    if (!shelfId.Success)
+                        throw new UseCaseException("Shelf not saved", shelfId.Errors);
+
+                    outputPort.Handle(new UseCaseResponseMessage<string>(shelfId.Data, true));
                     return true;
                 }
-                catch (Exception e)
+                catch (UseCaseException e)
                 {
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message));
+                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message, e.Errors));
                 }
             }
 

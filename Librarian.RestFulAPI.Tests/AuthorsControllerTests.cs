@@ -11,14 +11,18 @@ namespace Librarian.RestFulAPI.Tests
 {
     public class AuthorsControllerTests : BaseController
     {
+        private const string badFakeId = "0";
+        private const string fakeId = "000000000000000000000000";
+
         public AuthorsControllerTests(AppTestFixture fixture, ITestOutputHelper output)
             : base(fixture, output)
         {
 
         }
 
+        #region Get by id
         [Fact]
-        public async Task Targeted_author_is_got_from_database()
+        public async Task AuthorsController_GetById_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -28,12 +32,37 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
-            Assert.Null(result.Errors);
             Assert.Equal(model.Id, result.Result.Id);
         }
 
         [Fact]
-        public async Task Books_are_all_in_static_list()
+        public async Task AuthorsController_GetById_NotOk_BadAuthorIdLength()
+        {
+            await DataProvider.PopulateDatabase(this.client);
+
+            ContentResult<Author> result = await HttpHelper.Get<Author>(this.client, $"/api/v1/Authors/getById/{badFakeId}");
+
+            Assert.False(result.Success);
+            Assert.Equal("'0' is not a valid 24 digit hex string.", result.Message);
+            Assert.Null(result.Result);
+        }
+
+        [Fact]
+        public async Task AuthorsController_GetById_NotOk_AuthorNotFound()
+        {
+            await DataProvider.PopulateDatabase(this.client);
+
+            ContentResult<Author> result = await HttpHelper.Get<Author>(this.client, $"/api/v1/Authors/getById/{fakeId}");
+
+            Assert.False(result.Success);
+            Assert.Equal("Author not found", result.Message);
+            Assert.Null(result.Result);
+        }
+        #endregion
+
+        #region Get list
+        [Fact]
+        public async Task AuthorsController_GetList_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -41,7 +70,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
-            Assert.Null(result.Errors);
             Assert.Collection(result.Result,
                 item =>
                 {
@@ -100,9 +128,11 @@ namespace Librarian.RestFulAPI.Tests
                 }
             );
         }
+        #endregion
 
+        #region Create
         [Fact]
-        public async Task Author_is_created()
+        public async Task AuthorsController_Create_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -115,7 +145,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.NotNull(result1.Result);
 
             // get author from database
@@ -123,11 +152,37 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
-            Assert.Null(result2.Errors);
             Assert.NotNull(result2.Result);
             Assert.Equal(viewModel.FirstName, result2.Result.FirstName);
             Assert.Equal(viewModel.LastName, result2.Result.LastName);
         }
+
+        [Fact]
+        public async Task AuthorsController_Create_InvalidModel()
+        {
+            await DataProvider.PopulateDatabase(this.client);
+
+            CreateAuthorViewModel viewModel = new CreateAuthorViewModel()
+            {
+                FirstName = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                LastName = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            };
+            ContentResult<string> result1 = await HttpHelper.Post<CreateAuthorViewModel, string>(this.client, $"/api/v1/Authors/create", viewModel);
+
+            Assert.False(result1.Success);
+            //Assert.Null(result1.Message);
+            //Assert.NotNull(result1.Result);
+
+            //// get author from database
+            //ContentResult<Author> result2 = await HttpHelper.Get<Author>(this.client, $"/api/v1/Authors/getById/{result1.Result}");
+
+            //Assert.True(result2.Success);
+            //Assert.Null(result2.Message);
+            //Assert.NotNull(result2.Result);
+            //Assert.Equal(viewModel.FirstName, result2.Result.FirstName);
+            //Assert.Equal(viewModel.LastName, result2.Result.LastName);
+        }
+        #endregion
 
         [Fact]
         public async Task Author_is_updated()
@@ -146,7 +201,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.NotNull(result1.Result);
             Assert.Equal(author.Id, viewModel.Id);
 
@@ -155,7 +209,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result2.Success);
             Assert.Null(result2.Message);
-            Assert.Null(result2.Errors);
             Assert.NotNull(result2.Result);
             Assert.Equal(viewModel.FirstName, result2.Result.FirstName);
             Assert.Equal(viewModel.LastName, result2.Result.LastName);
@@ -172,7 +225,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.Null(result1.Errors);
             Assert.Null(result1.Result);
             Assert.Equal(author.Id, result1.Result);
 
@@ -181,7 +233,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.False(result2.Success);
             Assert.Equal("Author not found", result2.Message);
-            Assert.Null(result2.Errors);
             Assert.Null(result2.Result);
         }
 
@@ -199,7 +250,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
-            Assert.Null(result.Errors);
             Assert.Collection(result.Result,
                 item =>
                 {
@@ -225,7 +275,6 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result.Success);
             Assert.Null(result.Message);
-            Assert.Null(result.Errors);
             Assert.Collection(result.Result,
                 item =>
                 {

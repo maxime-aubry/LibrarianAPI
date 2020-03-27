@@ -3,7 +3,6 @@ using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.ReaderLoansBook;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.ReaderLoansBook
@@ -39,33 +38,30 @@ namespace Librarian.Core.UseCases.ReaderLoansBook
 
         public async Task<bool> Handle(CloseLoanAndDeclareAsLostRequest message, IOutputPort<UseCaseResponseMessage<string>> outputPort)
         {
-            if (!string.IsNullOrEmpty(message.LoanId))
+            try
             {
-                try
-                {
-                    Librarian.Core.Domain.Entities.ReaderLoansBook loan = await this.readerLoansBookRepository.Get(message.LoanId);
+                GateawayResponse<Librarian.Core.Domain.Entities.ReaderLoansBook> loan = await this.readerLoansBookRepository.Get(message.LoanId);
 
-                    if (loan == null)
-                        throw new Exception("Loan not found");
+                if (!loan.Success)
+                    throw new UseCaseException("Loan not found", loan.Errors);
 
-                    if (loan.EndDateOfLoaning != null)
-                        throw new Exception("Loan is already closed");
+                if (loan.Data.EndDateOfLoaning != null)
+                    throw new UseCaseException("Loan is already closed", null);
 
-                    loan.EndDateOfLoaning = DateTime.UtcNow.Date;
-                    loan.IsLost = true;
+                loan.Data.EndDateOfLoaning = DateTime.UtcNow.Date;
+                loan.Data.IsLost = true;
 
-                    string loanId = await this.readerLoansBookRepository.Update(message.LoanId, loan);
+                GateawayResponse<string> loanId = await this.readerLoansBookRepository.Update(message.LoanId, loan.Data);
 
-                    if (string.IsNullOrEmpty(loanId))
-                        throw new Exception("Loan not saved");
+                if (!loanId.Success)
+                    throw new UseCaseException("Loan not saved", null);
 
-                    outputPort.Handle(new UseCaseResponseMessage<string>(loanId, true));
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message));
-                }
+                outputPort.Handle(new UseCaseResponseMessage<string>(loanId.Data, true));
+                return true;
+            }
+            catch (UseCaseException e)
+            {
+                outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message, e.Errors));
             }
 
             return false;

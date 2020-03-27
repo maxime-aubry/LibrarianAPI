@@ -1,7 +1,7 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.AuthorWritesBook;
-using Librarian.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,38 +45,32 @@ namespace Librarian.Core.UseCases.AuthorWritesBook
             {
                 try
                 {
-                    // check if book exists
-                    Book book = await this.bookRepository.Get(message.BookId);
+                    GateawayResponse<IEnumerable<Librarian.Core.Domain.Entities.AuthorWritesBook>> properties = await this.authorWritesBookRepository.Get();
 
-                    if (book == null)
-                        throw new Exception("Book not found");
+                    if (!properties.Success)
+                        throw new UseCaseException("Properties not found", properties.Errors);
 
-                    // check if author exists
-                    Author author = await this.authorRepository.Get(message.AuthorId);
+                    // delete author from this book
+                    Librarian.Core.Domain.Entities.AuthorWritesBook property = (from awb in properties.Data
+                                                                                where awb.BookId == message.BookId
+                                                                                && awb.AuthorId == message.AuthorId
+                                                                                select awb).SingleOrDefault();
+                    if (property != null)
+                        throw new UseCaseException("Author is already linked to this book", null);
 
-                    if (author == null)
-                        throw new Exception("Author not found");
-
-                    IEnumerable<Librarian.Core.Domain.Entities.AuthorWritesBook> authorsOfBook = (from awb in await this.authorWritesBookRepository.Get()
-                                                                                            where awb.BookId == message.BookId
-                                                                                            && awb.AuthorId == message.AuthorId
-                                                                                            select awb);
-                    if (authorsOfBook.Any())
-                        throw new Exception("Author is already linked to this book");
-
-                    // add author to this book
+                    // link author to this book
                     Librarian.Core.Domain.Entities.AuthorWritesBook authorWritesBook = new Librarian.Core.Domain.Entities.AuthorWritesBook(message.AuthorId, message.BookId);
-                    string authorWritesBookId = await this.authorWritesBookRepository.Add(authorWritesBook);
+                    GateawayResponse<string> addedProperty = await this.authorWritesBookRepository.Add(authorWritesBook);
 
-                    if (string.IsNullOrEmpty(authorWritesBookId))
-                        throw new Exception("Author not linked to this book");
+                    if (!addedProperty.Success)
+                        throw new UseCaseException("Book not linked to this book", addedProperty.Errors);
 
-                    outputPort.Handle(new UseCaseResponseMessage<string>(authorWritesBookId, true));
+                    outputPort.Handle(new UseCaseResponseMessage<string>(addedProperty.Data, true));
                     return true;
                 }
-                catch (Exception e)
+                catch (UseCaseException e)
                 {
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message));
+                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message, e.Errors));
                 }
             }
 

@@ -6,10 +6,11 @@ namespace Librarian.Core.DataTransfertObject.GatewayResponses.Repositories
     public interface IRepository<TResult>
         where TResult : class
     {
-        Task<IEnumerable<TResult>> Get();
-        Task<TResult> Get(string id);
-        Task<string> Add(TResult model);
-        Task<string> Update(string id, TResult model);
-        Task Delete(string id);
+        Task<GateawayResponse<IEnumerable<TResult>>> Get();
+        Task<GateawayResponse<TResult>> Get(string id);
+        Task<GateawayResponse<string>> Add(TResult model);
+        Task<GateawayResponse<string>> Update(string id, TResult model);
+        Task<GateawayResponse<string>> Delete(string id);
+        Task<GateawayResponse<string>> DeleteMany(IEnumerable<string> ids);
     }
 }

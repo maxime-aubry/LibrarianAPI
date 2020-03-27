@@ -1,8 +1,8 @@
 ﻿using Librarian.Core.DataTransfertObject;
+using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Books;
 using Librarian.Core.Domain.Entities;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,35 +46,35 @@ namespace Librarian.Core.UseCases.Books
             {
                 try
                 {
-                    Shelf shelf = await this.shelfRepository.Get(message.ShelfId);
+                    GateawayResponse<Shelf> shelf = await this.shelfRepository.Get(message.ShelfId);
 
-                    if (shelf == null)
-                        throw new Exception("Shelf not found");
+                    if (!shelf.Success)
+                        throw new UseCaseException("Shelf not found", shelf.Errors);
 
-                    if (shelf.QtyOfRemainingPlaces == 0)
-                        throw new Exception("Shelf is full");
+                    if (shelf.Data.QtyOfRemainingPlaces == 0)
+                        throw new UseCaseException("Shelf is full", null);
 
-                    if (shelf.QtyOfRemainingPlaces < message.NumberOfCopies)
-                        throw new Exception("Shelf has no places enougth.");
+                    if (shelf.Data.QtyOfRemainingPlaces < message.NumberOfCopies)
+                        throw new UseCaseException("Shelf has no places enougth.", null);
 
                     Book book = new Book(message.Title, message.CategoryIds, message.ReleaseDate, message.NumberOfCopies, message.ShelfId);
-                    string bookId = await this.bookRepository.Add(book);
+                    GateawayResponse<string> bookId = await this.bookRepository.Add(book);
 
-                    if (string.IsNullOrEmpty(bookId))
-                        throw new Exception("Book not saved");
+                    if (!bookId.Success)
+                        throw new UseCaseException("Book not saved", bookId.Errors);
 
-                    shelf.QtyOfRemainingPlaces -= message.NumberOfCopies;
-                    string shelfId = await this.shelfRepository.Update(message.ShelfId, shelf);
+                    shelf.Data.QtyOfRemainingPlaces -= message.NumberOfCopies;
+                    GateawayResponse<string> shelfId = await this.shelfRepository.Update(message.ShelfId, shelf.Data);
 
-                    if (string.IsNullOrEmpty(shelfId))
-                        throw new Exception("Shelf not saved");
+                    if (!shelfId.Success)
+                        throw new UseCaseException("Shelf not saved", shelfId.Errors);
 
-                    outputPort.Handle(new UseCaseResponseMessage<string>(bookId, true));
+                    outputPort.Handle(new UseCaseResponseMessage<string>(bookId.Data, true));
                     return true;
                 }
-                catch (Exception e)
+                catch (UseCaseException e)
                 {
-                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message));
+                    outputPort.Handle(new UseCaseResponseMessage<string>(null, false, e.Message, e.Errors));
                 }
             }
 
