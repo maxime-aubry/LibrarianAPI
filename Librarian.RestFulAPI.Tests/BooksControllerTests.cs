@@ -20,7 +20,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Targeted_book_is_got_from_database()
+        public async Task BooksController_GetById_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -34,7 +34,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Books_are_all_in_static_list()
+        public async Task BooksController_GetList_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -46,7 +46,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Book_is_created()
+        public async Task BooksController_Create_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -79,7 +79,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Book_is_updated()
+        public async Task BooksController_Update_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -113,7 +113,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Book_is_deleted()
+        public async Task BooksController_Delete_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -134,7 +134,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Search_books_give_good_results()
+        public async Task BooksController_Search_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -190,7 +190,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Jules_verne_is_the_only_author_of_the_book()
+        public async Task BooksController_GetAuthors_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -210,7 +210,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Author_is_added_to_book()
+        public async Task BooksController_AddAuthor_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -239,7 +239,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Author_is_deleted_from_book()
+        public async Task BooksController_DeleteAuthor_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 

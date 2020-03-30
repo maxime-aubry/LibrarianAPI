@@ -19,7 +19,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Targeted_reader_is_got_from_database()
+        public async Task ReadersController_GetById_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -33,7 +33,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Readers_are_all_in_static_list()
+        public async Task ReadersController_GetList_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -71,7 +71,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Reader_is_created()
+        public async Task ReadersController_Create_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -98,7 +98,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Reader_is_updated()
+        public async Task ReadersController_Update_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -129,7 +129,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Reader_is_deleted()
+        public async Task ReadersController_Delete_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -150,7 +150,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Loans_of_reader_are_in_static_list()
+        public async Task ReadersController_GetLoans_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -164,7 +164,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Loan_is_added()
+        public async Task ReadersController_AddLoan_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -194,7 +194,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Loan_is_closed()
+        public async Task ReadersController_CloseLoan_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -222,7 +222,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Loan_is_closed_and_lost()
+        public async Task ReadersController_CloseLoanAnDeclareAsLost_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -250,7 +250,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Loan_is_deleted()
+        public async Task ReadersController_DeleteLoan_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 

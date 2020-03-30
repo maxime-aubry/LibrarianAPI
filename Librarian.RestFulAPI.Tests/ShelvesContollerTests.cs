@@ -19,7 +19,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Targeted_shelf_is_got_from_database()
+        public async Task ShelvesContoller_GetById_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -33,7 +33,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Books_are_all_in_static_list()
+        public async Task ShelvesContoller_GetList_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -45,7 +45,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Shelf_is_created()
+        public async Task ShelvesContoller_Create_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -73,7 +73,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Shelf_is_deleted()
+        public async Task ShelvesContoller_Delete_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -94,7 +94,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Available_shelves_are_ok()
+        public async Task ShelvesContoller_GetAvailableShelves_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
