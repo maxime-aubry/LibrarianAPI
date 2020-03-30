@@ -10,12 +10,12 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-    <PackageReference Include="NLog" Version="4.6.8" />
-    <PackageReference Include="NLog.Config" Version="4.6.8" />
+    <PackageReference Include="NLog" Version="4.7.0" />
+    <PackageReference Include="NLog.Config" Version="4.7.0" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.2" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.0" />
     <PackageReference Include="coverlet.collector" Version="1.2.0">
@@ -33,5 +33,7 @@
     <ProjectReference Include="..\Librarian.Domain\Librarian.Core.csproj" />
     <ProjectReference Include="..\Librarian.RestFulApi\Librarian.RestFulAPI.csproj" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties xunit_1runner_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

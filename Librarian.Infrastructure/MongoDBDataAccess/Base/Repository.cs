@@ -43,6 +43,9 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
             {
                 TEntity entity = (await this.dbContext.GetCollection<TEntity>().FindAsync<TEntity>(item => item.Id == id)).FirstOrDefault();
                 TResult result = this.mapper.Map<TResult>(entity);
+
+                if (result == null)
+                    return new GateawayResponse<TResult>(result, false);
                 return new GateawayResponse<TResult>(result, true);
             }
             catch (Exception e)

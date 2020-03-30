@@ -244,7 +244,7 @@ namespace Librarian.RestFulAPI.Tests
             await DataProvider.PopulateDatabase(this.client);
 
             Book book = DataProvider.Books.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single();
-            Author author = DataProvider.Authors.Where(a => a.LastName == "Rowling").Single();
+            Author author = DataProvider.Authors.Where(a => a.LastName == "Verne").Single();
 
             DeleteAuthorsOfBookViewModel viewModel = new DeleteAuthorsOfBookViewModel()
             {
@@ -255,7 +255,7 @@ namespace Librarian.RestFulAPI.Tests
 
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
-            Assert.NotNull(result1.Result);
+            Assert.Null(result1.Result);
 
             ContentResult<IEnumerable<Author>> result2 = await HttpHelper.Get<IEnumerable<Author>>(this.client, $"/api/v1/Books/authors/{book.Id}");
             Author deletedAuthor = result2.Result.Where(a => a.Id == author.Id).SingleOrDefault();

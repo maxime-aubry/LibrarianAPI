@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using Xunit;
 using Xunit.Abstractions;
 
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 namespace Librarian.RestFulAPI.Tests
 {
     public class BaseController : IClassFixture<AppTestFixture>, IDisposable

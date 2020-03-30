@@ -11,7 +11,6 @@ namespace Librarian.RestFulAPI.Tests
 {
     public class AuthorsControllerTests : BaseController
     {
-        private const string badFakeId = "0";
         private const string fakeId = "000000000000000000000000";
 
         public AuthorsControllerTests(AppTestFixture fixture, ITestOutputHelper output)
@@ -33,18 +32,6 @@ namespace Librarian.RestFulAPI.Tests
             Assert.True(result.Success);
             Assert.Null(result.Message);
             Assert.Equal(model.Id, result.Result.Id);
-        }
-
-        [Fact]
-        public async Task AuthorsController_GetById_NotOk_BadAuthorIdLength()
-        {
-            await DataProvider.PopulateDatabase(this.client);
-
-            ContentResult<Author> result = await HttpHelper.Get<Author>(this.client, $"/api/v1/Authors/getById/{badFakeId}");
-
-            Assert.False(result.Success);
-            Assert.Equal("'0' is not a valid 24 digit hex string.", result.Message);
-            Assert.Null(result.Result);
         }
 
         [Fact]
@@ -185,7 +172,7 @@ namespace Librarian.RestFulAPI.Tests
         #endregion
 
         [Fact]
-        public async Task Author_is_updated()
+        public async Task AuthorsController_Update_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -215,7 +202,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Author_is_deleted()
+        public async Task AuthorsController_Delete_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -226,7 +213,7 @@ namespace Librarian.RestFulAPI.Tests
             Assert.True(result1.Success);
             Assert.Null(result1.Message);
             Assert.Null(result1.Result);
-            Assert.Equal(author.Id, result1.Result);
+            Assert.Null(result1.Result);
 
             // try to get book from database
             ContentResult<Author> result2 = await HttpHelper.Get<Author>(this.client, $"/api/v1/Authors/getById/{author.Id}");
@@ -237,7 +224,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Search_authors_give_good_results()
+        public async Task AuthorsController_Search_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
@@ -265,7 +252,7 @@ namespace Librarian.RestFulAPI.Tests
         }
 
         [Fact]
-        public async Task Those_are_books_of_this_author()
+        public async Task AuthorsController_GetBooks_Ok()
         {
             await DataProvider.PopulateDatabase(this.client);
 
