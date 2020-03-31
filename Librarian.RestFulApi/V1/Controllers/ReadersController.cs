@@ -4,6 +4,8 @@ using Librarian.Core.Domain.Entities;
 using Librarian.Core.UseCases;
 using Librarian.RestFulAPI.Tools.Presenters;
 using Librarian.RestFulAPI.V1.ViewModels.Readers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -11,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace Librarian.RestFulAPI.V1.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]

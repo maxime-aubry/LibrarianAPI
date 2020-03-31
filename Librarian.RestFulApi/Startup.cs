@@ -1,5 +1,6 @@
 using AutoMapper;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
+using Librarian.Core.DataTransfertObject.GatewayResponses.Services;
 using Librarian.Core.DataTransfertObject.UseCases.Authors;
 using Librarian.Core.DataTransfertObject.UseCases.AuthorWritesBook;
 using Librarian.Core.DataTransfertObject.UseCases.Books;
@@ -18,17 +19,22 @@ using Librarian.Core.UseCases.Shelves;
 using Librarian.Infrastructure.Mapper;
 using Librarian.Infrastructure.MongoDBDataAccess.Base;
 using Librarian.Infrastructure.MongoDBDataAccess.Repositories;
+using Librarian.Infrastructure.Services.Auth;
 using Librarian.RestFulAPI.Tools;
 using Librarian.RestFulAPI.Tools.Presenters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System;
 
 namespace Librarian.RestFulAPI
 {
@@ -77,6 +83,9 @@ namespace Librarian.RestFulAPI
             services.Configure<LibrarianDatabaseSettings>(Configuration.GetSection(nameof(LibrarianDatabaseSettings)));
             services.AddSingleton<ILibrarianDatabaseSettings>(sp => sp.GetRequiredService<IOptions<LibrarianDatabaseSettings>>().Value);
             services.AddSingleton<IMongoDbContext, MongoDbContext>();
+
+            // Services
+            services.AddScoped<IJwtService, JwtService>();
 
             // Repositories
             services.AddScoped<IAuthorRepository, AuthorRepository>();
@@ -144,7 +153,10 @@ namespace Librarian.RestFulAPI
             services.AddScoped<IUseCasesProvider, UseCasesProvider>();
 
             // Swagger
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc(option =>
+            {
+                option.EnableEndpointRouting = false;
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddApiVersioning(config =>
             {
                 config.ReportApiVersions = true;
@@ -156,6 +168,30 @@ namespace Librarian.RestFulAPI
             });
             services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
             services.AddSwaggerGen();
+
+            // JWT
+            services.Configure<IISOptions>(options => options.AutomaticAuthentication = true);
+            services
+                    .AddAuthentication(config =>
+                    {
+                        config.DefaultAuthenticateScheme = IISDefaults.AuthenticationScheme;
+                        //config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                        config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    })
+                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, config =>
+                    {
+                        config.RequireHttpsMetadata = false;
+                        config.SaveToken = true;
+                        config.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            IssuerSigningKey = JwtService.GetSymmetricSecurityKey(this.Configuration.GetSection("JwtConfig").GetSection("secret").Value),
+                            ValidateIssuer = false,
+                            ValidateAudience = false,
+                            ValidateIssuerSigningKey = true,
+                            ValidateLifetime = true,
+                            ClockSkew = TimeSpan.FromMinutes(5)
+                        };
+                    });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -183,6 +219,8 @@ namespace Librarian.RestFulAPI
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseMvc();
 
             app.UseCors("CorsPolicy");
 
