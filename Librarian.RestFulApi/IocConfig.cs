@@ -9,6 +9,8 @@ using Librarian.Core.DataTransfertObject.UseCases.ReaderLoansBook;
 using Librarian.Core.DataTransfertObject.UseCases.ReaderRatesBook;
 using Librarian.Core.DataTransfertObject.UseCases.Readers;
 using Librarian.Core.DataTransfertObject.UseCases.Shelves;
+using Librarian.Core.DataTransfertObject.UseCases.UserHasRight;
+using Librarian.Core.DataTransfertObject.UseCases.Users;
 using Librarian.Core.UseCases;
 using Librarian.Core.UseCases.Authors;
 using Librarian.Core.UseCases.AuthorWritesBook;
@@ -17,6 +19,8 @@ using Librarian.Core.UseCases.ReaderLoansBook;
 using Librarian.Core.UseCases.ReaderRatesBook;
 using Librarian.Core.UseCases.Readers;
 using Librarian.Core.UseCases.Shelves;
+using Librarian.Core.UseCases.UserHasRight;
+using Librarian.Core.UseCases.Users;
 using Librarian.Infrastructure.Mapper;
 using Librarian.Infrastructure.MongoDBDataAccess;
 using Librarian.Infrastructure.MongoDBDataAccess.Base;
@@ -64,8 +68,8 @@ namespace Librarian.RestFulAPI
             services.AddScoped<IReaderLoansBookRepository, ReaderLoansBookRepository>();
             services.AddScoped<IReaderRatesBookRepository, ReaderRatesBookRepository>();
             services.AddScoped<IShelfRepository, ShelfRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserHasRightRepository, UserHasRightRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<IRepositoryProvider, RepositoryProvider>();
         }
@@ -133,12 +137,17 @@ namespace Librarian.RestFulAPI
             services.AddScoped<IGetAvailableShelvesUseCase, GetAvailableShelvesUseCase>();
             #endregion
 
-            #region Users
-
+            #region UserHasRight
+            services.AddScoped<IAddRightUseCase, AddRightUseCase>();
+            services.AddScoped<IDeleteRightUseCase, DeleteRightUseCase>();
             #endregion
 
-            #region UserHasRight
-
+            #region Users
+            services.AddScoped<ICreateUserUseCase, CreateUserUseCase>();
+            services.AddScoped<IDeleteUserUseCase, DeleteUserUseCase>();
+            services.AddScoped<IGetUserByIdUseCase, GetUserByIdUseCase>();
+            services.AddScoped<IGetUsersUseCase, GetUsersUseCase>();
+            services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
             #endregion
 
             #region All use case providers
@@ -149,6 +158,8 @@ namespace Librarian.RestFulAPI
             services.AddScoped<IReaderLoansBookUseCasesProvider, ReaderLoansBookUseCasesProvider>();
             services.AddScoped<IReaderRatesBookUseCasesProvider, ReaderRatesBookUseCasesProvider>();
             services.AddScoped<IShelvesUseCasesProvider, ShelvesUseCasesProvider>();
+            services.AddScoped<IUserHasRightUseCasesProvider, UserHasRightUseCasesProvider>();
+            services.AddScoped<IUsersUseCasesProvider, UsersUseCasesProvider>();
             services.AddScoped<IUseCasesProvider, UseCasesProvider>();
             #endregion
         }

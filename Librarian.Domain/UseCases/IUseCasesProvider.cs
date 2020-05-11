@@ -9,6 +9,7 @@
         IReaderLoansBookUseCasesProvider ReadersLoans { get; set; }
         IReaderRatesBookUseCasesProvider ReadersRates { get; set; }
         IShelvesUseCasesProvider Shelves { get; set; }
+        IUserHasRightUseCasesProvider UserRights { get; set; }
         IUsersUseCasesProvider Users { get; set; }
     }
 }

@@ -1,20 +1,20 @@
 ﻿using Librarian.Core.DataTransfertObject;
 using Librarian.Core.DataTransfertObject.GatewayResponses;
-using Librarian.Core.DataTransfertObject.UseCases.Authors;
+using Librarian.Core.DataTransfertObject.UseCases.Users;
 using Librarian.Core.Domain.Entities;
 using Librarian.Core.Helpers;
 using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.Users
 {
-    public class CreateUserUseCase : UseCase, ICreateAuthorUseCase
+    public class CreateUserUseCase : UseCase, ICreateUserUseCase
     {
         public CreateUserUseCase(IRepositoryProvider repositories)
             : base(repositories)
         {
         }
 
-        public async Task<bool> Handle(CreateAuthorRequest message, IOutputPort<UseCaseResponseMessage<string>> outputPort)
+        public async Task<bool> Handle(CreateUserRequest message, IOutputPort<UseCaseResponseMessage<string>> outputPort)
         {
             try
             {

@@ -2,11 +2,10 @@
 {
     public class CreateUserRequest : IUseCaseRequest<UseCaseResponseMessage<string>>
     {
-        public CreateUserRequest(string firstName, string lastName, string login)
+        public CreateUserRequest(string firstName, string lastName)
         {
             this.FirstName = firstName;
             this.LastName = lastName;
-            this.Login = login;
         }
 
         public string FirstName { get; set; }

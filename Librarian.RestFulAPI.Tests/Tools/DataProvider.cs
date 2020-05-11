@@ -21,6 +21,7 @@ namespace Librarian.RestFulAPI.Tests.Tools
         public static IDictionary<string, AuthorWritesBook> AuthorWritesBook { get; set; }
         public static List<ReaderLoansBook> ReaderLoansBook { get; set; }
         public static List<ReaderRatesBook> ReaderRatesBook { get; set; }
+        public static List<User> Users { get; set; }
 
         public static void GenerateLocalData()
         {
@@ -174,6 +175,11 @@ namespace Librarian.RestFulAPI.Tests.Tools
             DataProvider.AuthorWritesBook = new Dictionary<string, AuthorWritesBook>();
             DataProvider.ReaderLoansBook = new List<ReaderLoansBook>();
             DataProvider.ReaderRatesBook = new List<ReaderRatesBook>();
+            DataProvider.Users = new List<User>()
+            {
+                new User("Maxime", "AUBRY", "m.aubry"),
+                new User("David", "Zippari", "d.zippari")
+            };
         }
 
         public static async Task CleanDatabase(HttpClient client)

@@ -1,4 +1,5 @@
-﻿using Librarian.Core.DataTransfertObject.UseCases.Users;
+﻿using Librarian.Core.DataTransfertObject.UseCases.UserHasRight;
+using Librarian.Core.DataTransfertObject.UseCases.Users;
 using Librarian.Core.Domain.Entities;
 using Librarian.Core.UseCases;
 using Librarian.RestFulAPI.Tools.Presenters;
@@ -15,7 +16,6 @@ namespace Librarian.RestFulAPI.V1.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -67,7 +67,7 @@ namespace Librarian.RestFulAPI.V1.Controllers
             [FromBody] CreateUserViewModel viewmodel
         )
         {
-            await useCasesProvider.Users.Create.Handle(new CreateUserRequest(viewmodel.FirstName, viewmodel.LastName, viewmodel.Login), presenter);
+            await useCasesProvider.Users.Create.Handle(new CreateUserRequest(viewmodel.FirstName, viewmodel.LastName), presenter);
             return presenter.ContentResult;
         }
 
@@ -79,14 +79,14 @@ namespace Librarian.RestFulAPI.V1.Controllers
         public async Task<IActionResult> Update(
             [FromServices] IUseCasesProvider useCasesProvider,
             [FromServices] IJsonPresenter<string> presenter,
-            [FromBody] UpdateAuthorViewModel viewmodel,
+            [FromBody] UpdateUserViewModel viewmodel,
             string userId
         )
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await useCasesProvider.Users.Update.Handle(new UpdateUserRequest(userId, viewmodel.FirstName, viewmodel.LastName, viewmodel.Login), presenter);
+            await useCasesProvider.Users.Update.Handle(new UpdateUserRequest(userId, viewmodel.FirstName, viewmodel.LastName), presenter);
             return presenter.ContentResult;
         }
 
@@ -110,7 +110,37 @@ namespace Librarian.RestFulAPI.V1.Controllers
         #endregion
 
         #region Secondaries CRUD Methods
+        [HttpPost("rights/add")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddRight(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] AddRightViewModel viewmodel
+        )
+        {
+            await useCasesProvider.UserRights.AddRight.Handle(new AddRightRequest(viewmodel.UserId, viewmodel.UserRight), presenter);
+            return presenter.ContentResult;
+        }
 
+        [HttpDelete("rights/delete")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteRight(
+            [FromServices] IUseCasesProvider useCasesProvider,
+            [FromServices] IJsonPresenter<string> presenter,
+            [FromBody] DeleteRightViewModel viewmodel
+        )
+        {
+            await useCasesProvider.UserRights.DeleteRight.Handle(new DeleteRightRequest(viewmodel.UserId, viewmodel.UserRight), presenter);
+            return presenter.ContentResult;
+        }
         #endregion
     }
 }
