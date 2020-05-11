@@ -2,7 +2,7 @@
 
 namespace Librarian.Core.DataTransfertObject.GatewayResponses.Repositories
 {
-    public interface IAuthorWritesBook : IRepository<AuthorWritesBook>
+    public interface IUserRepository : IRepository<User>
     {
     }
 }

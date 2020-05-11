@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E1679BA5
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librarian.RestFulAPI.Tests", "Librarian.RestFulAPI.Tests\Librarian.RestFulAPI.Tests.csproj", "{66CBF24C-409B-4F0A-83AE-AA62E84FA118}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Librarian.Core.Tests", "Librarian.Core.Tests\Librarian.Core.Tests.csproj", "{0A9580BE-FF9B-4FD3-8FE7-F194E0DEC38F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,12 @@ Global
 		{66CBF24C-409B-4F0A-83AE-AA62E84FA118}.Release|Any CPU.Build.0 = Release|Any CPU
 		{66CBF24C-409B-4F0A-83AE-AA62E84FA118}.Test|Any CPU.ActiveCfg = Test|Any CPU
 		{66CBF24C-409B-4F0A-83AE-AA62E84FA118}.Test|Any CPU.Build.0 = Test|Any CPU
+		{0A9580BE-FF9B-4FD3-8FE7-F194E0DEC38F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A9580BE-FF9B-4FD3-8FE7-F194E0DEC38F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A9580BE-FF9B-4FD3-8FE7-F194E0DEC38F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A9580BE-FF9B-4FD3-8FE7-F194E0DEC38F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A9580BE-FF9B-4FD3-8FE7-F194E0DEC38F}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A9580BE-FF9B-4FD3-8FE7-F194E0DEC38F}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +65,7 @@ Global
 		{69221713-A471-4C3C-9729-DCD7B7A59B7D} = {D321870D-1E33-457C-8C07-3EA4437F6956}
 		{844ACF5B-F4F1-4445-B1DA-ED8EF66BFB0D} = {D321870D-1E33-457C-8C07-3EA4437F6956}
 		{66CBF24C-409B-4F0A-83AE-AA62E84FA118} = {E1679BA5-6BE9-4D30-A59D-02F20D2BD113}
+		{0A9580BE-FF9B-4FD3-8FE7-F194E0DEC38F} = {E1679BA5-6BE9-4D30-A59D-02F20D2BD113}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C556A37A-5CA3-4AC9-A816-368F6AFCE91D}

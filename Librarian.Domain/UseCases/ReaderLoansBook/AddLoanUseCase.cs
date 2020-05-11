@@ -1,6 +1,5 @@
 ﻿using Librarian.Core.DataTransfertObject;
 using Librarian.Core.DataTransfertObject.GatewayResponses;
-using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.ReaderLoansBook;
 using System;
 using System.Collections.Generic;
@@ -9,40 +8,18 @@ using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.ReaderLoansBook
 {
-    public class AddLoanUseCase : IAddLoanUseCase
+    public class AddLoanUseCase : UseCase, IAddLoanUseCase
     {
-        public AddLoanUseCase(
-            IAuthorRepository authorRepository,
-            IAuthorWritesBookRepository authorWritesBookRepository,
-            IBookRepository bookRepository,
-            IReaderLoansBookRepository readerLoansBookRepository,
-            IReaderRatesBookRepository readerRatesBookRepository,
-            IReaderRepository readerRepository,
-            IShelfRepository shelfRepository
-        )
+        public AddLoanUseCase(IRepositoryProvider repositories)
+            : base(repositories)
         {
-            this.authorRepository = authorRepository;
-            this.authorWritesBookRepository = authorWritesBookRepository;
-            this.bookRepository = bookRepository;
-            this.readerLoansBookRepository = readerLoansBookRepository;
-            this.readerRatesBookRepository = readerRatesBookRepository;
-            this.readerRepository = readerRepository;
-            this.shelfRepository = shelfRepository;
         }
-
-        private readonly IAuthorRepository authorRepository;
-        private readonly IAuthorWritesBookRepository authorWritesBookRepository;
-        private readonly IBookRepository bookRepository;
-        private readonly IReaderLoansBookRepository readerLoansBookRepository;
-        private readonly IReaderRatesBookRepository readerRatesBookRepository;
-        private readonly IReaderRepository readerRepository;
-        private readonly IShelfRepository shelfRepository;
 
         public async Task<bool> Handle(AddLoanRequest message, IOutputPort<UseCaseResponseMessage<string>> outputPort)
         {
             try
             {
-                GateawayResponse<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>> loans = await this.readerLoansBookRepository.Get();
+                GateawayResponse<IEnumerable<Librarian.Core.Domain.Entities.ReaderLoansBook>> loans = await this.repositories.ReaderLoansBook.Get();
 
                 if (!loans.Success)
                     throw new UseCaseException("Loans not found", loans.Errors);
@@ -57,7 +34,7 @@ namespace Librarian.Core.UseCases.ReaderLoansBook
                     throw new UseCaseException("Reader has already loaned this book", null);
 
                 Librarian.Core.Domain.Entities.ReaderLoansBook loan = new Librarian.Core.Domain.Entities.ReaderLoansBook(message.ReaderId, message.BookId, DateTime.UtcNow.Date);
-                GateawayResponse<string> loanId = await this.readerLoansBookRepository.Add(loan);
+                GateawayResponse<string> loanId = await this.repositories.ReaderLoansBook.Add(loan);
 
                 if (!loanId.Success)
                     throw new UseCaseException("Loan not saved", loanId.Errors);

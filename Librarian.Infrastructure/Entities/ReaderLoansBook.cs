@@ -6,7 +6,7 @@ namespace Librarian.Infrastructure.Entities
 {
     public class ReaderLoansBook : BaseObject
     {
-        public ReaderLoansBook(string id, string readerId, string bookId, DateTime dateOfLoaning, DateTime? endDateOfLoaning, bool? isLost)
+        public ReaderLoansBook(string id, string readerId, string bookId, DateTime dateOfLoaning, DateTime? endDateOfLoaning = null, bool? isLost = null)
             : base(id)
         {
             this.ReaderId = readerId;

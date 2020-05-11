@@ -9,7 +9,8 @@
             IReadersUseCasesProvider readers,
             IReaderLoansBookUseCasesProvider readersLoans,
             IReaderRatesBookUseCasesProvider readersRates,
-            IShelvesUseCasesProvider shelves
+            IShelvesUseCasesProvider shelves,
+            IUsersUseCasesProvider users
         )
         {
             this.Authors = authors;
@@ -19,6 +20,7 @@
             this.ReadersLoans = readersLoans;
             this.ReadersRates = readersRates;
             this.Shelves = shelves;
+            this.Users = users;
         }
 
         public IAuthorsUseCasesProvider Authors { get; set; }
@@ -28,5 +30,6 @@
         public IReaderLoansBookUseCasesProvider ReadersLoans { get; set; }
         public IReaderRatesBookUseCasesProvider ReadersRates { get; set; }
         public IShelvesUseCasesProvider Shelves { get; set; }
+        public IUsersUseCasesProvider Users { get; set; }
     }
 }

@@ -104,5 +104,14 @@ namespace Librarian.RestFulAPI.Properties {
                 return ResourceManager.GetString("ShelvesController_forgotten_reader_id_on_request", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Missing parameter user id on request..
+        /// </summary>
+        internal static string UsersController_forgotten_user_id_on_request {
+            get {
+                return ResourceManager.GetString("UsersController_forgotten_user_id_on_request", resourceCulture);
+            }
+        }
     }
 }

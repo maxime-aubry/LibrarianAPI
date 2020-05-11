@@ -1,6 +1,5 @@
 ﻿using Librarian.Core.DataTransfertObject;
 using Librarian.Core.DataTransfertObject.GatewayResponses;
-using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Books;
 using Librarian.Core.Domain.Entities;
 using System.Collections.Generic;
@@ -8,20 +7,18 @@ using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.Books
 {
-    public class GetBooksUseCase : IGetBooksUseCase
+    public class GetBooksUseCase : UseCase, IGetBooksUseCase
     {
-        public GetBooksUseCase(IBookRepository bookRepository)
+        public GetBooksUseCase(IRepositoryProvider repositories)
+            : base(repositories)
         {
-            this.bookRepository = bookRepository;
         }
-
-        private readonly IBookRepository bookRepository;
 
         public async Task<bool> Handle(GetBooksRequest message, IOutputPort<UseCaseResponseMessage<IEnumerable<Book>>> outputPort)
         {
             try
             {
-                GateawayResponse<IEnumerable<Book>> books = await this.bookRepository.Get();
+                GateawayResponse<IEnumerable<Book>> books = await this.repositories.Books.Get();
 
                 if (!books.Success)
                     throw new UseCaseException("Books not found", books.Errors);

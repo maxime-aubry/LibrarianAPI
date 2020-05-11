@@ -4,9 +4,9 @@ namespace Librarian.Core.DataTransfertObject.UseCases.Readers
 {
     public class UpdateReaderRequest : IUseCaseRequest<UseCaseResponseMessage<string>>
     {
-        public UpdateReaderRequest(string id, string firstName, string lastName, DateTime birthday, bool isForbidden)
+        public UpdateReaderRequest(string readerId, string firstName, string lastName, DateTime birthday, bool isForbidden)
         {
-            this.ReaderId = id;
+            this.ReaderId = readerId;
             this.FirstName = firstName;
             this.LastName = lastName;
             this.Birthday = birthday;

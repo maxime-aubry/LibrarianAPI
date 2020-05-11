@@ -59,6 +59,19 @@ namespace Librarian.Infrastructure.Mapper
                 (int)src.Floor,
                 (int)src.BookCategory
             ));
+            CreateMap<Librarian.Core.Domain.Entities.User, Librarian.Infrastructure.Entities.User>().ConvertUsing(src => new Librarian.Infrastructure.Entities.User(
+                src.Id,
+                src.FirstName,
+                src.LastName,
+                src.Login
+            ));
+            CreateMap<Librarian.Core.Domain.Entities.UserHasRight, Librarian.Infrastructure.Entities.UserHasRight>().ConvertUsing(src => new Librarian.Infrastructure.Entities.UserHasRight(
+                src.Id,
+                src.UserId,
+                (int)src.UserRight,
+                src.DateOfAdding,
+                src.DateOfEnding
+            ));
 
             /* Infrastructure > Domain */
             CreateMap<Librarian.Infrastructure.Entities.Author, Librarian.Core.Domain.Entities.Author>().ConvertUsing(src => new Librarian.Core.Domain.Entities.Author(
@@ -109,6 +122,19 @@ namespace Librarian.Infrastructure.Mapper
                 src.QtyOfRemainingPlaces,
                 (EFloor)Enum.ToObject(typeof(EFloor), src.Floor),
                 (EBookCategory)Enum.ToObject(typeof(EBookCategory), src.BookCategory)
+            ));
+            CreateMap<Librarian.Infrastructure.Entities.User, Librarian.Core.Domain.Entities.User>().ConvertUsing(src => new Librarian.Core.Domain.Entities.User(
+                src.Id,
+                src.FirstName,
+                src.LastName,
+                src.Login
+            ));
+            CreateMap<Librarian.Infrastructure.Entities.UserHasRight, Librarian.Core.Domain.Entities.UserHasRight>().ConvertUsing(src => new Librarian.Core.Domain.Entities.UserHasRight(
+                src.Id,
+                src.UserId,
+                (EUserRight)Enum.ToObject(typeof(EUserRight), src.RightId),
+                src.DateOfAdding,
+                src.DateOfEnding
             ));
         }
     }

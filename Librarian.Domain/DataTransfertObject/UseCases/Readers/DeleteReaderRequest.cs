@@ -2,9 +2,9 @@
 {
     public class DeleteReaderRequest : IUseCaseRequest<UseCaseResponseMessage<string>>
     {
-        public DeleteReaderRequest(string id)
+        public DeleteReaderRequest(string readerId)
         {
-            this.ReaderId = id;
+            this.ReaderId = readerId;
         }
 
         public string ReaderId { get; set; }

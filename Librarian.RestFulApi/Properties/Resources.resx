@@ -132,4 +132,7 @@
   <data name="ShelvesController_forgotten_reader_id_on_request" xml:space="preserve">
     <value>Missing parameter shelf id on request.</value>
   </data>
+  <data name="UsersController_forgotten_user_id_on_request" xml:space="preserve">
+    <value>Missing parameter user id on request.</value>
+  </data>
 </root>

@@ -1,6 +1,8 @@
-﻿namespace Librarian.Core.DataTransfertObject.UseCases.Books
+﻿using Librarian.Core.Domain.Entities;
+
+namespace Librarian.Core.DataTransfertObject.UseCases.Books
 {
-    public class GetBookByIdRequest : IUseCaseRequest<UseCaseResponseMessage<Librarian.Core.Domain.Entities.Book>>
+    public class GetBookByIdRequest : IUseCaseRequest<UseCaseResponseMessage<Book>>
     {
         public GetBookByIdRequest(string bookId)
         {

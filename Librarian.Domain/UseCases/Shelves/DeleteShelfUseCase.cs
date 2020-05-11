@@ -1,6 +1,5 @@
 ﻿using Librarian.Core.DataTransfertObject;
 using Librarian.Core.DataTransfertObject.GatewayResponses;
-using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.UseCases.Shelves;
 using Librarian.Core.Domain.Entities;
 using System.Collections.Generic;
@@ -9,45 +8,23 @@ using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.Shelves
 {
-    public class DeleteShelfUseCase : IDeleteShelfUseCase
+    public class DeleteShelfUseCase : UseCase, IDeleteShelfUseCase
     {
-        public DeleteShelfUseCase(
-            IAuthorRepository authorRepository,
-            IAuthorWritesBookRepository authorWritesBookRepository,
-            IBookRepository bookRepository,
-            IReaderLoansBookRepository readerLoansBookRepository,
-            IReaderRatesBookRepository readerRatesBookRepository,
-            IReaderRepository readerRepository,
-            IShelfRepository shelfRepository
-        )
+        public DeleteShelfUseCase(IRepositoryProvider repositories)
+            : base(repositories)
         {
-            this.authorRepository = authorRepository;
-            this.authorWritesBookRepository = authorWritesBookRepository;
-            this.bookRepository = bookRepository;
-            this.readerLoansBookRepository = readerLoansBookRepository;
-            this.readerRatesBookRepository = readerRatesBookRepository;
-            this.readerRepository = readerRepository;
-            this.shelfRepository = shelfRepository;
         }
-
-        private readonly IAuthorRepository authorRepository;
-        private readonly IAuthorWritesBookRepository authorWritesBookRepository;
-        private readonly IBookRepository bookRepository;
-        private readonly IReaderLoansBookRepository readerLoansBookRepository;
-        private readonly IReaderRatesBookRepository readerRatesBookRepository;
-        private readonly IReaderRepository readerRepository;
-        private readonly IShelfRepository shelfRepository;
 
         public async Task<bool> Handle(DeleteShelfRequest message, IOutputPort<UseCaseResponseMessage<string>> outputPort)
         {
             try
             {
-                GateawayResponse<Shelf> shelf = await this.shelfRepository.Get(message.ShelfId);
+                GateawayResponse<Shelf> shelf = await this.repositories.Shelves.Get(message.ShelfId);
 
                 if (!shelf.Success)
                     throw new UseCaseException("Shelf not found", shelf.Errors);
 
-                GateawayResponse<IEnumerable<Book>> books = await this.bookRepository.Get();
+                GateawayResponse<IEnumerable<Book>> books = await this.repositories.Books.Get();
 
                 if (!books.Success)
                     throw new UseCaseException("Books not found", books.Errors);
@@ -58,7 +35,7 @@ namespace Librarian.Core.UseCases.Shelves
                 if (booksOfShelf.Any())
                     throw new UseCaseException("This shelf is alreader linked to books", null);
 
-                GateawayResponse<string> deletedShelf = await this.shelfRepository.Delete(message.ShelfId);
+                GateawayResponse<string> deletedShelf = await this.repositories.Shelves.Delete(message.ShelfId);
 
                 if (!deletedShelf.Success)
                     throw new UseCaseException("Shelf not deleted", books.Errors);

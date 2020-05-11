@@ -4,9 +4,9 @@ namespace Librarian.Core.DataTransfertObject.UseCases.Readers
 {
     public class GetReaderByIdRequest : IUseCaseRequest<UseCaseResponseMessage<Reader>>
     {
-        public GetReaderByIdRequest(string id)
+        public GetReaderByIdRequest(string readerId)
         {
-            this.ReaderId = id;
+            this.ReaderId = readerId;
         }
 
         public string ReaderId { get; set; }

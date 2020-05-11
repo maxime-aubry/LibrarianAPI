@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Librarian.Core.Domain.Entities;
+using System.Collections.Generic;
 
 namespace Librarian.Core.DataTransfertObject.UseCases.Books
 {
-    public interface IGetBooksUseCase : IUseCaseRequestHandler<GetBooksRequest, UseCaseResponseMessage<IEnumerable<Librarian.Core.Domain.Entities.Book>>>
+    public interface IGetBooksUseCase : IUseCaseRequestHandler<GetBooksRequest, UseCaseResponseMessage<IEnumerable<Book>>>
     {
     }
 }
