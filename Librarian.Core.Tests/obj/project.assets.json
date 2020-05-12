@@ -6903,8 +6903,8 @@
     },
     "Librarian.Core/1.0.0": {
       "type": "project",
-      "path": "../Librarian.Domain/Librarian.Core.csproj",
-      "msbuildProject": "../Librarian.Domain/Librarian.Core.csproj"
+      "path": "../Librarian.Core/Librarian.Core.csproj",
+      "msbuildProject": "../Librarian.Core/Librarian.Core.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -6949,8 +6949,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "D:\\Mes projets\\LibrarianAPI\\Librarian.Domain\\Librarian.Core.csproj": {
-              "projectPath": "D:\\Mes projets\\LibrarianAPI\\Librarian.Domain\\Librarian.Core.csproj"
+            "D:\\Mes projets\\LibrarianAPI\\Librarian.Core\\Librarian.Core.csproj": {
+              "projectPath": "D:\\Mes projets\\LibrarianAPI\\Librarian.Core\\Librarian.Core.csproj"
             }
           }
         }

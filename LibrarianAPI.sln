@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D321870D-1E3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librarian.Infrastructure", "Librarian.Infrastructure\Librarian.Infrastructure.csproj", "{69221713-A471-4C3C-9729-DCD7B7A59B7D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librarian.Core", "Librarian.Domain\Librarian.Core.csproj", "{844ACF5B-F4F1-4445-B1DA-ED8EF66BFB0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librarian.Core", "Librarian.Core\Librarian.Core.csproj", "{844ACF5B-F4F1-4445-B1DA-ED8EF66BFB0D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{93C4B0B3-C241-4516-B693-FDF782F70B3C}"
 EndProject

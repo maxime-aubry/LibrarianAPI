@@ -1,0 +1,10 @@
+C:\Users\maubry\Desktop\Projets\LibrarianAPI\Librarian.Domain\bin\Debug\netcoreapp3.1\Librarian.Domain.deps.json
+C:\Users\maubry\Desktop\Projets\LibrarianAPI\Librarian.Domain\bin\Debug\netcoreapp3.1\Librarian.Domain.dll
+C:\Users\maubry\Desktop\Projets\LibrarianAPI\Librarian.Domain\bin\Debug\netcoreapp3.1\Librarian.Domain.pdb
+C:\Users\maubry\Desktop\Projets\LibrarianAPI\Librarian.Domain\obj\Debug\netcoreapp3.1\Librarian.Domain.csprojAssemblyReference.cache
+C:\Users\maubry\Desktop\Projets\LibrarianAPI\Librarian.Domain\obj\Debug\netcoreapp3.1\Librarian.Domain.AssemblyInfoInputs.cache
+C:\Users\maubry\Desktop\Projets\LibrarianAPI\Librarian.Domain\obj\Debug\netcoreapp3.1\Librarian.Domain.AssemblyInfo.cs
+C:\Users\maubry\Desktop\Projets\LibrarianAPI\Librarian.Domain\obj\Debug\netcoreapp3.1\Librarian.Domain.dll
+C:\Users\maubry\Desktop\Projets\LibrarianAPI\Librarian.Domain\obj\Debug\netcoreapp3.1\Librarian.Domain.pdb
+C:\Users\maubry\Desktop\Projets\LibrarianAPI\Librarian.Domain\obj\Debug\netcoreapp3.1\Librarian.Domain.Properties.Resources.resources
+C:\Users\maubry\Desktop\Projets\LibrarianAPI\Librarian.Domain\obj\Debug\netcoreapp3.1\Librarian.Domain.csproj.GenerateResource.cache

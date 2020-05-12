@@ -32,8 +32,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "D:\\Mes projets\\LibrarianAPI\\Librarian.Domain\\Librarian.Core.csproj": {
-                "projectPath": "D:\\Mes projets\\LibrarianAPI\\Librarian.Domain\\Librarian.Core.csproj"
+              "D:\\Mes projets\\LibrarianAPI\\Librarian.Core\\Librarian.Core.csproj": {
+                "projectPath": "D:\\Mes projets\\LibrarianAPI\\Librarian.Core\\Librarian.Core.csproj"
               }
             }
           }
@@ -83,14 +83,14 @@
         }
       }
     },
-    "D:\\Mes projets\\LibrarianAPI\\Librarian.Domain\\Librarian.Core.csproj": {
+    "D:\\Mes projets\\LibrarianAPI\\Librarian.Core\\Librarian.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Mes projets\\LibrarianAPI\\Librarian.Domain\\Librarian.Core.csproj",
+        "projectUniqueName": "D:\\Mes projets\\LibrarianAPI\\Librarian.Core\\Librarian.Core.csproj",
         "projectName": "Librarian.Core",
-        "projectPath": "D:\\Mes projets\\LibrarianAPI\\Librarian.Domain\\Librarian.Core.csproj",
+        "projectPath": "D:\\Mes projets\\LibrarianAPI\\Librarian.Core\\Librarian.Core.csproj",
         "packagesPath": "C:\\Users\\maxim\\.nuget\\packages\\",
-        "outputPath": "D:\\Mes projets\\LibrarianAPI\\Librarian.Domain\\obj\\",
+        "outputPath": "D:\\Mes projets\\LibrarianAPI\\Librarian.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
