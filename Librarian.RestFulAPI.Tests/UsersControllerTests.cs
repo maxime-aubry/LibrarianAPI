@@ -20,13 +20,13 @@ namespace Librarian.RestFulAPI.Tests
         {
             await DataProvider.PopulateDatabase(this.client);
 
-            User model = DataProvider.Users.Where(b => b.Title == "Vingt Mille Lieues sous les mers").Single();
+            User model = DataProvider.Users.Where(b => b.Login == "m.aubry").Single();
 
-            //ContentResult<Book> result = await HttpHelper.Get<Book>(this.client, $"/api/v1/Books/getById/{model.Id}");
+            ContentResult<Book> result = await HttpHelper.Get<Book>(this.client, $"/api/v1/Users/getById/{model.Id}");
 
-            //Assert.True(result.Success);
-            //Assert.Null(result.Message);
-            //Assert.Equal(model.Id, result.Result.Id);
+            Assert.True(result.Success);
+            Assert.Null(result.Message);
+            Assert.Equal(model.Id, result.Result.Id);
         }
 
         [Fact]

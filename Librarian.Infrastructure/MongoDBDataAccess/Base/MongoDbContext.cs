@@ -20,6 +20,8 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
                 { typeof(Librarian.Infrastructure.Entities.ReaderLoansBook), settings.ReaderLoansBookCollectionName},
                 { typeof(Librarian.Infrastructure.Entities.ReaderRatesBook), settings.ReaderRatesBookCollectionName},
                 { typeof(Librarian.Infrastructure.Entities.Shelf), settings.ShelvesCollectionName },
+                { typeof(Librarian.Infrastructure.Entities.UserHasRight), settings.UserHasRightCollectionName },
+                { typeof(Librarian.Infrastructure.Entities.User), settings.UsersCollectionName },
             };
 
             // collections
@@ -30,6 +32,8 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
             this.ReaderLoansBook = this.GetCollection<Librarian.Infrastructure.Entities.ReaderLoansBook>();
             this.ReaderRatesBook = this.GetCollection<Librarian.Infrastructure.Entities.ReaderRatesBook>();
             this.Shelves = this.GetCollection<Librarian.Infrastructure.Entities.Shelf>();
+            this.UserHasRight = this.GetCollection<Librarian.Infrastructure.Entities.UserHasRight>();
+            this.Users = this.GetCollection<Librarian.Infrastructure.Entities.User>();
         }
 
         private IDictionary<Type, string> collectionNames { get; set; }
@@ -41,6 +45,8 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         public IMongoCollection<Librarian.Infrastructure.Entities.ReaderLoansBook> ReaderLoansBook { get; set; }
         public IMongoCollection<Librarian.Infrastructure.Entities.ReaderRatesBook> ReaderRatesBook { get; set; }
         public IMongoCollection<Librarian.Infrastructure.Entities.Shelf> Shelves { get; set; }
+        public IMongoCollection<Librarian.Infrastructure.Entities.UserHasRight> UserHasRight { get; set; }
+        public IMongoCollection<Librarian.Infrastructure.Entities.User> Users { get; set; }
 
         /// <summary>
         /// Get a collection from database.
@@ -67,6 +73,8 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
             await this.ReaderRatesBook.DeleteManyAsync(item => true);
             await this.Readers.DeleteManyAsync(item => true);
             await this.Shelves.DeleteManyAsync(item => true);
+            await this.UserHasRight.DeleteManyAsync(item => true);
+            await this.Users.DeleteManyAsync(item => true);
         }
     }
 }

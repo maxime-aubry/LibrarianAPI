@@ -11,5 +11,7 @@
         string ReaderLoansBookCollectionName { get; set; }
         string ReaderRatesBookCollectionName { get; set; }
         string ShelvesCollectionName { get; set; }
+        string UserHasRightCollectionName { get; set; }
+        string UsersCollectionName { get; set; }
     }
 }

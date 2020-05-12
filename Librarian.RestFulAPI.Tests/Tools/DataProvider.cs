@@ -4,6 +4,7 @@ using Librarian.RestFulAPI.V1.ViewModels.Authors;
 using Librarian.RestFulAPI.V1.ViewModels.Books;
 using Librarian.RestFulAPI.V1.ViewModels.Readers;
 using Librarian.RestFulAPI.V1.ViewModels.Shelves;
+using Librarian.RestFulAPI.V1.ViewModels.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -177,8 +178,8 @@ namespace Librarian.RestFulAPI.Tests.Tools
             DataProvider.ReaderRatesBook = new List<ReaderRatesBook>();
             DataProvider.Users = new List<User>()
             {
-                new User("Maxime", "AUBRY", "m.aubry"),
-                new User("David", "Zippari", "d.zippari")
+                new User("Maxime", "AUBRY", string.Empty),
+                new User("David", "Zippari", string.Empty)
             };
         }
 
@@ -192,6 +193,21 @@ namespace Librarian.RestFulAPI.Tests.Tools
             DataProvider.GenerateLocalData();
 
             await client.PostAsync("/api/v1/Admin/cleanDatabase", null);
+
+            foreach (User user in DataProvider.Users)
+            {
+                CreateUserViewModel viewModel = new CreateUserViewModel()
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName
+                };
+                ContentResult<string> result = await HttpHelper.Post<CreateUserViewModel, string>(client, "/api/v1/Users/create", viewModel);
+
+                if (!result.Success)
+                    throw new Exception();
+
+                user.Id = result.Result;
+            }
 
             foreach (Reader reader in DataProvider.Readers)
             {
