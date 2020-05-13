@@ -1,5 +1,8 @@
-﻿namespace Librarian.Infrastructure.Entities
+﻿using Librarian.Infrastructure.MongoDBDataAccess.Base.Attributes;
+
+namespace Librarian.Infrastructure.Entities
 {
+    [CollectionInfo(CollectionName = "Shelves")]
     public class Shelf : BaseObject
     {
         public Shelf(string id, string name, int maxQtyOfBooks, int qtyOfRemainingPlaces, int floor, int bookCategory)

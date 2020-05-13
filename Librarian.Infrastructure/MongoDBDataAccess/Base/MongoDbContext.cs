@@ -1,6 +1,9 @@
-﻿using MongoDB.Driver;
+﻿using Librarian.Infrastructure.MongoDBDataAccess.Base.Attributes;
+using Microsoft.Win32.SafeHandles;
+using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Librarian.Infrastructure.MongoDBDataAccess.Base
@@ -11,42 +14,28 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         {
             MongoClient client = new MongoClient(settings.ConnectionString);
             this.Database = client.GetDatabase(settings.DatabaseName);
-            this.collectionNames = new Dictionary<Type, string>()
-            {
-                { typeof(Librarian.Infrastructure.Entities.Author), settings.AuthorsCollectionName },
-                { typeof(Librarian.Infrastructure.Entities.AuthorWritesBook), settings.AuthorWritesBookCollectionName },
-                { typeof(Librarian.Infrastructure.Entities.Book), settings.BooksCollectionName },
-                { typeof(Librarian.Infrastructure.Entities.Reader), settings.ReadersCollectionName},
-                { typeof(Librarian.Infrastructure.Entities.ReaderLoansBook), settings.ReaderLoansBookCollectionName},
-                { typeof(Librarian.Infrastructure.Entities.ReaderRatesBook), settings.ReaderRatesBookCollectionName},
-                { typeof(Librarian.Infrastructure.Entities.Shelf), settings.ShelvesCollectionName },
-                { typeof(Librarian.Infrastructure.Entities.UserHasRight), settings.UserHasRightCollectionName },
-                { typeof(Librarian.Infrastructure.Entities.User), settings.UsersCollectionName },
-            };
-
-            // collections
-            this.Authors = this.GetCollection<Librarian.Infrastructure.Entities.Author>();
-            this.AuthorWritesBook = this.GetCollection<Librarian.Infrastructure.Entities.AuthorWritesBook>();
-            this.Books = this.GetCollection<Librarian.Infrastructure.Entities.Book>();
-            this.Readers = this.GetCollection<Librarian.Infrastructure.Entities.Reader>();
-            this.ReaderLoansBook = this.GetCollection<Librarian.Infrastructure.Entities.ReaderLoansBook>();
-            this.ReaderRatesBook = this.GetCollection<Librarian.Infrastructure.Entities.ReaderRatesBook>();
-            this.Shelves = this.GetCollection<Librarian.Infrastructure.Entities.Shelf>();
-            this.UserHasRight = this.GetCollection<Librarian.Infrastructure.Entities.UserHasRight>();
-            this.Users = this.GetCollection<Librarian.Infrastructure.Entities.User>();
         }
 
-        private IDictionary<Type, string> collectionNames { get; set; }
+        private bool disposed = false;
+        private SafeHandle handle = new SafeFileHandle(IntPtr.Zero, true);
         public IMongoDatabase Database { get; private set; }
-        public IMongoCollection<Librarian.Infrastructure.Entities.Author> Authors { get; set; }
-        public IMongoCollection<Librarian.Infrastructure.Entities.AuthorWritesBook> AuthorWritesBook { get; set; }
-        public IMongoCollection<Librarian.Infrastructure.Entities.Book> Books { get; set; }
-        public IMongoCollection<Librarian.Infrastructure.Entities.Reader> Readers { get; set; }
-        public IMongoCollection<Librarian.Infrastructure.Entities.ReaderLoansBook> ReaderLoansBook { get; set; }
-        public IMongoCollection<Librarian.Infrastructure.Entities.ReaderRatesBook> ReaderRatesBook { get; set; }
-        public IMongoCollection<Librarian.Infrastructure.Entities.Shelf> Shelves { get; set; }
-        public IMongoCollection<Librarian.Infrastructure.Entities.UserHasRight> UserHasRight { get; set; }
-        public IMongoCollection<Librarian.Infrastructure.Entities.User> Users { get; set; }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+                handle.Dispose();
+
+            disposed = true;
+        }
 
         /// <summary>
         /// Get a collection from database.
@@ -56,25 +45,31 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         /// <returns>Returns a IMongoCollection of TEntity Type.</returns>
         public IMongoCollection<TEntity> GetCollection<TEntity>()
         {
-            string collectionName = this.collectionNames[typeof(TEntity)];
-            IMongoCollection<TEntity> collection = this.Database.GetCollection<TEntity>(collectionName);
+            CollectionInfoAttribute collectionInfo = typeof(TEntity).GetCustomAttribute(typeof(CollectionInfoAttribute), true) as CollectionInfoAttribute;
+
+            if (collectionInfo == null)
+                return null;
+
+            IMongoCollection<TEntity> collection = this.Database.GetCollection<TEntity>(collectionInfo.CollectionName);
+
             if (collection == null)
-                this.Database.CreateCollection(collectionName);
-            collection = this.Database.GetCollection<TEntity>(collectionName);
+                this.Database.CreateCollection(collectionInfo.CollectionName);
+
+            collection = this.Database.GetCollection<TEntity>(collectionInfo.CollectionName);
             return collection;
         }
 
         public async Task CleanDatase()
         {
-            await this.Authors.DeleteManyAsync(item => true);
-            await this.AuthorWritesBook.DeleteManyAsync(item => true);
-            await this.Books.DeleteManyAsync(item => true);
-            await this.ReaderLoansBook.DeleteManyAsync(item => true);
-            await this.ReaderRatesBook.DeleteManyAsync(item => true);
-            await this.Readers.DeleteManyAsync(item => true);
-            await this.Shelves.DeleteManyAsync(item => true);
-            await this.UserHasRight.DeleteManyAsync(item => true);
-            await this.Users.DeleteManyAsync(item => true);
+            await this.GetCollection<Librarian.Infrastructure.Entities.Author>().DeleteManyAsync(item => true);
+            await this.GetCollection<Librarian.Infrastructure.Entities.AuthorWritesBook>().DeleteManyAsync(item => true);
+            await this.GetCollection<Librarian.Infrastructure.Entities.Book>().DeleteManyAsync(item => true);
+            await this.GetCollection<Librarian.Infrastructure.Entities.ReaderLoansBook>().DeleteManyAsync(item => true);
+            await this.GetCollection<Librarian.Infrastructure.Entities.ReaderRatesBook>().DeleteManyAsync(item => true);
+            await this.GetCollection<Librarian.Infrastructure.Entities.Reader>().DeleteManyAsync(item => true);
+            await this.GetCollection<Librarian.Infrastructure.Entities.Shelf>().DeleteManyAsync(item => true);
+            await this.GetCollection<Librarian.Infrastructure.Entities.UserHasRight>().DeleteManyAsync(item => true);
+            await this.GetCollection<Librarian.Infrastructure.Entities.User>().DeleteManyAsync(item => true);
         }
     }
 }

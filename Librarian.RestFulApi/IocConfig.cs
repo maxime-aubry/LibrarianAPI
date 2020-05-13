@@ -29,15 +29,12 @@ using Librarian.Infrastructure.Services.Auth;
 using Librarian.RestFulAPI.Tools;
 using Librarian.RestFulAPI.Tools.Presenters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
 
 namespace Librarian.RestFulAPI
 {
@@ -185,28 +182,52 @@ namespace Librarian.RestFulAPI
 
         public static void AddJwt(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<IISOptions>(options => options.AutomaticAuthentication = false);
             services
-                    .AddAuthentication(config =>
+                .AddAuthentication(config =>
+                {
+                    config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(config =>
+                {
+                    string secret = configuration["JwtToken:secret"];
+                    string issuer = configuration["JwtToken:issuer"];
+                    string audience = configuration["JwtToken:audience"];
+
+                    config.TokenValidationParameters = new TokenValidationParameters
                     {
-                        config.DefaultAuthenticateScheme = IISDefaults.AuthenticationScheme;
-                        //config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                        config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    })
-                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, config =>
-                    {
-                        config.RequireHttpsMetadata = false;
-                        config.SaveToken = true;
-                        config.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            IssuerSigningKey = JwtService.GetSymmetricSecurityKey(configuration.GetSection("JwtConfig").GetSection("secret").Value),
-                            ValidateIssuer = false,
-                            ValidateAudience = false,
-                            ValidateIssuerSigningKey = true,
-                            ValidateLifetime = true,
-                            ClockSkew = TimeSpan.FromMinutes(5)
-                        };
-                    });
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = issuer,
+                        ValidAudience = audience,
+                        IssuerSigningKey = JwtService.GetSymmetricSecurityKey(secret)
+                    };
+
+                    //services.Configure<IISOptions>(options => options.AutomaticAuthentication = false);
+                    //services
+                    //        .AddAuthentication(config =>
+                    //        {
+                    //            config.DefaultAuthenticateScheme = IISDefaults.AuthenticationScheme;
+                    //            //config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    //            config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    //        })
+                    //        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, config =>
+                    //        {
+                    //            config.RequireHttpsMetadata = false;
+                    //            config.SaveToken = true;
+                    //            config.TokenValidationParameters = new TokenValidationParameters
+                    //            {
+                    //                IssuerSigningKey = JwtService.GetSymmetricSecurityKey(configuration.GetSection("JwtConfig").GetSection("secret").Value),
+                    //                ValidateIssuer = false,
+                    //                ValidateAudience = false,
+                    //                ValidateIssuerSigningKey = true,
+                    //                ValidateLifetime = true,
+                    //                ClockSkew = TimeSpan.FromMinutes(5)
+                    //            };
+                    //        });
+                });
         }
     }
 }

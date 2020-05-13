@@ -1,9 +1,11 @@
-﻿using MongoDB.Bson;
+﻿using Librarian.Infrastructure.MongoDBDataAccess.Base.Attributes;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 
 namespace Librarian.Infrastructure.Entities
 {
+    [CollectionInfo(CollectionName = "Readers")]
     public class Reader : BaseObject
     {
         public Reader(string id, string firstName, string lastName, DateTime birthday, bool isForbidden)

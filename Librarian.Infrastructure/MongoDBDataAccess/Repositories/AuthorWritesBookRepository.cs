@@ -6,8 +6,8 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Repositories
 {
     public class AuthorWritesBookRepository : Repository<Librarian.Infrastructure.Entities.AuthorWritesBook, Librarian.Core.Domain.Entities.AuthorWritesBook>, IAuthorWritesBookRepository
     {
-        public AuthorWritesBookRepository(IMongoDbContext dbContext, IMapper mapper)
-            : base(dbContext, mapper)
+        public AuthorWritesBookRepository(ILibrarianDatabaseSettings settings, IMapper mapper)
+            : base(settings, mapper)
         {
         }
     }

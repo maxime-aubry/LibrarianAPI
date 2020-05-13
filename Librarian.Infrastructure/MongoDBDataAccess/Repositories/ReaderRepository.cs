@@ -6,8 +6,8 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Repositories
 {
     public class ReaderRepository : Repository<Librarian.Infrastructure.Entities.Reader, Librarian.Core.Domain.Entities.Reader>, IReaderRepository
     {
-        public ReaderRepository(IMongoDbContext dbContext, IMapper mapper)
-            : base(dbContext, mapper)
+        public ReaderRepository(ILibrarianDatabaseSettings settings, IMapper mapper)
+            : base(settings, mapper)
         {
         }
     }

@@ -6,8 +6,8 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Repositories
 {
     public class UserHasRightRepository : Repository<Librarian.Infrastructure.Entities.UserHasRight, Librarian.Core.Domain.Entities.UserHasRight>, IUserHasRightRepository
     {
-        public UserHasRightRepository(IMongoDbContext dbContext, IMapper mapper)
-            : base(dbContext, mapper)
+        public UserHasRightRepository(ILibrarianDatabaseSettings settings, IMapper mapper)
+            : base(settings, mapper)
         {
         }
     }

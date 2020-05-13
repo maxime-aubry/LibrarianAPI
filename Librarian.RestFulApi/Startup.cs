@@ -71,11 +71,15 @@ namespace Librarian.RestFulAPI
 
             app.UseRouting();
 
-            app.UseAuthorization();
-            app.UseAuthentication();
-            app.UseMvc();
+            //app.UseMvc();
 
-            app.UseCors("CorsPolicy");
+            //app.UseCors("CorsPolicy");
+            app.UseCors(option => option
+               .AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader());
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

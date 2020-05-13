@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Librarian.RestFulAPI.V1.Controllers
 {
-    [Authorize(AuthenticationSchemes = IISDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = IISDefaults.AuthenticationScheme)]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]

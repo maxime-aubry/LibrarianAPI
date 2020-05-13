@@ -6,8 +6,8 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Repositories
 {
     public class ShelfRepository : Repository<Librarian.Infrastructure.Entities.Shelf, Librarian.Core.Domain.Entities.Shelf>, IShelfRepository
     {
-        public ShelfRepository(IMongoDbContext dbContext, IMapper mapper)
-            : base(dbContext, mapper)
+        public ShelfRepository(ILibrarianDatabaseSettings settings, IMapper mapper)
+            : base(settings, mapper)
         {
         }
     }

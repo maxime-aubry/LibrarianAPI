@@ -1,5 +1,8 @@
-﻿namespace Librarian.Infrastructure.Entities
+﻿using Librarian.Infrastructure.MongoDBDataAccess.Base.Attributes;
+
+namespace Librarian.Infrastructure.Entities
 {
+    [CollectionInfo(CollectionName = "Users")]
     public class User : BaseObject
     {
         public User(string id, string firstName, string lastName, string login)

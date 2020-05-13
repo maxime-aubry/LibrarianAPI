@@ -1,10 +1,12 @@
-﻿using MongoDB.Bson;
+﻿using Librarian.Infrastructure.MongoDBDataAccess.Base.Attributes;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 
 namespace Librarian.Infrastructure.Entities
 {
+    [CollectionInfo(CollectionName = "Books")]
     public class Book : BaseObject
     {
         public Book(string id, string title, IEnumerable<int> categories, DateTime realeaseDate, int numberOfCopies, string shelfId)

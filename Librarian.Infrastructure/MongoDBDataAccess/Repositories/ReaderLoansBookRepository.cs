@@ -6,8 +6,8 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Repositories
 {
     public class ReaderLoansBookRepository : Repository<Librarian.Infrastructure.Entities.ReaderLoansBook, Librarian.Core.Domain.Entities.ReaderLoansBook>, IReaderLoansBookRepository
     {
-        public ReaderLoansBookRepository(IMongoDbContext dbContext, IMapper mapper)
-            : base(dbContext, mapper)
+        public ReaderLoansBookRepository(ILibrarianDatabaseSettings settings, IMapper mapper)
+            : base(settings, mapper)
         {
         }
     }

@@ -14,12 +14,15 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         where TEntity : BaseObject
         where TResult : class
     {
-        protected readonly IMongoDbContext dbContext;
+        protected readonly ILibrarianDatabaseSettings settings;
         protected readonly IMapper mapper;
 
-        public Repository(IMongoDbContext dbContext, IMapper mapper)
+        public Repository(
+            ILibrarianDatabaseSettings settings,
+            IMapper mapper
+        )
         {
-            this.dbContext = dbContext;
+            this.settings = settings;
             this.mapper = mapper;
         }
 
@@ -27,9 +30,12 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         {
             try
             {
-                IEnumerable<TEntity> entities = (await this.dbContext.GetCollection<TEntity>().FindAsync<TEntity>(item => true)).ToEnumerable();
-                IEnumerable<TResult> results = this.mapper.Map<IEnumerable<TResult>>(entities);
-                return new GateawayResponse<IEnumerable<TResult>>(results, true);
+                using (IMongoDbContext dbContext = new MongoDbContext(null))
+                {
+                    IEnumerable<TEntity> entities = (await dbContext.GetCollection<TEntity>().FindAsync<TEntity>(item => true)).ToEnumerable();
+                    IEnumerable<TResult> results = this.mapper.Map<IEnumerable<TResult>>(entities);
+                    return new GateawayResponse<IEnumerable<TResult>>(results, true);
+                }
             }
             catch (Exception e)
             {
@@ -41,12 +47,15 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         {
             try
             {
-                TEntity entity = (await this.dbContext.GetCollection<TEntity>().FindAsync<TEntity>(item => item.Id == id)).FirstOrDefault();
-                TResult result = this.mapper.Map<TResult>(entity);
+                using (IMongoDbContext dbContext = new MongoDbContext(null))
+                {
+                    TEntity entity = (await dbContext.GetCollection<TEntity>().FindAsync<TEntity>(item => item.Id == id)).FirstOrDefault();
+                    TResult result = this.mapper.Map<TResult>(entity);
 
-                if (result == null)
-                    return new GateawayResponse<TResult>(result, false);
-                return new GateawayResponse<TResult>(result, true);
+                    if (result == null)
+                        return new GateawayResponse<TResult>(result, false);
+                    return new GateawayResponse<TResult>(result, true);
+                }
             }
             catch (Exception e)
             {
@@ -58,9 +67,12 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         {
             try
             {
-                TEntity entity = this.mapper.Map<TEntity>(model);
-                await this.dbContext.GetCollection<TEntity>().InsertOneAsync(entity);
-                return new GateawayResponse<string>(entity.Id, true);
+                using (IMongoDbContext dbContext = new MongoDbContext(null))
+                {
+                    TEntity entity = this.mapper.Map<TEntity>(model);
+                    await dbContext.GetCollection<TEntity>().InsertOneAsync(entity);
+                    return new GateawayResponse<string>(entity.Id, true);
+                }
             }
             catch (MongoQueryException e)
             {
@@ -76,9 +88,12 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         {
             try
             {
-                TEntity entity = this.mapper.Map<TEntity>(model);
-                ReplaceOneResult result = await this.dbContext.GetCollection<TEntity>().ReplaceOneAsync(obj => obj.Id == id, entity, new ReplaceOptions() { IsUpsert = true });
-                return new GateawayResponse<string>(entity.Id, true);
+                using (IMongoDbContext dbContext = new MongoDbContext(null))
+                {
+                    TEntity entity = this.mapper.Map<TEntity>(model);
+                    ReplaceOneResult result = await dbContext.GetCollection<TEntity>().ReplaceOneAsync(obj => obj.Id == id, entity, new ReplaceOptions() { IsUpsert = true });
+                    return new GateawayResponse<string>(entity.Id, true);
+                }
             }
             catch (MongoQueryException e)
             {
@@ -94,8 +109,11 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         {
             try
             {
-                await this.dbContext.GetCollection<TEntity>().DeleteOneAsync(item => item.Id == id);
-                return new GateawayResponse<string>(null, true);
+                using (IMongoDbContext dbContext = new MongoDbContext(null))
+                {
+                    await dbContext.GetCollection<TEntity>().DeleteOneAsync(item => item.Id == id);
+                    return new GateawayResponse<string>(null, true);
+                }
             }
             catch (Exception e)
             {
@@ -107,8 +125,11 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         {
             try
             {
-                DeleteResult result = await this.dbContext.GetCollection<TEntity>().DeleteManyAsync(item => ids.Contains(item.Id));
-                return new GateawayResponse<string>(null, true);
+                using (IMongoDbContext dbContext = new MongoDbContext(null))
+                {
+                    DeleteResult result = await dbContext.GetCollection<TEntity>().DeleteManyAsync(item => ids.Contains(item.Id));
+                    return new GateawayResponse<string>(null, true);
+                }
             }
             catch (Exception e)
             {

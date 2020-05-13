@@ -1,9 +1,11 @@
-﻿using MongoDB.Bson;
+﻿using Librarian.Infrastructure.MongoDBDataAccess.Base.Attributes;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 
 namespace Librarian.Infrastructure.Entities
 {
+    [CollectionInfo(CollectionName = "UserHasRight")]
     public class UserHasRight : BaseObject
     {
         public UserHasRight(string id, string userId, int rightId, DateTime dateOfAdding, DateTime? dateOfEnding = null)
