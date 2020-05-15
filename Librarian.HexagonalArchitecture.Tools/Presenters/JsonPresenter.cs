@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.Net;
 
-namespace Librarian.RestFulAPI.Tools.Presenters
+namespace Librarian.HexagonalArchitecture.Tools.Presenters
 {
     public class JsonPresenter<TResult> : IJsonPresenter<TResult>
     {

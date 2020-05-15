@@ -1,4 +1,4 @@
-﻿namespace Librarian.RestFulAPI.Tools.Presenters
+﻿namespace Librarian.HexagonalArchitecture.Tools.Presenters
 {
     public interface IJsonPresenter<TResult> : IPresenter<TResult>
     {

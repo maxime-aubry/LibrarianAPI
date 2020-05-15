@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using AspNetCore.Identity.Mongo;
+using AspNetCore.Identity.Mongo.Model;
+using AutoMapper;
 using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Services;
@@ -21,19 +23,18 @@ using Librarian.Core.UseCases.Readers;
 using Librarian.Core.UseCases.Shelves;
 using Librarian.Core.UseCases.UserHasRight;
 using Librarian.Core.UseCases.Users;
+using Librarian.HexagonalArchitecture.Tools.Presenters;
 using Librarian.Infrastructure.Mapper;
 using Librarian.Infrastructure.MongoDBDataAccess;
 using Librarian.Infrastructure.MongoDBDataAccess.Base;
 using Librarian.Infrastructure.MongoDBDataAccess.Repositories;
 using Librarian.Infrastructure.Services.Auth;
 using Librarian.RestFulAPI.Tools;
-using Librarian.RestFulAPI.Tools.Presenters;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Librarian.RestFulAPI
@@ -56,7 +57,7 @@ namespace Librarian.RestFulAPI
         {
             services.Configure<LibrarianDatabaseSettings>(configuration.GetSection(nameof(LibrarianDatabaseSettings)));
             services.AddSingleton<ILibrarianDatabaseSettings>(sp => sp.GetRequiredService<IOptions<LibrarianDatabaseSettings>>().Value);
-            services.AddSingleton<IMongoDbContext, MongoDbContext>();
+            //services.AddSingleton<IMongoDbContext, MongoDbContext>();
 
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IAuthorWritesBookRepository, AuthorWritesBookRepository>();
@@ -180,54 +181,54 @@ namespace Librarian.RestFulAPI
             services.AddSwaggerGen();
         }
 
-        public static void AddJwt(this IServiceCollection services, IConfiguration configuration)
-        {
-            services
-                .AddAuthentication(config =>
-                {
-                    config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(config =>
-                {
-                    string secret = configuration["JwtToken:secret"];
-                    string issuer = configuration["JwtToken:issuer"];
-                    string audience = configuration["JwtToken:audience"];
+        //public static void AddJwt(this IServiceCollection services, IConfiguration configuration)
+        //{
+        //    services
+        //        .AddAuthentication(config =>
+        //        {
+        //            config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        //            config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        //        })
+        //        .AddJwtBearer(config =>
+        //        {
+        //            string secret = configuration["JwtToken:secret"];
+        //            string issuer = configuration["JwtToken:issuer"];
+        //            string audience = configuration["JwtToken:audience"];
 
-                    config.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = issuer,
-                        ValidAudience = audience,
-                        IssuerSigningKey = JwtService.GetSymmetricSecurityKey(secret)
-                    };
+        //            config.TokenValidationParameters = new TokenValidationParameters
+        //            {
+        //                ValidateIssuer = true,
+        //                ValidateAudience = true,
+        //                ValidateLifetime = true,
+        //                ValidateIssuerSigningKey = true,
+        //                ValidIssuer = issuer,
+        //                ValidAudience = audience,
+        //                IssuerSigningKey = JwtService.GetSymmetricSecurityKey(secret)
+        //            };
 
-                    //services.Configure<IISOptions>(options => options.AutomaticAuthentication = false);
-                    //services
-                    //        .AddAuthentication(config =>
-                    //        {
-                    //            config.DefaultAuthenticateScheme = IISDefaults.AuthenticationScheme;
-                    //            //config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    //            config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    //        })
-                    //        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, config =>
-                    //        {
-                    //            config.RequireHttpsMetadata = false;
-                    //            config.SaveToken = true;
-                    //            config.TokenValidationParameters = new TokenValidationParameters
-                    //            {
-                    //                IssuerSigningKey = JwtService.GetSymmetricSecurityKey(configuration.GetSection("JwtConfig").GetSection("secret").Value),
-                    //                ValidateIssuer = false,
-                    //                ValidateAudience = false,
-                    //                ValidateIssuerSigningKey = true,
-                    //                ValidateLifetime = true,
-                    //                ClockSkew = TimeSpan.FromMinutes(5)
-                    //            };
-                    //        });
-                });
-        }
+        //            //services.Configure<IISOptions>(options => options.AutomaticAuthentication = false);
+        //            //services
+        //            //        .AddAuthentication(config =>
+        //            //        {
+        //            //            config.DefaultAuthenticateScheme = IISDefaults.AuthenticationScheme;
+        //            //            //config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        //            //            config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        //            //        })
+        //            //        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, config =>
+        //            //        {
+        //            //            config.RequireHttpsMetadata = false;
+        //            //            config.SaveToken = true;
+        //            //            config.TokenValidationParameters = new TokenValidationParameters
+        //            //            {
+        //            //                IssuerSigningKey = JwtService.GetSymmetricSecurityKey(configuration.GetSection("JwtConfig").GetSection("secret").Value),
+        //            //                ValidateIssuer = false,
+        //            //                ValidateAudience = false,
+        //            //                ValidateIssuerSigningKey = true,
+        //            //                ValidateLifetime = true,
+        //            //                ClockSkew = TimeSpan.FromMinutes(5)
+        //            //            };
+        //            //        });
+        //        });
+        //}
     }
 }

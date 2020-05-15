@@ -2,10 +2,8 @@
 using Librarian.Core.DataTransfertObject.UseCases.Users;
 using Librarian.Core.Domain.Entities;
 using Librarian.Core.UseCases;
-using Librarian.RestFulAPI.Tools.Presenters;
+using Librarian.HexagonalArchitecture.Tools.Presenters;
 using Librarian.RestFulAPI.V1.ViewModels.Users;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -13,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Librarian.RestFulAPI.V1.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]

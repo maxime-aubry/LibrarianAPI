@@ -44,7 +44,8 @@ namespace Librarian.RestFulAPI
             services.AddPresenters();
             services.AddUseCases();
             services.AddSwagger();
-            services.AddJwt(this.Configuration);
+            //services.AddIdentity(this.Configuration);
+            //services.AddJwt(this.Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

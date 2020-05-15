@@ -30,7 +30,7 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         {
             try
             {
-                using (IMongoDbContext dbContext = new MongoDbContext(null))
+                using (IMongoDbContext dbContext = new MongoDbContext(this.settings))
                 {
                     IEnumerable<TEntity> entities = (await dbContext.GetCollection<TEntity>().FindAsync<TEntity>(item => true)).ToEnumerable();
                     IEnumerable<TResult> results = this.mapper.Map<IEnumerable<TResult>>(entities);
@@ -47,7 +47,7 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         {
             try
             {
-                using (IMongoDbContext dbContext = new MongoDbContext(null))
+                using (IMongoDbContext dbContext = new MongoDbContext(this.settings))
                 {
                     TEntity entity = (await dbContext.GetCollection<TEntity>().FindAsync<TEntity>(item => item.Id == id)).FirstOrDefault();
                     TResult result = this.mapper.Map<TResult>(entity);
@@ -67,7 +67,7 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         {
             try
             {
-                using (IMongoDbContext dbContext = new MongoDbContext(null))
+                using (IMongoDbContext dbContext = new MongoDbContext(this.settings))
                 {
                     TEntity entity = this.mapper.Map<TEntity>(model);
                     await dbContext.GetCollection<TEntity>().InsertOneAsync(entity);
@@ -88,7 +88,7 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         {
             try
             {
-                using (IMongoDbContext dbContext = new MongoDbContext(null))
+                using (IMongoDbContext dbContext = new MongoDbContext(this.settings))
                 {
                     TEntity entity = this.mapper.Map<TEntity>(model);
                     ReplaceOneResult result = await dbContext.GetCollection<TEntity>().ReplaceOneAsync(obj => obj.Id == id, entity, new ReplaceOptions() { IsUpsert = true });
@@ -109,7 +109,7 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         {
             try
             {
-                using (IMongoDbContext dbContext = new MongoDbContext(null))
+                using (IMongoDbContext dbContext = new MongoDbContext(this.settings))
                 {
                     await dbContext.GetCollection<TEntity>().DeleteOneAsync(item => item.Id == id);
                     return new GateawayResponse<string>(null, true);
@@ -125,7 +125,7 @@ namespace Librarian.Infrastructure.MongoDBDataAccess.Base
         {
             try
             {
-                using (IMongoDbContext dbContext = new MongoDbContext(null))
+                using (IMongoDbContext dbContext = new MongoDbContext(this.settings))
                 {
                     DeleteResult result = await dbContext.GetCollection<TEntity>().DeleteManyAsync(item => ids.Contains(item.Id));
                     return new GateawayResponse<string>(null, true);

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Librarian.RestFulAPI.Tools.Presenters
+namespace Librarian.HexagonalArchitecture.Tools.Presenters
 {
     public class JsonContentResult : ContentResult
     {
