@@ -1,6 +1,6 @@
 ﻿using HexagonalArchitecture.Core.DataTransfertObject;
-using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.Domain.Entities;
+using Librarian.Core.Repositories;
 using System.Threading.Tasks;
 
 namespace Librarian.Core.UseCases.Users.UpdateUser

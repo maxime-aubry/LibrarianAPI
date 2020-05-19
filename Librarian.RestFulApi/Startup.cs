@@ -44,8 +44,6 @@ namespace Librarian.RestFulAPI
             services.AddPresenters();
             services.AddUseCases();
             services.AddSwagger();
-            //services.AddIdentity(this.Configuration);
-            //services.AddJwt(this.Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,9 +70,6 @@ namespace Librarian.RestFulAPI
 
             app.UseRouting();
 
-            //app.UseMvc();
-
-            //app.UseCors("CorsPolicy");
             app.UseCors(option => option
                .AllowAnyOrigin()
                .AllowAnyMethod()

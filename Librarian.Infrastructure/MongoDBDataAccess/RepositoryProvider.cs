@@ -1,5 +1,4 @@
-﻿using Librarian.Core.DataTransfertObject.GatewayResponses;
-using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
+﻿using Librarian.Core.Repositories;
 
 namespace Librarian.Infrastructure.MongoDBDataAccess
 {

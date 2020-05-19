@@ -11,19 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librarian.Infrastructure", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librarian.Core", "Librarian.Core\Librarian.Core.csproj", "{844ACF5B-F4F1-4445-B1DA-ED8EF66BFB0D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{93C4B0B3-C241-4516-B693-FDF782F70B3C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E1679BA5-6BE9-4D30-A59D-02F20D2BD113}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librarian.RestFulAPI.Tests", "Librarian.RestFulAPI.Tests\Librarian.RestFulAPI.Tests.csproj", "{66CBF24C-409B-4F0A-83AE-AA62E84FA118}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librarian.Core.Tests", "Librarian.Core.Tests\Librarian.Core.Tests.csproj", "{0A9580BE-FF9B-4FD3-8FE7-F194E0DEC38F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librarian.Identity.IdentityServer", "Librarian.Identity.IdentityServer\Librarian.Identity.IdentityServer.csproj", "{07F58840-7077-4C18-BFD0-03740853DC70}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{B39F6419-E382-4E62-8463-2305BA4D687F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Librarian.Identity.IdentityClient", "Librarian.Identity.IdentityClient\Librarian.Identity.IdentityClient.csproj", "{F217FA61-24B6-4225-96E7-8453E8A05DCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,18 +54,6 @@ Global
 		{0A9580BE-FF9B-4FD3-8FE7-F194E0DEC38F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0A9580BE-FF9B-4FD3-8FE7-F194E0DEC38F}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{0A9580BE-FF9B-4FD3-8FE7-F194E0DEC38F}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{07F58840-7077-4C18-BFD0-03740853DC70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{07F58840-7077-4C18-BFD0-03740853DC70}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{07F58840-7077-4C18-BFD0-03740853DC70}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{07F58840-7077-4C18-BFD0-03740853DC70}.Release|Any CPU.Build.0 = Release|Any CPU
-		{07F58840-7077-4C18-BFD0-03740853DC70}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{07F58840-7077-4C18-BFD0-03740853DC70}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{F217FA61-24B6-4225-96E7-8453E8A05DCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F217FA61-24B6-4225-96E7-8453E8A05DCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F217FA61-24B6-4225-96E7-8453E8A05DCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F217FA61-24B6-4225-96E7-8453E8A05DCF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F217FA61-24B6-4225-96E7-8453E8A05DCF}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{F217FA61-24B6-4225-96E7-8453E8A05DCF}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,9 +64,6 @@ Global
 		{844ACF5B-F4F1-4445-B1DA-ED8EF66BFB0D} = {D321870D-1E33-457C-8C07-3EA4437F6956}
 		{66CBF24C-409B-4F0A-83AE-AA62E84FA118} = {E1679BA5-6BE9-4D30-A59D-02F20D2BD113}
 		{0A9580BE-FF9B-4FD3-8FE7-F194E0DEC38F} = {E1679BA5-6BE9-4D30-A59D-02F20D2BD113}
-		{07F58840-7077-4C18-BFD0-03740853DC70} = {B39F6419-E382-4E62-8463-2305BA4D687F}
-		{B39F6419-E382-4E62-8463-2305BA4D687F} = {D321870D-1E33-457C-8C07-3EA4437F6956}
-		{F217FA61-24B6-4225-96E7-8453E8A05DCF} = {B39F6419-E382-4E62-8463-2305BA4D687F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C556A37A-5CA3-4AC9-A816-368F6AFCE91D}

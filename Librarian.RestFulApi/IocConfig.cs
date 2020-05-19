@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using HexagonalArchitecture.Core.Presenters;
-using Librarian.Core.DataTransfertObject.GatewayResponses;
-using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
+using Librarian.Core.Repositories;
 using Librarian.Core.UseCases;
 using Librarian.Core.UseCases.Authors;
 using Librarian.Core.UseCases.Authors.CreateAuthor;

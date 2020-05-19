@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="HexagonalArchitecture.Core" Version="0.0.2" />
+    <PackageReference Include="HexagonalArchitecture.Core" Version="0.0.3" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.5.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.10.4" />
   </ItemGroup>
