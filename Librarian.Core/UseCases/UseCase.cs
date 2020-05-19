@@ -1,4 +1,4 @@
-﻿using Librarian.Core.DataTransfertObject.GatewayResponses;
+﻿using Librarian.Core.Repositories;
 
 namespace Librarian.Core.UseCases
 {

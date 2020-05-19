@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using Librarian.Core.DataTransfertObject;
-using Librarian.Core.DataTransfertObject.GatewayResponses;
+using HexagonalArchitecture.Core.DataTransfertObject;
 using Librarian.Infrastructure.Entities;
 using MongoDB.Driver;
 using System;

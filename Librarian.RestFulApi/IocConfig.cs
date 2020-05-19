@@ -1,36 +1,63 @@
-﻿using AspNetCore.Identity.Mongo;
-using AspNetCore.Identity.Mongo.Model;
-using AutoMapper;
+﻿using AutoMapper;
+using HexagonalArchitecture.Core.Presenters;
 using Librarian.Core.DataTransfertObject.GatewayResponses;
 using Librarian.Core.DataTransfertObject.GatewayResponses.Repositories;
-using Librarian.Core.DataTransfertObject.GatewayResponses.Services;
-using Librarian.Core.DataTransfertObject.UseCases.Authors;
-using Librarian.Core.DataTransfertObject.UseCases.AuthorWritesBook;
-using Librarian.Core.DataTransfertObject.UseCases.Books;
-using Librarian.Core.DataTransfertObject.UseCases.ReaderLoansBook;
-using Librarian.Core.DataTransfertObject.UseCases.ReaderRatesBook;
-using Librarian.Core.DataTransfertObject.UseCases.Readers;
-using Librarian.Core.DataTransfertObject.UseCases.Shelves;
-using Librarian.Core.DataTransfertObject.UseCases.UserHasRight;
-using Librarian.Core.DataTransfertObject.UseCases.Users;
 using Librarian.Core.UseCases;
 using Librarian.Core.UseCases.Authors;
+using Librarian.Core.UseCases.Authors.CreateAuthor;
+using Librarian.Core.UseCases.Authors.DeleteAuthor;
+using Librarian.Core.UseCases.Authors.GetAuthorById;
+using Librarian.Core.UseCases.Authors.GetAuthors;
+using Librarian.Core.UseCases.Authors.GetAuthorsByFilters;
+using Librarian.Core.UseCases.Authors.UpdateAuthor;
 using Librarian.Core.UseCases.AuthorWritesBook;
+using Librarian.Core.UseCases.AuthorWritesBook.AddAuthor;
+using Librarian.Core.UseCases.AuthorWritesBook.GetAuthorsByBookId;
+using Librarian.Core.UseCases.AuthorWritesBook.GetBooksByAuthorId;
 using Librarian.Core.UseCases.Books;
+using Librarian.Core.UseCases.Books.AddCopies;
+using Librarian.Core.UseCases.Books.CreateBook;
+using Librarian.Core.UseCases.Books.DeleteBook;
+using Librarian.Core.UseCases.Books.GetBookById;
+using Librarian.Core.UseCases.Books.GetBooks;
+using Librarian.Core.UseCases.Books.GetBooksByFilters;
+using Librarian.Core.UseCases.Books.RemoveCopies;
+using Librarian.Core.UseCases.Books.UpdateBook;
 using Librarian.Core.UseCases.ReaderLoansBook;
+using Librarian.Core.UseCases.ReaderLoansBook.AddLoan;
+using Librarian.Core.UseCases.ReaderLoansBook.CloseLoan;
+using Librarian.Core.UseCases.ReaderLoansBook.CloseLoanAndDeclareAsLost;
+using Librarian.Core.UseCases.ReaderLoansBook.DeleteLoan;
+using Librarian.Core.UseCases.ReaderLoansBook.GetLoans;
 using Librarian.Core.UseCases.ReaderRatesBook;
+using Librarian.Core.UseCases.ReaderRatesBook.AddRate;
+using Librarian.Core.UseCases.ReaderRatesBook.GetRates;
 using Librarian.Core.UseCases.Readers;
+using Librarian.Core.UseCases.Readers.CreateReader;
+using Librarian.Core.UseCases.Readers.DeleteReader;
+using Librarian.Core.UseCases.Readers.GetReaderById;
+using Librarian.Core.UseCases.Readers.GetReaders;
+using Librarian.Core.UseCases.Readers.UpdateReader;
 using Librarian.Core.UseCases.Shelves;
+using Librarian.Core.UseCases.Shelves.CreateShelf;
+using Librarian.Core.UseCases.Shelves.DeleteShelf;
+using Librarian.Core.UseCases.Shelves.GetAvailableShelves;
+using Librarian.Core.UseCases.Shelves.GetShelfById;
+using Librarian.Core.UseCases.Shelves.GetShelves;
 using Librarian.Core.UseCases.UserHasRight;
+using Librarian.Core.UseCases.UserHasRight.AddRight;
+using Librarian.Core.UseCases.UserHasRight.DeleteRight;
 using Librarian.Core.UseCases.Users;
-using Librarian.HexagonalArchitecture.Tools.Presenters;
+using Librarian.Core.UseCases.Users.CreateUser;
+using Librarian.Core.UseCases.Users.DeleteUser;
+using Librarian.Core.UseCases.Users.GetUserById;
+using Librarian.Core.UseCases.Users.GetUsers;
+using Librarian.Core.UseCases.Users.UpdateUser;
 using Librarian.Infrastructure.Mapper;
 using Librarian.Infrastructure.MongoDBDataAccess;
 using Librarian.Infrastructure.MongoDBDataAccess.Base;
 using Librarian.Infrastructure.MongoDBDataAccess.Repositories;
-using Librarian.Infrastructure.Services.Auth;
 using Librarian.RestFulAPI.Tools;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,8 +76,6 @@ namespace Librarian.RestFulAPI
                 mc.AddProfile(new Librarian.Infrastructure.Mapper.MappingProfile());
             });
             services.AddSingleton(mappingConfig.CreateMapper());
-
-            services.AddScoped<IJwtService, JwtService>();
         }
 
         public static void AddRepositories(this IServiceCollection services, IConfiguration configuration)
@@ -85,12 +110,12 @@ namespace Librarian.RestFulAPI
             services.AddScoped<IGetAuthorsByFiltersUseCase, GetAuthorsByFiltersUseCase>();
             services.AddScoped<ICreateAuthorUseCase, CreateAuthorUseCase>();
             services.AddScoped<IUpdateAuthorUseCase, UpdateAuthorUseCase>();
-            services.AddScoped<Core.DataTransfertObject.UseCases.Authors.IDeleteAuthorUseCase, Core.UseCases.Authors.DeleteAuthorUseCase>();
+            services.AddScoped<IDeleteAuthorUseCase, DeleteAuthorUseCase>();
             #endregion
 
             #region AuthorWritesBook
             services.AddScoped<IAddAuthorUseCase, AddAuthorUseCase>();
-            services.AddScoped<Core.DataTransfertObject.UseCases.AuthorWritesBook.IDeleteAuthorUseCase, Core.UseCases.AuthorWritesBook.DeleteAuthorUseCase>();
+            services.AddScoped<Librarian.Core.UseCases.AuthorWritesBook.DeleteAuthor.IDeleteAuthorUseCase, Librarian.Core.UseCases.AuthorWritesBook.DeleteAuthor.DeleteAuthorUseCase>();
             services.AddScoped<IGetAuthorsByBookIdUseCase, GetAuthorsByBookIdUseCase>();
             services.AddScoped<IGetBooksByAuthorIdUseCase, GetBooksByAuthorIdUseCase>();
             #endregion

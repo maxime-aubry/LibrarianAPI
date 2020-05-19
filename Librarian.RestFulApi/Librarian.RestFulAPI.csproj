@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="HexagonalArchitecture.Core" Version="0.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ApiExplorer" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.1" />
@@ -19,8 +20,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.4" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
-    <PackageReference Include="NLog" Version="4.7.0" />
-    <PackageReference Include="NLog.Config" Version="4.7.0" />
+    <PackageReference Include="NLog" Version="4.7.1" />
+    <PackageReference Include="NLog.Config" Version="4.7.1" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.3" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
@@ -29,7 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Librarian.Core\Librarian.Core.csproj" />
-    <ProjectReference Include="..\Librarian.HexagonalArchitecture.Tools\Librarian.HexagonalArchitecture.Tools.csproj" />
+    <ProjectReference Include="..\Librarian.Identity.IdentityClient\Librarian.Identity.IdentityClient.csproj" />
     <ProjectReference Include="..\Librarian.Infrastructure\Librarian.Infrastructure.csproj" />
   </ItemGroup>
 

@@ -1,8 +1,12 @@
-﻿using Librarian.Core.DataTransfertObject.UseCases.Shelves;
+﻿using HexagonalArchitecture.Core.Presenters;
 using Librarian.Core.Domain.Entities;
 using Librarian.Core.Domain.Enums;
 using Librarian.Core.UseCases;
-using Librarian.HexagonalArchitecture.Tools.Presenters;
+using Librarian.Core.UseCases.Shelves.CreateShelf;
+using Librarian.Core.UseCases.Shelves.DeleteShelf;
+using Librarian.Core.UseCases.Shelves.GetAvailableShelves;
+using Librarian.Core.UseCases.Shelves.GetShelfById;
+using Librarian.Core.UseCases.Shelves.GetShelves;
 using Librarian.RestFulAPI.V1.ViewModels.Shelves;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

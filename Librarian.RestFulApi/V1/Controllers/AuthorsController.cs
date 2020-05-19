@@ -1,8 +1,13 @@
-﻿using Librarian.Core.DataTransfertObject.UseCases.Authors;
-using Librarian.Core.DataTransfertObject.UseCases.AuthorWritesBook;
+﻿using HexagonalArchitecture.Core.Presenters;
 using Librarian.Core.Domain.Entities;
 using Librarian.Core.UseCases;
-using Librarian.HexagonalArchitecture.Tools.Presenters;
+using Librarian.Core.UseCases.Authors.CreateAuthor;
+using Librarian.Core.UseCases.Authors.DeleteAuthor;
+using Librarian.Core.UseCases.Authors.GetAuthorById;
+using Librarian.Core.UseCases.Authors.GetAuthors;
+using Librarian.Core.UseCases.Authors.GetAuthorsByFilters;
+using Librarian.Core.UseCases.Authors.UpdateAuthor;
+using Librarian.Core.UseCases.AuthorWritesBook.GetBooksByAuthorId;
 using Librarian.RestFulAPI.V1.ViewModels.Authors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -101,7 +106,7 @@ namespace Librarian.RestFulAPI.V1.Controllers
             if (string.IsNullOrEmpty(authorId))
                 return BadRequest(Librarian.RestFulAPI.Properties.Resources.AuthorsController_forgotten_author_id_on_request);
 
-            await useCasesProvider.Authors.Delete.Handle(new Core.DataTransfertObject.UseCases.Authors.DeleteAuthorRequest(authorId), presenter);
+            await useCasesProvider.Authors.Delete.Handle(new DeleteAuthorRequest(authorId), presenter);
             return presenter.ContentResult;
         }
         #endregion

@@ -1,8 +1,13 @@
-﻿using Librarian.Core.DataTransfertObject.UseCases.UserHasRight;
-using Librarian.Core.DataTransfertObject.UseCases.Users;
+﻿using HexagonalArchitecture.Core.Presenters;
 using Librarian.Core.Domain.Entities;
 using Librarian.Core.UseCases;
-using Librarian.HexagonalArchitecture.Tools.Presenters;
+using Librarian.Core.UseCases.UserHasRight.AddRight;
+using Librarian.Core.UseCases.UserHasRight.DeleteRight;
+using Librarian.Core.UseCases.Users.CreateUser;
+using Librarian.Core.UseCases.Users.DeleteUser;
+using Librarian.Core.UseCases.Users.GetUserById;
+using Librarian.Core.UseCases.Users.GetUsers;
+using Librarian.Core.UseCases.Users.UpdateUser;
 using Librarian.RestFulAPI.V1.ViewModels.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

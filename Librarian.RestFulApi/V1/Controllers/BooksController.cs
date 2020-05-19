@@ -1,10 +1,20 @@
-﻿using Librarian.Core.DataTransfertObject.UseCases.AuthorWritesBook;
-using Librarian.Core.DataTransfertObject.UseCases.Books;
-using Librarian.Core.DataTransfertObject.UseCases.ReaderRatesBook;
+﻿using HexagonalArchitecture.Core.Presenters;
 using Librarian.Core.Domain.Entities;
 using Librarian.Core.Domain.Enums;
 using Librarian.Core.UseCases;
-using Librarian.HexagonalArchitecture.Tools.Presenters;
+using Librarian.Core.UseCases.AuthorWritesBook.AddAuthor;
+using Librarian.Core.UseCases.AuthorWritesBook.DeleteAuthor;
+using Librarian.Core.UseCases.AuthorWritesBook.GetAuthorsByBookId;
+using Librarian.Core.UseCases.Books.AddCopies;
+using Librarian.Core.UseCases.Books.CreateBook;
+using Librarian.Core.UseCases.Books.DeleteBook;
+using Librarian.Core.UseCases.Books.GetBookById;
+using Librarian.Core.UseCases.Books.GetBooks;
+using Librarian.Core.UseCases.Books.GetBooksByFilters;
+using Librarian.Core.UseCases.Books.RemoveCopies;
+using Librarian.Core.UseCases.Books.UpdateBook;
+using Librarian.Core.UseCases.ReaderRatesBook.AddRate;
+using Librarian.Core.UseCases.ReaderRatesBook.GetRates;
 using Librarian.RestFulAPI.V1.ViewModels.Books;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -142,7 +152,7 @@ namespace Librarian.RestFulAPI.V1.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await useCasesProvider.Books.ReduceCopiesUseCase.Handle(new ReduceCopiesRequest(viewModel.BookId, viewModel.NumberOfCopies), presenter);
+            await useCasesProvider.Books.ReduceCopiesUseCase.Handle(new RemoveCopiesRequest(viewModel.BookId, viewModel.NumberOfCopies), presenter);
             return presenter.ContentResult;
         }
 
